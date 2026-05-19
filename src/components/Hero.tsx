@@ -3,7 +3,7 @@ import React from 'react';
 export default function Hero() {
   return (
     <section
-      className="relative w-full min-h-[100svh] flex flex-col justify-between items-center py-10 overflow-hidden bg-cover bg-center"
+      className="relative w-full min-h-[100vh] flex flex-col justify-between items-center py-10 overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: 'url("/main-texture4.png")' }}
     >
       {/* Subtle Noise Background overlaying the texture */}
@@ -13,7 +13,7 @@ export default function Hero() {
       ></div>
 
       {/* Top Name */}
-      <div className="z-10 w-full text-center fade-in pt-6">
+      <div className="z-10 w-full text-center fade-in pt-2">
         <h1 className="font-cursive text-[clamp(36px,10vw,50px)] text-[#333333] font-light tracking-wide">
           Dongho
         </h1>
@@ -32,14 +32,14 @@ export default function Hero() {
       </div>
 
       {/* Bottom Name */}
-      <div className="z-10 w-full text-center fade-in pb-5 pt-3">
+      <div className="z-10 w-full text-center fade-in pb-10">
         <h1 className="font-cursive text-[clamp(36px,10vw,50px)] text-[#333333] font-light tracking-wide">
           Kayoung
         </h1>
       </div>
 
       {/* Details at Bottom */}
-      <div className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-2 whitespace-nowrap">
+      <div className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-6 whitespace-nowrap">
         <div className="text-left">
           <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest text-black font-bold mb-1 whitespace-nowrap">
             THE BMK WEDDING
@@ -57,6 +57,9 @@ export default function Hero() {
           </p>
         </div>
       </div>
+
+      {/* Smooth bottom white gradient overlay to dissolve into Greeting section */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none z-0"></div>
     </section>
   );
 }
