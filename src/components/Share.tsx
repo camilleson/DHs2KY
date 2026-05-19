@@ -17,36 +17,18 @@ export default function Share() {
     });
   };
 
+  const KAKAO_TEMPLATE_ID = 133307;
+
   const handleKakaoShare = () => {
     if (window.Kakao) {
       try {
-        window.Kakao.Share.sendDefault({
-          objectType: 'feed',
-          content: {
-            title: '동호 ♥ 가영 모바일 청첩장',
-            description: '2026년 10월 17일 토요일 오후 3시, 저희의 첫 시작에 소중한 당신을 초대합니다.',
-            imageUrl: 'https://dh-s2-ky.vercel.app/hero-photo2.png',
-            link: {
-              mobileWebUrl: 'https://dh-s2-ky.vercel.app',
-              webUrl: 'https://dh-s2-ky.vercel.app',
-            },
+        window.Kakao.Share.sendCustom({
+          templateId: KAKAO_TEMPLATE_ID,
+          templateArgs: {
+            THU: 'https://dh-s2-ky.vercel.app/hero-photo2.png',
+            SR1: 'https://dh-s2-ky.vercel.app',
+            SR2: 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP',
           },
-          buttons: [
-            {
-              title: '청첩장 보기',
-              link: {
-                mobileWebUrl: 'https://dh-s2-ky.vercel.app',
-                webUrl: 'https://dh-s2-ky.vercel.app',
-              },
-            },
-            {
-              title: '위치 보기',
-              link: {
-                mobileWebUrl: 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP',
-                webUrl: 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP',
-              },
-            },
-          ],
         });
       } catch (error) {
         alert('카카오톡 공유하기 설정이 필요합니다.');
