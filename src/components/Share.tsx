@@ -19,7 +19,6 @@ export default function Share() {
 
   const handleKakaoShare = () => {
     if (window.Kakao) {
-      const shareUrl = 'https://dh-s2-ky.vercel.app';
       try {
         window.Kakao.Share.sendDefault({
           objectType: 'feed',
@@ -28,16 +27,16 @@ export default function Share() {
             description: '2026년 10월 17일 토요일 오후 3시, 저희의 첫 시작에 소중한 당신을 초대합니다.',
             imageUrl: 'https://dh-s2-ky.vercel.app/hero-photo2.png',
             link: {
-              mobileWebUrl: shareUrl,
-              webUrl: shareUrl,
+              mobileWebUrl: 'https://dh-s2-ky.vercel.app',
+              webUrl: 'https://dh-s2-ky.vercel.app',
             },
           },
           buttons: [
             {
-              title: '청첩장 보기',
+              title: '웹으로 보기',
               link: {
-                mobileWebUrl: shareUrl,
-                webUrl: shareUrl,
+                mobileWebUrl: 'https://dh-s2-ky.vercel.app',
+                webUrl: 'https://dh-s2-ky.vercel.app',
               },
             },
           ],
