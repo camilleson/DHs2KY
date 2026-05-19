@@ -64,8 +64,8 @@ export default function Greeting() {
                   <div className="text-center">
                     <p className="text-[14px] text-[#666] mb-3"><span className="text-[#888] text-[13px] mr-1">신랑</span> 남동호</p>
                     <div className="flex justify-center gap-4">
-                      <a href="tel:010" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Phone size={18} /></a>
-                      <a href="sms:010" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Mail size={18} /></a>
+                      <a href="tel:01031437732" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Phone size={18} /></a>
+                      <a href="sms:01031437732" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Mail size={18} /></a>
                     </div>
                   </div>
                   
@@ -95,8 +95,8 @@ export default function Greeting() {
                   <div className="text-center">
                     <p className="text-[14px] text-[#666] mb-3"><span className="text-[#888] text-[13px] mr-1">신부</span> 손가영</p>
                     <div className="flex justify-center gap-4">
-                      <a href="tel:010" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Phone size={18} /></a>
-                      <a href="sms:010" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Mail size={18} /></a>
+                      <a href="tel:01023870509" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Phone size={18} /></a>
+                      <a href="sms:01023870509" className="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><Mail size={18} /></a>
                     </div>
                   </div>
                   
