@@ -9,7 +9,15 @@ import Account from './components/Account';
 import AudioPlayer from './components/AudioPlayer';
 import Share from './components/Share';
 
+const KAKAO_MAP_URL = 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP';
+
 function App() {
+  // /map 경로 접속 시 카카오맵으로 즉시 리다이렉트
+  if (window.location.pathname === '/map') {
+    window.location.replace(KAKAO_MAP_URL);
+    return null;
+  }
+
   // Simple intersection observer for fade-in animations
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {

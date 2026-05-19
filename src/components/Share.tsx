@@ -27,7 +27,7 @@ export default function Share() {
           templateArgs: {
             THU: 'https://dh-s2-ky.vercel.app/hero-photo2.png',
             SR1: 'https://dh-s2-ky.vercel.app',
-            SR2: 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP',
+            SR2: 'https://dh-s2-ky.vercel.app/map',
           },
         });
       } catch (error) {
