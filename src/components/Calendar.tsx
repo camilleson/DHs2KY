@@ -18,12 +18,12 @@ export default function Calendar() {
   }, []);
 
   return (
-    <section className="py-24 bg-[#F6F6F6] fade-in border-t border-gray-100">
+    <section className="py-14 bg-[#F6F6F6] fade-in border-t border-gray-100">
       <div className="text-center mb-8">
         <h3 className="font-serif text-[18px] tracking-[0.25em] text-[#111]">WEDDING DAY</h3>
       </div>
 
-      <div className="text-center font-sans text-[15px] text-[#444] tracking-wide mb-14">
+      <div className="text-center font-sans text-[15px] text-[#444] tracking-wide mb-8">
         2026년 10월 17일 토요일 오후 3시 00분
       </div>
 
@@ -32,7 +32,7 @@ export default function Calendar() {
           Oct.
         </div>
         
-        <div className="grid grid-cols-7 gap-y-6 text-center font-sans">
+        <div className="grid grid-cols-7 gap-y-2 text-center font-sans">
           {days.map((day, idx) => (
             <div key={`header-${idx}`} className={`text-[13px] ${idx === 0 ? 'text-[#ff6b6b]' : 'text-[#333]'}`}>
               {day}
@@ -41,7 +41,7 @@ export default function Calendar() {
           {allDays.map((date, idx) => {
             const isWeddingDay = date === 17;
             return (
-              <div key={`date-${idx}`} className="flex justify-center items-center h-8 relative">
+              <div key={`date-${idx}`} className="flex justify-center items-center h-7 relative">
                 {isWeddingDay && (
                   <div className="absolute inset-0 bg-[#999] rounded-full shadow-md scale-110"></div>
                 )}
@@ -57,7 +57,7 @@ export default function Calendar() {
           })}
         </div>
         
-        <div className="mt-14 pt-8 border-t border-gray-100 text-center">
+        <div className="mt-8 pt-6 border-t border-gray-100 text-center">
           <p className="font-sans text-[14px] tracking-wide text-[#555]">
             결혼식이 <span className="font-bold text-[#b49071]">{dDay}일</span> 남았습니다.
           </p>
