@@ -41,18 +41,18 @@ export default function Hero() {
       {/* Details at Bottom */}
       <div className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-2 whitespace-nowrap">
         <div className="text-left">
-          <p className="font-sans text-[14px] tracking-widest text-black font-medium mb-1 whitespace-nowrap">
+          <p className="font-sans text-[12px] tracking-widest text-black font-medium mb-1 whitespace-nowrap">
             THE BMK WEDDING
           </p>
-          <p className="font-sans text-[14px] tracking-widest text-black font-medium whitespace-nowrap">
+          <p className="font-sans text-[12px] tracking-widest text-black font-medium whitespace-nowrap">
             ASTIN HALL
           </p>
         </div>
         <div className="text-right">
-          <p className="font-sans text-[14px] tracking-widest text-black font-medium mb-1 whitespace-nowrap">
+          <p className="font-sans text-[12px] tracking-widest text-black font-medium mb-1 whitespace-nowrap">
             2026. 10. 17 SAT
           </p>
-          <p className="font-sans text-[14px] tracking-widest text-black font-medium whitespace-nowrap">
+          <p className="font-sans text-[12px] tracking-widest text-black font-medium whitespace-nowrap">
             03:00 PM
           </p>
         </div>
