@@ -32,7 +32,7 @@ export default function Hero() {
       </div>
 
       {/* Bottom Name */}
-      <div className="z-10 w-full text-center fade-in pb-10">
+      <div className="z-10 w-full text-center fade-in pt-2 pb-10">
         <h1 className="font-cursive text-[clamp(36px,10vw,50px)] text-[#333333] font-light tracking-wide">
           Kayoung
         </h1>
