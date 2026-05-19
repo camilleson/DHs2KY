@@ -9,7 +9,7 @@ import Account from './components/Account';
 import AudioPlayer from './components/AudioPlayer';
 import Share from './components/Share';
 
-const KAKAO_MAP_URL = 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP';
+const KAKAO_MAP_URL = 'https://map.naver.com/p/search/the%20bmk/place/33794156?c=15.00,0,0,3,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605191517&locale=ko&svcName=map_pcv5&searchText=the%20bmk';
 
 function App() {
   // /map 경로 접속 시 카카오맵으로 즉시 리다이렉트
