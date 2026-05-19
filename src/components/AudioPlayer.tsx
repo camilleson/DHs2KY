@@ -13,6 +13,23 @@ export default function AudioPlayer() {
     return () => clearTimeout(timer);
   }, []);
 
+  // 자동재생 시도 (브라우저 정책으로 막히면 무시)
+  useEffect(() => {
+    const playAudio = async () => {
+      try {
+        if (audioRef.current) {
+          audioRef.current.volume = 0.5;
+          await audioRef.current.play();
+          setIsPlaying(true);
+        }
+      } catch (err) {
+        // 브라우저 자동재생 차단 시 사용자가 직접 재생
+        setIsPlaying(false);
+      }
+    };
+    playAudio();
+  }, []);
+
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
