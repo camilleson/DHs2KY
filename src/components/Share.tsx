@@ -5,7 +5,7 @@ export default function Share() {
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
       // Replace with actual Kakao JS key if you want real sharing
-      window.Kakao.init('4be6e68401e7f05d0ab4c92a5135ffbb');
+      window.Kakao.init('0d274d521eb3cd12878dce5d82b6fcac');
     }
   }, []);
 
