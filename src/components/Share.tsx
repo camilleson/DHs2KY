@@ -19,7 +19,7 @@ export default function Share() {
 
   const handleKakaoShare = () => {
     if (window.Kakao) {
-      const shareUrl = window.location.origin + '/';
+      const shareUrl = 'https://dh-s2-ky.vercel.app';
       try {
         window.Kakao.Share.sendDefault({
           objectType: 'feed',
