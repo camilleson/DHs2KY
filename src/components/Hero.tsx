@@ -13,7 +13,7 @@ export default function Hero() {
       ></div>
 
       {/* Top Name */}
-      <div className="z-10 w-full text-center fade-in pt-12">
+      <div className="z-10 w-full text-center fade-in pt-6">
         <h1 className="font-cursive text-[clamp(36px,10vw,50px)] text-[#333333] font-light tracking-wide">
           Dongho
         </h1>
