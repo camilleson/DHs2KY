@@ -19,11 +19,32 @@ export default function Share() {
 
   const handleKakaoShare = () => {
     if (window.Kakao) {
-      window.Kakao.Share.sendScrap({
-        requestUrl: window.location.href,
-      }).catch(() => {
+      const shareUrl = window.location.origin + '/';
+      try {
+        window.Kakao.Share.sendDefault({
+          objectType: 'feed',
+          content: {
+            title: '동호 ♥ 가영 모바일 청첩장',
+            description: '2026년 10월 17일 토요일 오후 3시, 저희의 첫 시작에 소중한 당신을 초대합니다.',
+            imageUrl: 'https://dh-s2-ky.vercel.app/hero-photo2.png',
+            link: {
+              mobileWebUrl: shareUrl,
+              webUrl: shareUrl,
+            },
+          },
+          buttons: [
+            {
+              title: '청첩장 보기',
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+          ],
+        });
+      } catch (error) {
         alert('카카오톡 공유하기 설정이 필요합니다.');
-      });
+      }
     } else {
       alert('카카오톡 공유 기능을 불러오지 못했습니다.');
     }
