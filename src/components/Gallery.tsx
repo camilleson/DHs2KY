@@ -1,0 +1,65 @@
+import React, { useState } from 'react';
+
+const IMAGES = [
+  'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1544928147-79a2dbc1f389?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1607504386708-4176d6542d25?auto=format&fit=crop&q=80&w=800',
+];
+
+export default function Gallery() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  return (
+    <section className="pt-24 pb-10 bg-[#fcfcfc] fade-in">
+      <div className="text-center mb-10">
+        <h3 className="font-serif text-[18px] tracking-[0.25em] text-[#111]">GALLERY</h3>
+      </div>
+
+      <div className="w-full mx-auto">
+        {/* Main Image - Narrower container to match the screenshot */}
+        <div className="w-full max-w-[300px] mx-auto mb-8 overflow-hidden shadow-sm">
+          <img 
+            src={IMAGES[selectedIndex]} 
+            alt={`Gallery ${selectedIndex + 1}`} 
+            className="w-full h-auto object-cover aspect-[2/3] transition-opacity duration-300"
+            loading="lazy"
+          />
+        </div>
+
+        {/* Thumbnails Carousel - Wider than the main image */}
+        <div 
+          className="flex gap-3 overflow-x-auto pb-4 px-6 snap-x max-w-md mx-auto" 
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+        >
+          {/* Inject style for webkit scrollbar hiding inline */}
+          <style>{`
+            .overflow-x-auto::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
+          
+          {IMAGES.map((src, index) => (
+            <div 
+              key={index} 
+              className={`flex-shrink-0 w-20 aspect-square cursor-pointer overflow-hidden snap-center transition-all ${
+                index === selectedIndex ? 'opacity-100 ring-1 ring-gray-400' : 'opacity-40 hover:opacity-100'
+              }`}
+              onClick={() => setSelectedIndex(index)}
+            >
+              <img 
+                src={src} 
+                alt={`Thumbnail ${index + 1}`} 
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
