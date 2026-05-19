@@ -20,7 +20,7 @@ export default function Hero() {
       </div>
 
       {/* Center Image */}
-      <div className="z-10 w-[90%] max-w-[360px] aspect-[4/5] relative my-6 fade-in mx-auto">
+      <div className="z-10 w-[90%] max-w-[420px] aspect-[4/5] relative my-6 fade-in mx-auto">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
