@@ -5,18 +5,18 @@ export default function Greeting() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   return (
-    <section className="py-24 px-6 text-center bg-white fade-in">
+    <section className="py-14 px-6 text-center bg-white fade-in">
       <div className="mb-12">
         <h3 className="font-serif text-[22px] tracking-[0.15em] text-[#111]">INVITATION</h3>
       </div>
       
-      <div className="font-sans text-[15px] leading-[2.2] text-[#444] mb-16 tracking-wide">
+      <div className="font-sans text-[13px] leading-[1.9] text-[#444] mb-10 tracking-wide">
         <p>인생은 누구나 비슷한 길을 걸어간다.</p>
         <p>결국엔 늙어서 지난 날을 추억하는 것일 뿐이다.</p>
         <p>그러니 결혼은 따뜻한 사람과 하거라</p>
         <p className="mt-2">-영화 '어바웃 타임'-</p>
         
-        <div className="h-8"></div>
+        <div className="h-4"></div>
         
         <p>부부라는 이름의 첫 시작,</p>
         <p>그 설렘의 순간에 소중한 분들을 초대합니다.</p>
