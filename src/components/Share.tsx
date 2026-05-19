@@ -33,10 +33,17 @@ export default function Share() {
           },
           buttons: [
             {
-              title: '웹으로 보기',
+              title: '청첩장 보기',
               link: {
                 mobileWebUrl: 'https://dh-s2-ky.vercel.app',
                 webUrl: 'https://dh-s2-ky.vercel.app',
+              },
+            },
+            {
+              title: '위치 보기',
+              link: {
+                mobileWebUrl: 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP',
+                webUrl: 'https://map.kakao.com/?urlX=590939.0000000012&urlY=784024.9999999977&urlLevel=3&itemId=22301957&q=%EB%8D%94BMK%EC%BB%A8%EB%B2%A4%EC%85%98&srcid=22301957&map_type=TYPE_MAP',
               },
             },
           ],
