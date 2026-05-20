@@ -3,6 +3,7 @@ import diveAudio from '../assets/Dive.mp3';
 
 export default function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isManuallyPaused, setIsManuallyPaused] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -17,7 +18,7 @@ export default function AudioPlayer() {
   // 자동재생 시도 (브라우저 정책 우회)
   useEffect(() => {
     const playAudio = async () => {
-      if (!audioRef.current || isPlaying) return;
+      if (!audioRef.current || isPlaying || isManuallyPaused) return;
       
       try {
         audioRef.current.volume = 0.5;
@@ -33,29 +34,34 @@ export default function AudioPlayer() {
       }
     };
 
-    // 1. 마운트 시 즉시 시도
-    playAudio();
+    if (!isManuallyPaused) {
+      // 1. 마운트 시 즉시 시도
+      playAudio();
 
-    // 2. 사용자의 첫 상호작용 시 자동재생 시도 (클릭, 터치, 스크롤)
-    window.addEventListener('click', playAudio, { passive: true });
-    window.addEventListener('touchstart', playAudio, { passive: true });
-    window.addEventListener('scroll', playAudio, { passive: true });
+      // 2. 사용자의 첫 상호작용 시 자동재생 시도 (클릭, 터치, 스크롤)
+      window.addEventListener('click', playAudio, { passive: true });
+      window.addEventListener('touchstart', playAudio, { passive: true });
+      window.addEventListener('scroll', playAudio, { passive: true });
+    }
 
     return () => {
       window.removeEventListener('click', playAudio);
       window.removeEventListener('touchstart', playAudio);
       window.removeEventListener('scroll', playAudio);
     };
-  }, [isPlaying]);
+  }, [isPlaying, isManuallyPaused]);
 
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
+        setIsManuallyPaused(true); // 사용자가 직접 멈춤
       } else {
         audioRef.current.play();
+        setIsPlaying(true);
+        setIsManuallyPaused(false); // 사용자가 다시 재생시킴
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
