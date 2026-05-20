@@ -8,6 +8,7 @@ import Location from './components/Location';
 import Account from './components/Account';
 import AudioPlayer from './components/AudioPlayer';
 import Share from './components/Share';
+import BakeryTour from './components/BakeryTour';
 
 const KAKAO_MAP_URL = 'https://map.naver.com/p/search/the%20bmk/place/33794156?c=15.00,0,0,3,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605191517&locale=ko&svcName=map_pcv5&searchText=the%20bmk';
 
@@ -46,6 +47,7 @@ function App() {
       <Location />
       <Account />
       <Share />
+      <BakeryTour />
     </div>
   );
 }

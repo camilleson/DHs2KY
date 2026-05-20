@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import diveAudio from '../assets/Dive.mp3';
 
 export default function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -58,7 +59,7 @@ export default function AudioPlayer() {
         <audio
           ref={audioRef}
           loop
-          src="/Frank Sinatra - L.O.V.E. (lyrics).mp3"
+          src={diveAudio}
         />
         <button
           onClick={togglePlay}
