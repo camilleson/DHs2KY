@@ -46,8 +46,8 @@ function App() {
       <Gallery />
       <Location />
       <Account />
-      <Share />
       <BakeryTour />
+      <Share />
     </div>
   );
 }

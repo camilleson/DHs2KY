@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import imgTitle from '../assets/대전빵지순례/제목.png';
 import imgLePain from '../assets/대전빵지순례/르뺑99-1.jpg';
 import imgSungSimDang from '../assets/대전빵지순례/성심당.jpg';
-import imgJeonDong from '../assets/대전빵지순례/전동문화사.jpg';
+import imgJeonDong from '../assets/대전빵지순례/정동문화사.jpg';
 import imgColmar from '../assets/대전빵지순례/콜마르베이커리.jpg';
 import imgHareHare from '../assets/대전빵지순례/하레하레.jpg';
 import imgHaruPang from '../assets/대전빵지순례/하루팡.jpg';
