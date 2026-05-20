@@ -52,10 +52,10 @@ export default function FlowerParticles() {
         // 처음 마운트 될 때는 화면 전체에 흩뿌려진 상태로 시작, 그 이후엔 위쪽에서 서서히 젠(spawn)됨
         y: isInitial ? Math.random() * h : -20,
         size,
-        speedY: Math.random() * 0.8 + 0.6, // 은은하게 내려앉는 속도
-        speedX: Math.random() * 0.4 - 0.2, // 가로 흔들림 기본값
+        speedY: Math.random() * 0.7 + 0.9, // 낙하 속도 약간 상향 (0.9 ~ 1.6)
+        speedX: Math.random() * 0.5 - 0.25, // 가로 흔들림 약간 상향
         angle: Math.random() * Math.PI * 2,
-        spin: (Math.random() * 0.015 - 0.007) * Math.PI, // 회전 회오리 속도
+        spin: (Math.random() * 0.015 - 0.0075) * Math.PI, // 회전 속도
         opacity: Math.random() * 0.45 + 0.35, // 0.35 ~ 0.8 사이의 은은한 반투명도
         blur: size > 11 ? 1 : 0, 
       };
@@ -71,22 +71,29 @@ export default function FlowerParticles() {
       ctx.translate(petal.x, petal.y);
       ctx.rotate(petal.angle);
       
+      // y축 기준 스케일을 angle 회전각에 바인딩하여 3D 뒤집힘 효과 극대화
+      ctx.scale(1, Math.sin(petal.angle) * 0.45 + 0.55);
+      
       // 번지듯이 부드러운 꽃잎의 깊이감을 위해 Radial Gradient 적용
       const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, petal.size);
-      // 백합/벚꽃잎과 같은 하얗고 화사한 미색 톤
       grad.addColorStop(0, `rgba(255, 255, 255, ${petal.opacity})`);
-      grad.addColorStop(0.5, `rgba(255, 248, 248, ${petal.opacity * 0.85})`);
-      grad.addColorStop(0.9, `rgba(255, 255, 255, ${petal.opacity * 0.15})`);
+      grad.addColorStop(0.4, `rgba(255, 248, 248, ${petal.opacity * 0.85})`);
+      grad.addColorStop(0.8, `rgba(255, 255, 255, ${petal.opacity * 0.15})`);
       grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
       
       ctx.fillStyle = grad;
       
-      // 꽃잎 형태 그리기
+      // 베지에 곡선(Bezier Curve)을 사용해 둥그스름하면서 끝은 날렵한 '진짜 꽃잎' 형태 드로잉
       ctx.beginPath();
-      // ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle)
-      ctx.ellipse(0, 0, petal.size, petal.size * 0.6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // 상단 꼭짓점
+      ctx.moveTo(0, -petal.size);
+      // 좌측 볼륨
+      ctx.bezierCurveTo(-petal.size * 0.85, -petal.size * 0.4, -petal.size * 0.85, petal.size * 0.4, 0, petal.size);
+      // 우측 볼륨
+      ctx.bezierCurveTo(petal.size * 0.85, petal.size * 0.4, petal.size * 0.85, -petal.size * 0.4, 0, -petal.size);
+      ctx.closePath();
       
+      ctx.fill();
       ctx.restore();
     };
 
