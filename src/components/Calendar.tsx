@@ -18,7 +18,7 @@ export default function Calendar() {
   }, []);
 
   return (
-    <section className="py-14 bg-[#F6F6F6] fade-in border-t border-gray-100">
+    <section className="pt-14 pb-20 bg-[#F6F6F6] fade-in border-t border-gray-100">
       <div className="text-center mb-8">
         <h3 className="font-serif text-[18px] tracking-[0.25em] text-[#111]">WEDDING DAY</h3>
       </div>
