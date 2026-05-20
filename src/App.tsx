@@ -37,7 +37,7 @@ function App() {
   }, []);
 
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl overflow-hidden pb-10">
+    <div className="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl overflow-x-hidden pb-10">
       <AudioPlayer />
       <Hero />
       <Greeting />
