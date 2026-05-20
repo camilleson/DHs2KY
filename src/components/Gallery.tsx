@@ -57,7 +57,7 @@ export default function Gallery() {
               <div 
                 key={index} 
                 className={`flex-shrink-0 w-20 aspect-square cursor-pointer overflow-hidden snap-center transition-all ${
-                  index === selectedIndex ? 'opacity-100 ring-1 ring-gray-400' : 'opacity-40 hover:opacity-100'
+                  index === selectedIndex ? 'opacity-100' : 'opacity-40 hover:opacity-100'
                 }`}
                 onClick={() => handleSelectImage(index)}
               >
@@ -77,7 +77,7 @@ export default function Gallery() {
               <div 
                 key={index} 
                 className={`w-full aspect-square cursor-pointer overflow-hidden transition-all ${
-                  index === selectedIndex ? 'opacity-100 ring-2 ring-gray-400' : 'opacity-50 hover:opacity-100'
+                  index === selectedIndex ? 'opacity-100' : 'opacity-50 hover:opacity-100'
                 }`}
                 onClick={() => handleSelectImage(index)}
               >
