@@ -1,4 +1,5 @@
 import React from 'react';
+import FlowerParticles from './FlowerParticles';
 
 export default function Hero() {
   return (
@@ -6,6 +7,7 @@ export default function Hero() {
       className="relative w-full min-h-[100vh] flex flex-col justify-between items-center py-10 overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: 'url("/main-texture4.png")' }}
     >
+      <FlowerParticles />
       {/* Subtle Noise Background overlaying the texture */}
       <div
         className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
