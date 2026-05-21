@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import FireworkOverlay from './FireworkOverlay';
 
 export default function Calendar() {
   const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -8,6 +9,7 @@ export default function Calendar() {
   const allDays = [...blanks, ...dates];
 
   const [dDay, setDDay] = useState(0);
+  const [showFirework, setShowFirework] = useState(false);
 
   useEffect(() => {
     const weddingDate = new Date('2026-10-17T15:00:00+09:00').getTime();
@@ -17,8 +19,19 @@ export default function Calendar() {
     setDDay(daysLeft > 0 ? daysLeft : 0);
   }, []);
 
+  const handleFireworkClick = () => {
+    // 이미 켜져 있다면 잠깐 껐다가(reset) 다시 켜서 연속 발사가 원활하게 작동하도록 처리
+    setShowFirework(false);
+    setTimeout(() => {
+      setShowFirework(true);
+    }, 50);
+  };
+
   return (
-    <section className="pt-14 pb-20 bg-[#F6F6F6] fade-in border-t border-gray-100">
+    <section className="pt-14 pb-20 bg-[#F6F6F6] fade-in border-t border-gray-100 relative">
+      {/* 폭죽 오버레이 컴포넌트 */}
+      <FireworkOverlay isActive={showFirework} onClose={() => setShowFirework(false)} />
+
       <div className="text-center mb-8">
         <h3 className="font-serif text-[18px] tracking-[0.25em] text-[#111]">WEDDING DAY</h3>
       </div>
@@ -57,10 +70,17 @@ export default function Calendar() {
           })}
         </div>
         
-        <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+        <div className="mt-8 pt-6 border-t border-gray-100 text-center flex flex-col items-center gap-4">
           <p className="font-sans text-[14px] tracking-wide text-[#555]">
             결혼식이 <span className="font-bold text-[#b49071]">{dDay}일</span> 남았습니다.
           </p>
+          
+          <button
+            onClick={handleFireworkClick}
+            className="mt-2 px-6 py-3 bg-[#f5ebe0] text-[#8e7f70] font-sans font-medium text-[13px] rounded-full shadow-[0_4px_12px_rgba(245,235,224,0.4)] hover:bg-[#e3d5ca] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 tracking-wide cursor-pointer outline-none border-none"
+          >
+            <span className="text-[16px]">🎉</span> 축하 폭죽 쏘기
+          </button>
         </div>
       </div>
     </section>
