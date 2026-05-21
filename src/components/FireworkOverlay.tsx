@@ -179,7 +179,7 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
     };
 
     // 폭죽 발사! (춘식이가 올라오기 시작할 때 첫 발사 후 공중 폭발 연속 트리거)
-    const activeTimers: NodeJS.Timeout[] = [];
+    const activeTimers: ReturnType<typeof setTimeout>[] = [];
 
     // 1. 기본 좌우 컨페티 분수 발사 (총 240개로 대폭 증량)
     const launchTimer1 = setTimeout(() => {
