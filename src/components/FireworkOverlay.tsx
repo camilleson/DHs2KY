@@ -107,14 +107,14 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
       context.fill();
     };
 
-    // 단일 파티클 생성 함수
+    // 단일 파티클 생성 함수 (아래에서 위로 뿜어지는 컨페티)
     const createParticle = (x: number, y: number, direction: 'left' | 'right'): Particle => {
       const angle =
         direction === 'left'
-          ? (Math.random() * 40 + 25) * (Math.PI / 180) // 25~65도 (우상향)
-          : (Math.random() * 40 + 115) * (Math.PI / 180); // 115~155도 (좌상향)
+          ? (Math.random() * 60 + 20) * (Math.PI / 180) // 20~80도 (더 넓고 가파른 발사각)
+          : (Math.random() * 60 + 100) * (Math.PI / 180); // 100~160도 (더 넓고 가파른 발사각)
 
-      const speed = Math.random() * 14 + 10; // 초기 속도
+      const speed = Math.random() * 24 + 20; // 초기 발사 속도 상향 (20 ~ 44)하여 화면 꼭대기까지 올라감
       const shapeType = Math.random();
       let shape: 'rect' | 'circle' | 'star' = 'rect';
 
@@ -129,30 +129,90 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
         y,
         vx: Math.cos(angle) * speed,
         vy: -Math.sin(angle) * speed,
-        gravity: 0.35,
-        drag: 0.97,
+        gravity: 0.21, // 중력 더 완화하여 더 높게 날아감
+        drag: 0.98, // 공기 마찰 감쇠 완화로 힘차게 날아감
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
         shape,
-        size: Math.random() * 8 + 6,
+        size: Math.random() * 9 + 6,
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.15,
         opacity: 1.0,
       };
     };
 
-    // 폭죽 발사! (약간의 딜레이를 주어 캐릭터가 올라왔을 때 발사되게 함)
-    const launchTimer = setTimeout(() => {
+    // 공중 폭죽(Radial Explosion)을 위한 360도 구형 파티클 생성 함수
+    const createRadialParticle = (x: number, y: number, color: string): Particle => {
+      const angle = Math.random() * Math.PI * 2; // 360도 전방향
+      const speed = Math.random() * 10 + 4; // 폭발 속도 (4 ~ 14)
+      const shapeType = Math.random();
+      let shape: 'rect' | 'circle' | 'star' = 'circle';
+
+      if (shapeType > 0.6) {
+        shape = 'star';
+      } else if (shapeType > 0.3) {
+        shape = 'rect';
+      }
+
+      return {
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        gravity: 0.14, // 가볍게 낙하
+        drag: 0.982,
+        color,
+        shape,
+        size: Math.random() * 8 + 5,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.2,
+        opacity: 1.0,
+      };
+    };
+
+    // 특정 지점에서 공중 폭발을 일으키는 헬퍼 함수
+    const explode = (x: number, y: number) => {
+      const particleCount = 40; // 폭발당 파티클 수
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(createRadialParticle(x, y, color));
+      }
+    };
+
+    // 폭죽 발사! (춘식이가 올라오기 시작할 때 첫 발사 후 공중 폭발 연속 트리거)
+    const activeTimers: NodeJS.Timeout[] = [];
+
+    // 1. 기본 좌우 컨페티 분수 발사 (총 240개로 대폭 증량)
+    const launchTimer1 = setTimeout(() => {
       const leftSourceX = 60;
       const leftSourceY = canvas.height - 60;
       const rightSourceX = canvas.width - 60;
       const rightSourceY = canvas.height - 60;
 
-      // 양쪽에서 65개씩 생성
-      for (let i = 0; i < 65; i++) {
+      for (let i = 0; i < 120; i++) {
         particles.push(createParticle(leftSourceX, leftSourceY, 'left'));
         particles.push(createParticle(rightSourceX, rightSourceY, 'right'));
       }
-    }, 250); // 0.25초 딜레이
+    }, 250);
+    activeTimers.push(launchTimer1);
+
+    // 2. 공중 폭죽 1차 폭발 (좌측 상단)
+    const launchTimer2 = setTimeout(() => {
+      explode(canvas.width * 0.3, canvas.height * 0.25);
+    }, 450);
+    activeTimers.push(launchTimer2);
+
+    // 3. 공중 폭죽 2차 폭발 (우측 상단)
+    const launchTimer3 = setTimeout(() => {
+      explode(canvas.width * 0.7, canvas.height * 0.2);
+    }, 700);
+    activeTimers.push(launchTimer3);
+
+    // 4. 공중 폭죽 3차 대형 폭발 (중앙 상단)
+    const launchTimer4 = setTimeout(() => {
+      explode(canvas.width * 0.5, canvas.height * 0.35);
+      explode(canvas.width * 0.5, canvas.height * 0.35); // 2중 겹쳐서 매우 화려하게 터짐
+    }, 950);
+    activeTimers.push(launchTimer4);
 
     // 애니메이션 루프
     const render = () => {
@@ -165,9 +225,9 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
         p.x += p.vx;
         p.y += p.vy;
         p.rotation += p.rotationSpeed;
-        p.opacity -= 0.007; // 서서히 투명해짐
+        p.opacity -= 0.0055; // 서서히 투명해짐
 
-        // 화면 밖으로 나가거나 투명해진 파티클 제거
+        // 화면 밖으로 완전히 벗어나거나 투명해진 파티클 제거
         if (p.opacity <= 0 || p.y > canvas.height + 20) {
           particles.splice(index, 1);
           return;
@@ -200,7 +260,7 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      clearTimeout(launchTimer);
+      activeTimers.forEach(clearTimeout);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, [isActive]);
