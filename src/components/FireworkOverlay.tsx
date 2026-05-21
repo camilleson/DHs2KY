@@ -206,55 +206,71 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
   }, [isActive]);
 
   return (
-    <AnimatePresence>
-      {isActive && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-50">
-          {/* 파티클 캔버스 */}
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full pointer-events-none z-45"
-          />
+    <>
+      {/* 백그라운드 이미지 프리로드 및 캐싱 가드 (화면에 보이지 않게 처리) */}
+      <div style={{ display: 'none' }} aria-hidden="true">
+        <img
+          src="/groom_chunsik.png"
+          alt="groom preload"
+          onError={() => setGroomHasError(true)}
+        />
+        <img
+          src="/bride_chunsik.png"
+          alt="bride preload"
+          onError={() => setBrideHasError(true)}
+        />
+      </div>
 
-          {/* 좌측 캐릭터 (신랑춘식) & 폭죽 */}
-          {!groomHasError && (
-            <motion.div
-              initial={{ y: 150, rotate: 12 }}
-              animate={{ y: 0, rotate: 12 }}
-              exit={{ y: 150, rotate: 12 }}
-              transition={{ type: 'spring', damping: 14, stiffness: 120 }}
-              className="absolute left-[-15px] bottom-[-15px] w-28 h-28 origin-bottom z-50 flex items-end justify-start"
-              style={{ mixBlendMode: 'multiply' }}
-            >
-              <img
-                src="/groom_chunsik.png"
-                alt="groom chunsik"
-                className="w-24 h-24 object-contain"
-                onError={() => setGroomHasError(true)}
-              />
-            </motion.div>
-          )}
+      <AnimatePresence>
+        {isActive && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden z-50">
+            {/* 파티클 캔버스 */}
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full pointer-events-none z-45"
+            />
 
-          {/* 우측 캐릭터 (신부춘식) & 폭죽 */}
-          {!brideHasError && (
-            <motion.div
-              initial={{ y: 150, rotate: -12 }}
-              animate={{ y: 0, rotate: -12 }}
-              exit={{ y: 150, rotate: -12 }}
-              transition={{ type: 'spring', damping: 14, stiffness: 120 }}
-              className="absolute right-[-15px] bottom-[-15px] w-28 h-28 origin-bottom z-50 flex items-end justify-end"
-              style={{ mixBlendMode: 'multiply' }}
-            >
-              <img
-                src="/bride_chunsik.png"
-                alt="bride chunsik"
-                className="w-24 h-24 object-contain"
-                style={{ transform: 'scaleX(-1)' }}
-                onError={() => setBrideHasError(true)}
-              />
-            </motion.div>
-          )}
-        </div>
-      )}
-    </AnimatePresence>
+            {/* 좌측 캐릭터 (신랑춘식) & 폭죽 */}
+            {!groomHasError && (
+              <motion.div
+                initial={{ y: 150, rotate: 12 }}
+                animate={{ y: 0, rotate: 12 }}
+                exit={{ y: 150, rotate: 12 }}
+                transition={{ type: 'spring', damping: 14, stiffness: 120 }}
+                className="absolute left-[-15px] bottom-[-15px] w-28 h-28 origin-bottom z-50 flex items-end justify-start"
+                style={{ mixBlendMode: 'multiply' }}
+              >
+                <img
+                  src="/groom_chunsik.png"
+                  alt="groom chunsik"
+                  className="w-24 h-24 object-contain"
+                  onError={() => setGroomHasError(true)}
+                />
+              </motion.div>
+            )}
+
+            {/* 우측 캐릭터 (신부춘식) & 폭죽 */}
+            {!brideHasError && (
+              <motion.div
+                initial={{ y: 150, rotate: -12 }}
+                animate={{ y: 0, rotate: -12 }}
+                exit={{ y: 150, rotate: -12 }}
+                transition={{ type: 'spring', damping: 14, stiffness: 120 }}
+                className="absolute right-[-15px] bottom-[-15px] w-28 h-28 origin-bottom z-50 flex items-end justify-end"
+                style={{ mixBlendMode: 'multiply' }}
+              >
+                <img
+                  src="/bride_chunsik.png"
+                  alt="bride chunsik"
+                  className="w-24 h-24 object-contain"
+                  style={{ transform: 'scaleX(-1)' }}
+                  onError={() => setBrideHasError(true)}
+                />
+              </motion.div>
+            )}
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
