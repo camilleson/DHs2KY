@@ -7,15 +7,15 @@ type AccountInfo = {
 };
 
 const GROOM_ACCOUNTS: AccountInfo[] = [
-  { bank: '국민은행', account: '123-456-789012', name: '남동호' },
-  { bank: '신한은행', account: '110-123-456789', name: '남택천' },
-  { bank: '우리은행', account: '1002-123-456789', name: '손향남' },
+  { bank: '토스뱅크', account: '1000-0508-8269', name: '남동호' },
+  { bank: '경남은행', account: '607-21-0041424', name: '남택천' },
+  { bank: '농협', account: '821144-56-012564', name: '손향남' },
 ];
 
 const BRIDE_ACCOUNTS: AccountInfo[] = [
-  { bank: '국민은행', account: '123-456-789012', name: '손가영' },
-  { bank: '신한은행', account: '110-123-456789', name: '손중만' },
-  { bank: '우리은행', account: '1002-123-456789', name: '장옥화' },
+  { bank: '기업은행', account: '07017194001011', name: '손가영' },
+  { bank: '농협', account: '3510760183013', name: '손중만' },
+  { bank: '카카오뱅크', account: '3333223541837', name: '장옥화' },
 ];
 
 function AccountAccordion({ title, accounts }: { title: string, accounts: AccountInfo[] }) {
