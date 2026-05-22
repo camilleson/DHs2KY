@@ -31,29 +31,6 @@ groomImage.src = groomMiniImg;
 const brideImage = new Image();
 brideImage.src = brideMiniImg;
 
-// 둥근 모서리 패스를 그리는 크로스 브라우징 안전 헬퍼 함수
-const drawRoundedRect = (
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radii: [number, number, number, number]
-) => {
-  const [tl, tr, br, bl] = radii;
-  ctx.beginPath();
-  ctx.moveTo(x + tl, y);
-  ctx.lineTo(x + width - tr, y);
-  ctx.arcTo(x + width, y, x + width, y + tr, tr);
-  ctx.lineTo(x + width, y + height - br);
-  ctx.arcTo(x + width, y + height, x + width - br, y + height, br);
-  ctx.lineTo(x + bl, y + height);
-  ctx.arcTo(x, y + height, x, y + height - bl, bl);
-  ctx.lineTo(x, y + tl);
-  ctx.arcTo(x, y, x + tl, y, tl);
-  ctx.closePath();
-};
-
 export default function ClickParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
@@ -108,8 +85,8 @@ export default function ClickParticles() {
         vx: Math.cos(angleGroom) * speedGroom,
         vy: Math.sin(angleGroom) * speedGroom - 1.6, // 가볍게 솟구침
         size: 48, // 기존 32에서 48로 한층 더 키워 시각적 존재감과 매력을 대폭 보강
-        alpha: 0.75, // 0.55에서 0.75로 투명도를 조율하여 몸체와 발끝까지 형태가 선명하게 잘 보이도록 개선
-        decay: Math.random() * 0.012 + 0.01, // 서서히 오래 머물며 감상되게 약간 느린 소멸속도
+        alpha: 0.85, // 초기 선명도를 0.55에서 0.85로 크게 상향 조정하여 한층 더 또렷하게 보이도록 개선
+        decay: Math.random() * 0.01 + 0.008, // 소멸 감폭 속도를 약간 늦춰 화면에 좀 더 진하게 오래 머물게 함
         type: 'groom',
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.06 // 날아가며 살짝 돌아가는 디테일
@@ -124,8 +101,8 @@ export default function ClickParticles() {
         vx: Math.cos(angleBride) * speedBride,
         vy: Math.sin(angleBride) * speedBride - 1.6,
         size: 48, // 기존 32에서 48로 한층 더 키워 시각적 존재감 보강
-        alpha: 0.75, // 0.75로 투명도를 조정해 신랑과 완전히 동일하게 선명한 형태로 보이도록 통일
-        decay: Math.random() * 0.012 + 0.01,
+        alpha: 0.85, // 0.85로 상향 조정
+        decay: Math.random() * 0.01 + 0.008, // 소멸 감폭 속도 조정
         type: 'bride',
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.06
@@ -164,24 +141,41 @@ export default function ClickParticles() {
           const drawHeight = p.size;
           const drawWidth = p.size * aspectRatio;
 
-          ctx.translate(p.x, p.y);
-          if (p.rotation !== undefined) {
-            ctx.rotate(p.rotation);
-          }
-          ctx.globalAlpha = p.alpha; // 시간의 경과에 따른 페이드아웃 감폭 반영
-          
-          if (p.type === 'bride') {
-            ctx.scale(-1, 1);
-          }
+          // 얼굴(위)은 진하게, 아랫부분(아래)은 아주 조금 더 희미하게 그라데이션 마스크 적용
+          const offCanvas = document.createElement('canvas');
+          offCanvas.width = drawWidth;
+          offCanvas.height = drawHeight;
+          const offCtx = offCanvas.getContext('2d');
 
-          // 아랫부분 잘린 단면이 부드러운 곡선이 되도록 하단에 14px 래디어스 클리핑 처리
-          // 위(얼굴)는 춘식이의 머리/귀 고유 실루엣을 보존하도록 2px만 깎고, 아래는 14px 래디어스 적용
-          ctx.save();
-          drawRoundedRect(ctx, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight, [2, 2, 14, 14]);
-          ctx.clip();
+          if (offCtx) {
+            // 1. 임시 캔버스에 춘식이 원본 이미지 그리기
+            offCtx.drawImage(img, 0, 0, drawWidth, drawHeight);
 
-          ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
-          ctx.restore();
+            // 2. 합성 모드를 destination-in으로 설정하여 투명도 깎아내기 마스킹 진행
+            offCtx.globalCompositeOperation = 'destination-in';
+
+            // 3. 위(얼굴)는 선명하고 아래(발)는 희미한 세로 선형 그라데이션 생성
+            const maskGrad = offCtx.createLinearGradient(0, 0, 0, drawHeight);
+            maskGrad.addColorStop(0, 'rgba(0, 0, 0, 1.0)');    // 머리 정수리 선명하게
+            maskGrad.addColorStop(0.4, 'rgba(0, 0, 0, 1.0)');  // 눈코입이 있는 얼굴 영역까지 또렷하게 유지
+            maskGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0.45)'); // 아랫부분 드레스와 다리 부근 농도를 25%에서 45%로 높여 너무 흐리지 않게 보정
+
+            offCtx.fillStyle = maskGrad;
+            offCtx.fillRect(0, 0, drawWidth, drawHeight);
+
+            // 4. 메인 캔버스에 회전, 가로 반전(신부), 투명도를 적용하여 최종 드로잉
+            ctx.translate(p.x, p.y);
+            if (p.rotation !== undefined) {
+              ctx.rotate(p.rotation);
+            }
+            ctx.globalAlpha = p.alpha; // 시간의 경과에 따른 페이드아웃 감폭 반영
+            
+            if (p.type === 'bride') {
+              ctx.scale(-1, 1);
+            }
+
+            ctx.drawImage(offCanvas, -drawWidth / 2, -drawHeight / 2);
+          }
         }
       }
       
