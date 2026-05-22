@@ -84,7 +84,7 @@ export default function ClickParticles() {
         y,
         vx: Math.cos(angleGroom) * speedGroom,
         vy: Math.sin(angleGroom) * speedGroom - 1.6, // 가볍게 솟구침
-        size: 32, // 기존 18에서 32로 조금 더 크게 조절하여 귀여운 형태가 눈에 잘 띄도록 보강
+        size: 48, // 기존 32에서 48로 한층 더 키워 시각적 존재감과 매력을 대폭 보강
         alpha: 0.55, // 희미한 이미지 형태 (초기 투명도 0.55로 은은함과 시인성의 균형을 맞춤)
         decay: Math.random() * 0.012 + 0.01, // 서서히 오래 머물며 감상되게 약간 느린 소멸속도
         type: 'groom',
@@ -100,7 +100,7 @@ export default function ClickParticles() {
         y,
         vx: Math.cos(angleBride) * speedBride,
         vy: Math.sin(angleBride) * speedBride - 1.6,
-        size: 32, // 기존 18에서 32로 조금 더 크게 조절
+        size: 48, // 기존 32에서 48로 한층 더 키워 시각적 존재감 보강
         alpha: 0.55, // 희미함
         decay: Math.random() * 0.012 + 0.01,
         type: 'bride',
