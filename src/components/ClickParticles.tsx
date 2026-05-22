@@ -31,6 +31,29 @@ groomImage.src = groomMiniImg;
 const brideImage = new Image();
 brideImage.src = brideMiniImg;
 
+// 둥근 모서리 패스를 그리는 크로스 브라우징 안전 헬퍼 함수
+const drawRoundedRect = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radii: [number, number, number, number]
+) => {
+  const [tl, tr, br, bl] = radii;
+  ctx.beginPath();
+  ctx.moveTo(x + tl, y);
+  ctx.lineTo(x + width - tr, y);
+  ctx.arcTo(x + width, y, x + width, y + tr, tr);
+  ctx.lineTo(x + width, y + height - br);
+  ctx.arcTo(x + width, y + height, x + width - br, y + height, br);
+  ctx.lineTo(x + bl, y + height);
+  ctx.arcTo(x, y + height, x, y + height - bl, bl);
+  ctx.lineTo(x, y + tl);
+  ctx.arcTo(x, y, x + tl, y, tl);
+  ctx.closePath();
+};
+
 export default function ClickParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
@@ -151,7 +174,14 @@ export default function ClickParticles() {
             ctx.scale(-1, 1);
           }
 
+          // 아랫부분 잘린 단면이 부드러운 곡선이 되도록 하단에 14px 래디어스 클리핑 처리
+          // 위(얼굴)는 춘식이의 머리/귀 고유 실루엣을 보존하도록 2px만 깎고, 아래는 14px 래디어스 적용
+          ctx.save();
+          drawRoundedRect(ctx, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight, [2, 2, 14, 14]);
+          ctx.clip();
+
           ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+          ctx.restore();
         }
       }
       
