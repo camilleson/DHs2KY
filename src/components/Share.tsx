@@ -25,7 +25,7 @@ export default function Share() {
         window.Kakao.Share.sendCustom({
           templateId: KAKAO_TEMPLATE_ID,
           templateArgs: {
-            THU: 'https://dh-s2-ky.vercel.app/hero-photo2.png',
+            THU: 'https://dh-s2-ky.vercel.app/wedding-invitation.png',
             SR1: 'https://dh-s2-ky.vercel.app',
             SR2: 'https://dh-s2-ky.vercel.app/map',
           },

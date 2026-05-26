@@ -1,5 +1,6 @@
 import React from 'react';
 import FlowerParticles from './FlowerParticles';
+import weddingImg from '../assets/청첩장.png';
 
 export default function Hero() {
   return (
@@ -26,7 +27,7 @@ export default function Hero() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: 'url("/hero-photo2.png")',
+            backgroundImage: `url(${weddingImg})`,
             maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)',
             WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)'
           }}
