@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import img1 from '../assets/wedding-snap/1.JPG';
@@ -31,11 +32,10 @@ const ARROW_RESET_DELAY_MS = 150;
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
-  const [prevPressed, setPrevPressed] = useState(false);
-  const [nextPressed, setNextPressed] = useState(false);
-  const mainImageRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const mouseStartX = useRef<number | null>(null);
   const [orientations, setOrientations] = useState<Record<number, 'portrait' | 'landscape'>>({});
@@ -48,22 +48,28 @@ export default function Gallery() {
     }));
   };
 
-  const goToPrev = useCallback(() => {
+  const goToPrev = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setSelectedIndex((prev) => (prev - 1 + IMAGES.length) % IMAGES.length);
   }, []);
 
-  const goToNext = useCallback(() => {
+  const goToNext = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setSelectedIndex((prev) => (prev + 1) % IMAGES.length);
   }, []);
 
-  const handleSelectImage = (index: number) => {
+  const openModal = (index: number) => {
     setSelectedIndex(index);
-    if (isExpanded && mainImageRef.current) {
-      mainImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
   };
 
-  // Touch handlers
+  const closeModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = 'unset';
+  };
+
+  // Touch handlers for modal
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     setIsDragging(false);
@@ -78,17 +84,13 @@ export default function Gallery() {
   };
 
   const handleTouchEnd = () => {
-    if (dragOffset < -SWIPE_THRESHOLD) {
-      goToNext();
-    } else if (dragOffset > SWIPE_THRESHOLD) {
-      goToPrev();
-    }
+    if (dragOffset < -SWIPE_THRESHOLD) goToNext();
+    else if (dragOffset > SWIPE_THRESHOLD) goToPrev();
     setDragOffset(0);
     setIsDragging(false);
     touchStartX.current = null;
   };
 
-  // Mouse handlers (desktop drag)
   const handleMouseDown = (e: React.MouseEvent) => {
     mouseStartX.current = e.clientX;
     setIsDragging(false);
@@ -103,51 +105,87 @@ export default function Gallery() {
   };
 
   const handleMouseUp = () => {
-    if (dragOffset < -SWIPE_THRESHOLD) {
-      goToNext();
-    } else if (dragOffset > SWIPE_THRESHOLD) {
-      goToPrev();
-    }
+    if (dragOffset < -SWIPE_THRESHOLD) goToNext();
+    else if (dragOffset > SWIPE_THRESHOLD) goToPrev();
     setDragOffset(0);
     setIsDragging(false);
     mouseStartX.current = null;
   };
 
   const handleMouseLeave = () => {
-    if (mouseStartX.current !== null) {
-      handleMouseUp();
-    }
+    if (mouseStartX.current !== null) handleMouseUp();
   };
+
+  const visibleImages = isExpanded ? IMAGES : IMAGES.slice(0, 9);
 
   return (
     <section className="pt-24 pb-10 bg-[#fcfcfc] fade-in" id="gallery-section">
-      <div className="text-center mb-10">
-        <h3 className="font-serif text-[18px] tracking-[0.25em] text-[#111]">GALLERY</h3>
+      <div className="text-center mb-10 px-4">
+        <h3 className="font-serif text-[18px] tracking-[0.25em] text-[#111] mb-6">GALLERY</h3>
+        <p className="text-[14px] text-gray-500 font-light leading-relaxed">
+          사진을 클릭하시면 전체 화면 보기가<br />가능합니다.
+        </p>
       </div>
 
-      <div className="w-full mx-auto">
-        {/* Main Image Carousel — 화살표를 양쪽 여백에 배치 */}
-        <div
-          ref={mainImageRef}
-          className="flex items-center justify-center gap-3 mb-8 scroll-mt-24 px-4"
-        >
-          {/* Prev button — 이미지 왼쪽 여백 */}
-          <button
-            onPointerDown={() => setPrevPressed(true)}
-            onPointerUp={() => { goToPrev(); setTimeout(() => setPrevPressed(false), ARROW_RESET_DELAY_MS); }}
-            onPointerLeave={() => setTimeout(() => setPrevPressed(false), ARROW_RESET_DELAY_MS)}
-            className="flex-shrink-0 w-9 h-9 flex items-center justify-center transition-colors duration-150 drop-shadow-md"
-            style={{ color: prevPressed ? '#c9a97a' : '#888' }}
-            aria-label="이전 사진"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+      <div className="w-full max-w-lg mx-auto">
+        {/* Grid View */}
+        <div className="grid grid-cols-3 gap-[2px] mb-6">
+          {visibleImages.map((src, index) => (
+            <div
+              key={index}
+              className="w-full aspect-square cursor-pointer overflow-hidden bg-gray-100"
+              onClick={() => openModal(index)}
+            >
+              <img
+                src={src}
+                alt={`Gallery thumbnail ${index + 1}`}
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
 
-          {/* Image wrapper */}
-          <div
-            className={`relative w-full overflow-hidden shadow-sm select-none flex items-center justify-center min-h-[240px] transition-all duration-300 ${
-              orientations[selectedIndex] === 'landscape' ? 'max-w-[500px]' : 'max-w-[320px]'
-            }`}
+        {/* Toggle Button */}
+        {IMAGES.length > 9 && (
+          <div className="text-center mt-6">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="inline-flex flex-col items-center gap-2 text-[13px] text-gray-600 hover:text-gray-900 transition-colors px-4 py-2"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="w-5 h-5 text-gray-400 font-light" strokeWidth={1} />
+                  <span>접기</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-5 h-5 text-gray-400 font-light" strokeWidth={1} />
+                  <span>더 보기</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Fullscreen Modal */}
+      {isModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-white flex flex-col">
+          {/* Top bar */}
+          <div className="flex justify-end p-4">
+            <button onClick={closeModal} className="p-2 text-gray-500 hover:text-black">
+              {/* Using a simple SVG for X if lucide 'X' is not imported, but let's import it if we can. Actually we can just use an SVG to avoid adding missing imports if we forgot. */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          {/* Image Container */}
+          <div 
+            className="flex-1 overflow-hidden relative flex items-center justify-center select-none touch-none"
             style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -157,118 +195,38 @@ export default function Gallery() {
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Drag-follow image */}
             <img
               src={IMAGES[selectedIndex]}
-              alt={`Gallery ${selectedIndex + 1}`}
+              alt={`Fullscreen ${selectedIndex + 1}`}
               onLoad={(e) => handleImageLoad(selectedIndex, e)}
-              className={`w-full transition-all duration-300 ${
+              className={`transition-all duration-300 pointer-events-none mx-auto ${
                 orientations[selectedIndex] === 'landscape'
-                  ? 'h-auto object-contain'
-                  : 'aspect-[2/3] object-cover max-h-[500px]'
+                  ? 'w-full h-auto object-contain'
+                  : 'w-full max-w-[400px] aspect-[2/3] object-cover'
               }`}
               style={{
                 transform: `translateX(${dragOffset}px)`,
                 transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                userSelect: 'none',
-                pointerEvents: 'none',
               }}
-              loading="lazy"
               draggable={false}
             />
-
-
           </div>
 
-          {/* Next button — 이미지 오른쪽 여백 */}
-          <button
-            onPointerDown={() => setNextPressed(true)}
-            onPointerUp={() => { goToNext(); setTimeout(() => setNextPressed(false), ARROW_RESET_DELAY_MS); }}
-            onPointerLeave={() => setTimeout(() => setNextPressed(false), ARROW_RESET_DELAY_MS)}
-            className="flex-shrink-0 w-9 h-9 flex items-center justify-center transition-colors duration-150 drop-shadow-md"
-            style={{ color: nextPressed ? '#c9a97a' : '#888' }}
-            aria-label="다음 사진"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Image Counter */}
-        <p className="text-center text-[11px] text-gray-400 tracking-widest mb-6 select-none">
-          {selectedIndex + 1} / {IMAGES.length}
-        </p>
-
-        {/* Thumbnails Container */}
-        {!isExpanded ? (
-          /* Horizontal Carousel (Default) */
-          <div
-            className="flex gap-3 overflow-x-auto pb-4 px-6 snap-x max-w-md mx-auto"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-          >
-            <style>{`
-              .overflow-x-auto::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
-
-            {IMAGES.map((src, index) => (
-              <div
-                key={index}
-                className={`flex-shrink-0 w-20 aspect-square cursor-pointer overflow-hidden snap-center transition-all ${
-                  index === selectedIndex ? 'opacity-100 ring-1 ring-[#c9a97a]' : 'opacity-40 hover:opacity-100'
-                }`}
-                onClick={() => handleSelectImage(index)}
-              >
-                <img
-                  src={src}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
+          {/* Bottom Navigation */}
+          <div className="flex items-center justify-between px-6 py-6 pb-12">
+            <button onClick={goToPrev} className="p-2 text-gray-400 hover:text-black transition-colors">
+              <ChevronLeft className="w-6 h-6" strokeWidth={1} />
+            </button>
+            <span className="text-[14px] text-gray-600 tracking-widest font-light">
+              {selectedIndex + 1} / {IMAGES.length}
+            </span>
+            <button onClick={goToNext} className="p-2 text-gray-400 hover:text-black transition-colors">
+              <ChevronRight className="w-6 h-6" strokeWidth={1} />
+            </button>
           </div>
-        ) : (
-          /* Grid View (Expanded) */
-          <div className="grid grid-cols-3 gap-2 px-6 max-w-md mx-auto mb-4">
-            {IMAGES.map((src, index) => (
-              <div
-                key={index}
-                className={`w-full aspect-square cursor-pointer overflow-hidden transition-all ${
-                  index === selectedIndex ? 'opacity-100 ring-1 ring-[#c9a97a]' : 'opacity-50 hover:opacity-100'
-                }`}
-                onClick={() => handleSelectImage(index)}
-              >
-                <img
-                  src={src}
-                  alt={`Grid Thumbnail ${index + 1}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Toggle Button */}
-        <div className="text-center mt-2">
-          <button
-            onClick={() => {
-              setIsExpanded(!isExpanded);
-              if (isExpanded && mainImageRef.current) {
-                mainImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
-            }}
-            className="inline-flex items-center gap-1 text-[13px] text-gray-500 hover:text-gray-800 transition-colors px-4 py-2 tracking-wide"
-          >
-            {isExpanded ? (
-              <>접기 <ChevronUp className="w-4 h-4" /></>
-            ) : (
-              <>더보기 <ChevronDown className="w-4 h-4" /></>
-            )}
-          </button>
-        </div>
-      </div>
+        </div>,
+        document.body
+      )}
     </section>
   );
 }
