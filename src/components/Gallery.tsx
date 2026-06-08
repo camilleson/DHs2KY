@@ -12,7 +12,7 @@ import img7 from '../assets/wedding-snap/7.jpg';
 import img8 from '../assets/wedding-snap/8.JPG';
 import img9 from '../assets/wedding-snap/9.jpg';
 import img10 from '../assets/wedding-snap/10.jpg';
-import img11 from '../assets/wedding-snap/11.JPEG';
+import img11 from '../assets/wedding-snap/11.jpg';
 import img12 from '../assets/wedding-snap/12.jpg';
 import img13 from '../assets/wedding-snap/13.jpg';
 import img14 from '../assets/wedding-snap/14.jpg';
