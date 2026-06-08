@@ -11,12 +11,15 @@ const IMAGES = [
 ];
 
 const SWIPE_THRESHOLD = 50;
+const ARROW_RESET_DELAY_MS = 150;
 
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  const [prevPressed, setPrevPressed] = useState(false);
+  const [nextPressed, setNextPressed] = useState(false);
   const mainImageRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const mouseStartX = useRef<number | null>(null);
@@ -106,11 +109,14 @@ export default function Gallery() {
         >
           {/* Prev button — 이미지 왼쪽 여백 */}
           <button
-            onClick={goToPrev}
-            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[#ddd] bg-white text-[#888] shadow-sm hover:border-[#c9a97a] hover:text-[#c9a97a] transition-all"
+            onPointerDown={() => setPrevPressed(true)}
+            onPointerUp={() => { goToPrev(); setTimeout(() => setPrevPressed(false), ARROW_RESET_DELAY_MS); }}
+            onPointerLeave={() => setTimeout(() => setPrevPressed(false), ARROW_RESET_DELAY_MS)}
+            className="flex-shrink-0 w-9 h-9 flex items-center justify-center transition-colors duration-150 drop-shadow-md"
+            style={{ color: prevPressed ? '#c9a97a' : '#888' }}
             aria-label="이전 사진"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-5 h-5" />
           </button>
 
           {/* Image wrapper */}
@@ -159,11 +165,14 @@ export default function Gallery() {
 
           {/* Next button — 이미지 오른쪽 여백 */}
           <button
-            onClick={goToNext}
-            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[#ddd] bg-white text-[#888] shadow-sm hover:border-[#c9a97a] hover:text-[#c9a97a] transition-all"
+            onPointerDown={() => setNextPressed(true)}
+            onPointerUp={() => { goToNext(); setTimeout(() => setNextPressed(false), ARROW_RESET_DELAY_MS); }}
+            onPointerLeave={() => setTimeout(() => setNextPressed(false), ARROW_RESET_DELAY_MS)}
+            className="flex-shrink-0 w-9 h-9 flex items-center justify-center transition-colors duration-150 drop-shadow-md"
+            style={{ color: nextPressed ? '#c9a97a' : '#888' }}
             aria-label="다음 사진"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-5 h-5" />
           </button>
         </div>
 
