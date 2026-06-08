@@ -11,10 +11,13 @@ export default function Greeting() {
       </div>
       
       <div className="font-sans text-[13px] leading-[1.9] text-[#444] mb-10 tracking-wide">
-        <p>인생은 누구나 비슷한 길을 걸어간다.</p>
-        <p>결국엔 늙어서 지난 날을 추억하는 것일 뿐이다.</p>
-        <p>그러니 결혼은 따뜻한 사람과 하거라</p>
-        <p className="mt-2">-영화 '어바웃 타임'-</p>
+        <p>봄날의 햇살처럼 따뜻하고,</p>
+        <p>가을의 바람처럼 편안한 사람을 만났습니다.</p>
+        
+        <div className="h-4"></div>
+        
+        <p>함께 걷는 길, 때로는 비바람이 불어도</p>
+        <p>서로의 온기로 꼭 안아주며 평생을 함께하겠습니다.</p>
         
         <div className="h-4"></div>
         
