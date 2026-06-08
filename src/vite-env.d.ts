@@ -5,6 +5,11 @@ declare module '*.JPG' {
   export default src
 }
 
+declare module '*.JPEG' {
+  const src: string
+  export default src
+}
+
 interface Window {
   Kakao: any;
 }
