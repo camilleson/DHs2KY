@@ -201,8 +201,8 @@ export default function Gallery() {
               onLoad={(e) => handleImageLoad(selectedIndex, e)}
               className={`transition-all duration-300 pointer-events-none mx-auto ${
                 orientations[selectedIndex] === 'landscape'
-                  ? 'w-full h-auto object-contain'
-                  : 'w-full max-w-[400px] aspect-[2/3] object-cover'
+                  ? 'w-[90%] max-w-[500px] h-auto object-contain'
+                  : 'w-[85%] max-w-[320px] aspect-[2/3] object-cover'
               }`}
               style={{
                 transform: `translateX(${dragOffset}px)`,
