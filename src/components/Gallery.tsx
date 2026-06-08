@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState, useRef, useCallback } from 'react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const IMAGES = [
   'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&q=80&w=800',
@@ -10,16 +10,85 @@ const IMAGES = [
   'https://images.unsplash.com/photo-1607504386708-4176d6542d25?auto=format&fit=crop&q=80&w=800',
 ];
 
+const SWIPE_THRESHOLD = 50;
+
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
   const mainImageRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
+  const mouseStartX = useRef<number | null>(null);
+
+  const goToPrev = useCallback(() => {
+    setSelectedIndex((prev) => (prev - 1 + IMAGES.length) % IMAGES.length);
+  }, []);
+
+  const goToNext = useCallback(() => {
+    setSelectedIndex((prev) => (prev + 1) % IMAGES.length);
+  }, []);
 
   const handleSelectImage = (index: number) => {
     setSelectedIndex(index);
-    // 선택 시 위쪽 메인 사진으로 부드럽게 스크롤
     if (isExpanded && mainImageRef.current) {
       mainImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setIsDragging(false);
+    setDragOffset(0);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = e.touches[0].clientX - touchStartX.current;
+    setDragOffset(diff);
+    setIsDragging(true);
+  };
+
+  const handleTouchEnd = () => {
+    if (dragOffset < -SWIPE_THRESHOLD) {
+      goToNext();
+    } else if (dragOffset > SWIPE_THRESHOLD) {
+      goToPrev();
+    }
+    setDragOffset(0);
+    setIsDragging(false);
+    touchStartX.current = null;
+  };
+
+  // Mouse handlers (desktop drag)
+  const handleMouseDown = (e: React.MouseEvent) => {
+    mouseStartX.current = e.clientX;
+    setIsDragging(false);
+    setDragOffset(0);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (mouseStartX.current === null) return;
+    const diff = e.clientX - mouseStartX.current;
+    setDragOffset(diff);
+    setIsDragging(true);
+  };
+
+  const handleMouseUp = () => {
+    if (dragOffset < -SWIPE_THRESHOLD) {
+      goToNext();
+    } else if (dragOffset > SWIPE_THRESHOLD) {
+      goToPrev();
+    }
+    setDragOffset(0);
+    setIsDragging(false);
+    mouseStartX.current = null;
+  };
+
+  const handleMouseLeave = () => {
+    if (mouseStartX.current !== null) {
+      handleMouseUp();
     }
   };
 
@@ -30,21 +99,84 @@ export default function Gallery() {
       </div>
 
       <div className="w-full mx-auto">
-        {/* Main Image */}
-        <div ref={mainImageRef} className="w-full max-w-[300px] mx-auto mb-8 overflow-hidden shadow-sm scroll-mt-24">
-          <img 
-            src={IMAGES[selectedIndex]} 
-            alt={`Gallery ${selectedIndex + 1}`} 
-            className="w-full h-auto object-cover aspect-[2/3] transition-opacity duration-300"
-            loading="lazy"
-          />
+        {/* Main Image Carousel — 화살표를 양쪽 여백에 배치 */}
+        <div
+          ref={mainImageRef}
+          className="flex items-center justify-center gap-3 mb-8 scroll-mt-24 px-4"
+        >
+          {/* Prev button — 이미지 왼쪽 여백 */}
+          <button
+            onClick={goToPrev}
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[#ddd] bg-white text-[#888] shadow-sm hover:border-[#c9a97a] hover:text-[#c9a97a] transition-all"
+            aria-label="이전 사진"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          {/* Image wrapper */}
+          <div
+            className="relative w-full max-w-[280px] overflow-hidden shadow-sm select-none"
+            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+          >
+            {/* Drag-follow image */}
+            <img
+              src={IMAGES[selectedIndex]}
+              alt={`Gallery ${selectedIndex + 1}`}
+              className="w-full h-auto object-cover aspect-[2/3]"
+              style={{
+                transform: `translateX(${dragOffset}px)`,
+                transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+              loading="lazy"
+              draggable={false}
+            />
+
+            {/* Dot Indicators */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+              {IMAGES.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => { e.stopPropagation(); handleSelectImage(index); }}
+                  className={`rounded-full transition-all duration-300 ${
+                    index === selectedIndex
+                      ? 'w-4 h-1.5 bg-white'
+                      : 'w-1.5 h-1.5 bg-white/50'
+                  }`}
+                  aria-label={`${index + 1}번 사진으로 이동`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Next button — 이미지 오른쪽 여백 */}
+          <button
+            onClick={goToNext}
+            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-[#ddd] bg-white text-[#888] shadow-sm hover:border-[#c9a97a] hover:text-[#c9a97a] transition-all"
+            aria-label="다음 사진"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
+
+        {/* Image Counter */}
+        <p className="text-center text-[11px] text-gray-400 tracking-widest mb-6 select-none">
+          {selectedIndex + 1} / {IMAGES.length}
+        </p>
 
         {/* Thumbnails Container */}
         {!isExpanded ? (
           /* Horizontal Carousel (Default) */
-          <div 
-            className="flex gap-3 overflow-x-auto pb-4 px-6 snap-x max-w-md mx-auto" 
+          <div
+            className="flex gap-3 overflow-x-auto pb-4 px-6 snap-x max-w-md mx-auto"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
           >
             <style>{`
@@ -52,18 +184,18 @@ export default function Gallery() {
                 display: none;
               }
             `}</style>
-            
+
             {IMAGES.map((src, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`flex-shrink-0 w-20 aspect-square cursor-pointer overflow-hidden snap-center transition-all ${
-                  index === selectedIndex ? 'opacity-100' : 'opacity-40 hover:opacity-100'
+                  index === selectedIndex ? 'opacity-100 ring-1 ring-[#c9a97a]' : 'opacity-40 hover:opacity-100'
                 }`}
                 onClick={() => handleSelectImage(index)}
               >
-                <img 
-                  src={src} 
-                  alt={`Thumbnail ${index + 1}`} 
+                <img
+                  src={src}
+                  alt={`Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
@@ -74,16 +206,16 @@ export default function Gallery() {
           /* Grid View (Expanded) */
           <div className="grid grid-cols-3 gap-2 px-6 max-w-md mx-auto mb-4">
             {IMAGES.map((src, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`w-full aspect-square cursor-pointer overflow-hidden transition-all ${
-                  index === selectedIndex ? 'opacity-100' : 'opacity-50 hover:opacity-100'
+                  index === selectedIndex ? 'opacity-100 ring-1 ring-[#c9a97a]' : 'opacity-50 hover:opacity-100'
                 }`}
                 onClick={() => handleSelectImage(index)}
               >
-                <img 
-                  src={src} 
-                  alt={`Grid Thumbnail ${index + 1}`} 
+                <img
+                  src={src}
+                  alt={`Grid Thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
@@ -98,7 +230,6 @@ export default function Gallery() {
             onClick={() => {
               setIsExpanded(!isExpanded);
               if (isExpanded && mainImageRef.current) {
-                // 접을 때도 메인 이미지 쪽으로 화면을 유지
                 mainImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }
             }}
@@ -115,4 +246,3 @@ export default function Gallery() {
     </section>
   );
 }
-
