@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import img1 from '../assets/wedding-snap/1.JPEG';
-import img2 from '../assets/wedding-snap/2.JPEG';
+import img2 from '../assets/wedding-snap/2.JPG';
 import img3 from '../assets/wedding-snap/3.jpg';
 import img4 from '../assets/wedding-snap/4.jpg';
 import img5 from '../assets/wedding-snap/5.jpg';
