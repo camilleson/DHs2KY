@@ -165,7 +165,7 @@ export default function Gallery() {
               className={`w-full transition-all duration-300 ${
                 orientations[selectedIndex] === 'landscape'
                   ? 'h-auto object-contain'
-                  : 'aspect-[4/5] object-cover max-h-[500px]'
+                  : 'aspect-[2/3] object-cover max-h-[500px]'
               }`}
               style={{
                 transform: `translateX(${dragOffset}px)`,
