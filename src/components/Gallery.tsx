@@ -38,6 +38,15 @@ export default function Gallery() {
   const mainImageRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const mouseStartX = useRef<number | null>(null);
+  const [orientations, setOrientations] = useState<Record<number, 'portrait' | 'landscape'>>({});
+
+  const handleImageLoad = (index: number, e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    setOrientations(prev => ({
+      ...prev,
+      [index]: naturalHeight > naturalWidth ? 'portrait' : 'landscape'
+    }));
+  };
 
   const goToPrev = useCallback(() => {
     setSelectedIndex((prev) => (prev - 1 + IMAGES.length) % IMAGES.length);
@@ -136,7 +145,9 @@ export default function Gallery() {
 
           {/* Image wrapper */}
           <div
-            className="relative w-full max-w-[320px] overflow-hidden shadow-sm select-none flex items-center justify-center min-h-[240px]"
+            className={`relative w-full overflow-hidden shadow-sm select-none flex items-center justify-center min-h-[240px] transition-all duration-300 ${
+              orientations[selectedIndex] === 'landscape' ? 'max-w-[500px]' : 'max-w-[320px]'
+            }`}
             style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -150,7 +161,12 @@ export default function Gallery() {
             <img
               src={IMAGES[selectedIndex]}
               alt={`Gallery ${selectedIndex + 1}`}
-              className="w-full h-auto max-h-[500px] object-contain"
+              onLoad={(e) => handleImageLoad(selectedIndex, e)}
+              className={`w-full transition-all duration-300 ${
+                orientations[selectedIndex] === 'landscape'
+                  ? 'h-auto object-contain'
+                  : 'aspect-[4/5] object-cover max-h-[500px]'
+              }`}
               style={{
                 transform: `translateX(${dragOffset}px)`,
                 transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
