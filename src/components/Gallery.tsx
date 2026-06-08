@@ -1,13 +1,28 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
+import img1 from '../assets/wedding-snap/1.JPG';
+import img2 from '../assets/wedding-snap/2.JPG';
+import img3 from '../assets/wedding-snap/3.jpg';
+import img4 from '../assets/wedding-snap/4.jpg';
+import img5 from '../assets/wedding-snap/5.jpg';
+import img6 from '../assets/wedding-snap/6.jpg';
+import img7 from '../assets/wedding-snap/7.jpg';
+import img8 from '../assets/wedding-snap/8.JPG';
+import img9 from '../assets/wedding-snap/9.jpg';
+import img10 from '../assets/wedding-snap/10.jpg';
+import img11 from '../assets/wedding-snap/11.jpg';
+import img12 from '../assets/wedding-snap/12.jpg';
+import img13 from '../assets/wedding-snap/13.jpg';
+import img14 from '../assets/wedding-snap/14.jpg';
+import img15 from '../assets/wedding-snap/15.jpg';
+import img16 from '../assets/wedding-snap/16.jpg';
+import img17 from '../assets/wedding-snap/17.jpg';
+import img18 from '../assets/wedding-snap/18.jpg';
+
 const IMAGES = [
-  'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1544928147-79a2dbc1f389?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1607504386708-4176d6542d25?auto=format&fit=crop&q=80&w=800',
+  img1, img2, img3, img4, img5, img6, img7, img8, img9,
+  img10, img11, img12, img13, img14, img15, img16, img17, img18
 ];
 
 const SWIPE_THRESHOLD = 50;
@@ -121,7 +136,7 @@ export default function Gallery() {
 
           {/* Image wrapper */}
           <div
-            className="relative w-full max-w-[280px] overflow-hidden shadow-sm select-none"
+            className="relative w-full max-w-[320px] overflow-hidden shadow-sm select-none flex items-center justify-center min-h-[240px]"
             style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -135,7 +150,7 @@ export default function Gallery() {
             <img
               src={IMAGES[selectedIndex]}
               alt={`Gallery ${selectedIndex + 1}`}
-              className="w-full h-auto object-cover aspect-[2/3]"
+              className="w-full h-auto max-h-[500px] object-contain"
               style={{
                 transform: `translateX(${dragOffset}px)`,
                 transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -146,21 +161,7 @@ export default function Gallery() {
               draggable={false}
             />
 
-            {/* Dot Indicators */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-              {IMAGES.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => { e.stopPropagation(); handleSelectImage(index); }}
-                  className={`rounded-full transition-all duration-300 ${
-                    index === selectedIndex
-                      ? 'w-4 h-1.5 bg-white'
-                      : 'w-1.5 h-1.5 bg-white/50'
-                  }`}
-                  aria-label={`${index + 1}번 사진으로 이동`}
-                />
-              ))}
-            </div>
+
           </div>
 
           {/* Next button — 이미지 오른쪽 여백 */}

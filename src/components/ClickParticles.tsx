@@ -55,14 +55,14 @@ export default function ClickParticles() {
     // 클릭/터치 지점에 폭죽 생성
     const createParticles = (x: number, y: number) => {
       const count = 12; // 가벼운 느낌을 주는 최적의 파티클 수
-      
+
       // 1. 일반 파스텔 파티클 생성
       for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
         const speed = Math.random() * 2.6 + 1.2; // 흩날리는 속도
         const size = Math.random() * 6 + 4; // 4px ~ 10px 사이의 크기
         const color = PASTEL_COLORS[Math.floor(Math.random() * PASTEL_COLORS.length)];
-        
+
         particlesRef.current.push({
           x,
           y,
@@ -118,16 +118,16 @@ export default function ClickParticles() {
 
     const drawParticle = (ctx: CanvasRenderingContext2D, p: Particle) => {
       ctx.save();
-      
+
       if (p.type === 'pastel' && p.color) {
         // 번지듯이 몽환적인 둥근 폭죽 알갱이를 위해 Radial Gradient 사용
         const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
         const colorWithAlpha = p.color.replace('1)', `${p.alpha})`);
-        
+
         grad.addColorStop(0, colorWithAlpha);
         grad.addColorStop(0.5, colorWithAlpha.replace(`${p.alpha})`, `${p.alpha * 0.6})`));
         grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        
+
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -169,7 +169,7 @@ export default function ClickParticles() {
               ctx.rotate(p.rotation);
             }
             ctx.globalAlpha = p.alpha; // 시간의 경과에 따른 페이드아웃 감폭 반영
-            
+
             if (p.type === 'bride') {
               ctx.scale(-1, 1);
             }
@@ -178,38 +178,38 @@ export default function ClickParticles() {
           }
         }
       }
-      
+
       ctx.restore();
     };
 
     const updateAndDraw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       const particles = particlesRef.current;
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-        
+
         // 물리 좌표 및 마찰 감쇠
         p.x += p.vx;
         p.y += p.vy;
         p.vy += 0.08; // 부드러운 중력 낙하
         p.vx *= 0.97; // 공기 저항 감폭
         p.vy *= 0.97;
-        
+
         p.alpha -= p.decay; // 페이드 아웃
-        
+
         // 춘식이 파티클 회전 업데이트
         if ((p.type === 'groom' || p.type === 'bride') && p.rotation !== undefined && p.rotationSpeed !== undefined) {
           p.rotation += p.rotationSpeed;
         }
-        
+
         if (p.alpha <= 0) {
           particles.splice(i, 1);
         } else {
           drawParticle(ctx, p);
         }
       }
-      
+
       animationFrameId = requestAnimationFrame(updateAndDraw);
     };
 
