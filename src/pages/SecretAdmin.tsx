@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Upload, Image as ImageIcon, Loader2, Save, Trash2, Music, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
 import type { AppConfig } from '../hooks/useConfig';
@@ -8,15 +8,23 @@ const DEFAULT_MUSIC_OPTIONS = [
   { label: 'Dive (현재 기본 음악)', value: '/audio/background.mp3' },
 ];
 
+// ─── Pointer-based Drag State ────────────────────────────────────────────────
+interface DragState {
+  fromIndex: number;
+  toIndex: number;
+}
+
 export default function SecretAdmin() {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [isLoadingConfig, setIsLoadingConfig] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Drag-and-drop state
-  const dragIndexRef = useRef<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  // Pointer-events drag state (replaces HTML5 drag + touch approach)
+  const [dragState, setDragState] = useState<DragState | null>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const configRef = useRef<AppConfig | null>(null);
+  configRef.current = config;
 
   // 1. Load config
   useEffect(() => {
@@ -33,68 +41,50 @@ export default function SecretAdmin() {
       });
   }, []);
 
-  // ── Gallery Drag & Drop handlers ──────────────────────────────────────────
-  const handleDragStart = (index: number) => {
-    dragIndexRef.current = index;
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
+  // ── Pointer drag handlers ─────────────────────────────────────────────────
+  // Called only from the grip handle — prevents scroll+drag conflict
+  const handleGripPointerDown = useCallback((e: React.PointerEvent, index: number) => {
     e.preventDefault();
-    setDragOverIndex(index);
-  };
+    e.stopPropagation();
+    // Capture pointer so we keep receiving move/up even outside the element
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    setDragState({ fromIndex: index, toIndex: index });
+  }, []);
 
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+  const handleGripPointerMove = useCallback((e: React.PointerEvent, _index: number) => {
+    if (!dragState) return;
     e.preventDefault();
-    if (!config) return;
-    const from = dragIndexRef.current;
-    if (from === null || from === dropIndex) {
-      dragIndexRef.current = null;
-      setDragOverIndex(null);
-      return;
-    }
-    const newPhotos = [...config.galleryPhotos];
-    const [moved] = newPhotos.splice(from, 1);
-    newPhotos.splice(dropIndex, 0, moved);
-    setConfig({ ...config, galleryPhotos: newPhotos });
-    setSaveStatus('idle');
-    dragIndexRef.current = null;
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    dragIndexRef.current = null;
-    setDragOverIndex(null);
-  };
-
-  // Touch-based drag support (mobile)
-  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
-  const touchFromIndex = useRef<number | null>(null);
-
-  const handleTouchStart = (e: React.TouchEvent, index: number) => {
-    touchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    touchFromIndex.current = index;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchFromIndex.current === null || !config) return;
-    const touch = e.changedTouches[0];
-    // Find which card the touch ended on
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    const card = el?.closest('[data-gallery-index]');
-    if (card) {
-      const toIndex = parseInt(card.getAttribute('data-gallery-index') || '-1', 10);
-      if (toIndex >= 0 && toIndex !== touchFromIndex.current) {
-        const newPhotos = [...config.galleryPhotos];
-        const [moved] = newPhotos.splice(touchFromIndex.current, 1);
-        newPhotos.splice(toIndex, 0, moved);
-        setConfig({ ...config, galleryPhotos: newPhotos });
-        setSaveStatus('idle');
+    // Find which card the pointer is currently over by checking bounding rects
+    const { clientX, clientY } = e;
+    for (let i = 0; i < cardRefs.current.length; i++) {
+      const card = cardRefs.current[i];
+      if (!card) continue;
+      const rect = card.getBoundingClientRect();
+      if (clientX >= rect.left && clientX <= rect.right &&
+          clientY >= rect.top && clientY <= rect.bottom) {
+        if (i !== dragState.toIndex) {
+          setDragState(prev => prev ? { ...prev, toIndex: i } : null);
+        }
+        break;
       }
     }
-    touchFromIndex.current = null;
-    touchStartPos.current = null;
-    setDragOverIndex(null);
-  };
+  }, [dragState]);
+
+  const handleGripPointerUp = useCallback((_e: React.PointerEvent, _index: number) => {
+    if (!dragState || !configRef.current) {
+      setDragState(null);
+      return;
+    }
+    const { fromIndex, toIndex } = dragState;
+    if (fromIndex !== toIndex) {
+      const newPhotos = [...configRef.current.galleryPhotos];
+      const [moved] = newPhotos.splice(fromIndex, 1);
+      newPhotos.splice(toIndex, 0, moved);
+      setConfig({ ...configRef.current, galleryPhotos: newPhotos });
+      setSaveStatus('idle');
+    }
+    setDragState(null);
+  }, [dragState]);
 
   // ── Remove photo ──────────────────────────────────────────────────────────
   const removePhoto = (index: number) => {
@@ -252,56 +242,77 @@ export default function SecretAdmin() {
 
             {/* ── 섹션 3: 갤러리 사진 관리 ── */}
             <div className="bg-white p-6 rounded-2xl shadow-xl">
-              <div className="flex justify-between items-center mb-2">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-1">갤러리 사진 관리</h3>
-                  <p className="text-sm text-gray-500">드래그하여 순서를 바꾸거나 ✕를 눌러 제외하세요.</p>
-                </div>
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-1">갤러리 사진 관리</h3>
+                <p className="text-sm text-gray-500">
+                  <span className="inline-flex items-center gap-1">
+                    <GripVertical className="w-3.5 h-3.5" />
+                    핸들을 누른 채 드래그하여 순서를 바꾸세요. ✕는 제외하기.
+                  </span>
+                </p>
               </div>
 
+              {/* Gallery grid — pointer drag, no HTML5 drag */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 mt-4">
-                {config.galleryPhotos.map((photoUrl, idx) => (
-                  <div
-                    key={photoUrl + idx}
-                    data-gallery-index={idx}
-                    draggable
-                    onDragStart={() => handleDragStart(idx)}
-                    onDragOver={(e) => handleDragOver(e, idx)}
-                    onDrop={(e) => handleDrop(e, idx)}
-                    onDragEnd={handleDragEnd}
-                    onTouchStart={(e) => handleTouchStart(e, idx)}
-                    onTouchEnd={handleTouchEnd}
-                    className={clsx(
-                      "relative group border rounded-lg overflow-hidden flex flex-col transition-all duration-150 select-none",
-                      dragOverIndex === idx && dragIndexRef.current !== idx
-                        ? "border-blue-400 ring-2 ring-blue-300 scale-[1.02]"
-                        : "border-gray-200"
-                    )}
-                    style={{ cursor: 'grab' }}
-                  >
-                    {/* Drag handle */}
-                    <div className="absolute top-1 left-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 rounded p-0.5">
-                      <GripVertical className="w-4 h-4 text-gray-500" />
-                    </div>
+                {config.galleryPhotos.map((photoUrl, idx) => {
+                  const isDragging = dragState?.fromIndex === idx;
+                  const isDropTarget = dragState !== null &&
+                    dragState.toIndex === idx &&
+                    dragState.fromIndex !== idx;
 
-                    {/* Index badge */}
-                    <div className="absolute bottom-1 left-1 z-10 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded">
-                      {idx + 1}
-                    </div>
+                  return (
+                    <div
+                      key={photoUrl + idx}
+                      ref={el => { cardRefs.current[idx] = el; }}
+                      className={clsx(
+                        "relative group border rounded-lg overflow-hidden flex flex-col transition-all duration-150 select-none",
+                        isDragging && "opacity-50 scale-95 border-gray-300",
+                        isDropTarget && "border-blue-400 ring-2 ring-blue-300",
+                        !isDragging && !isDropTarget && "border-gray-200"
+                      )}
+                    >
+                      {/* Index badge */}
+                      <div className="absolute bottom-1 left-1 z-10 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded pointer-events-none">
+                        {idx + 1}
+                      </div>
 
-                    {/* Photo */}
-                    <div className="h-28 bg-gray-100 relative">
-                      <img src={photoUrl} className="w-full h-full object-cover" alt={`Gallery ${idx + 1}`} />
+                      {/* Delete button */}
                       <button
                         onClick={() => removePhoto(idx)}
-                        className="absolute top-1 right-1 bg-white p-1 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 shadow"
+                        className="absolute top-1 right-1 z-10 bg-white p-1 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 shadow"
                         title="제외하기"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
+
+                      {/* Photo */}
+                      <div className="h-28 bg-gray-100 relative">
+                        <img
+                          src={photoUrl}
+                          className="w-full h-full object-cover pointer-events-none"
+                          alt={`Gallery ${idx + 1}`}
+                          draggable={false}
+                        />
+                      </div>
+
+                      {/* Grip handle — ONLY this element starts the drag */}
+                      <div
+                        className={clsx(
+                          "flex items-center justify-center gap-1 py-2 bg-gray-50 border-t border-gray-100 text-gray-400 text-xs select-none",
+                          dragState ? "cursor-grabbing" : "cursor-grab hover:bg-gray-100 hover:text-gray-600"
+                        )}
+                        style={{ touchAction: 'none', userSelect: 'none' }}
+                        onPointerDown={(e) => handleGripPointerDown(e, idx)}
+                        onPointerMove={(e) => handleGripPointerMove(e, idx)}
+                        onPointerUp={(e) => handleGripPointerUp(e, idx)}
+                        onPointerCancel={() => setDragState(null)}
+                      >
+                        <GripVertical className="w-4 h-4" />
+                        <span className="text-[11px]">드래그</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* 새 사진 추가 */}
