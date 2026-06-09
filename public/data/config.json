@@ -1,0 +1,23 @@
+{
+  "mainPhoto": "/images/gallery/main.png",
+  "galleryPhotos": [
+    "/images/gallery/1.JPEG",
+    "/images/gallery/2.JPEG",
+    "/images/gallery/3.JPG",
+    "/images/gallery/4.jpg",
+    "/images/gallery/5.jpg",
+    "/images/gallery/6.jpg",
+    "/images/gallery/7.jpg",
+    "/images/gallery/8.JPG",
+    "/images/gallery/9.jpg",
+    "/images/gallery/10.jpg",
+    "/images/gallery/11.jpg",
+    "/images/gallery/12.jpg",
+    "/images/gallery/13.jpg",
+    "/images/gallery/14.jpg",
+    "/images/gallery/15.jpg",
+    "/images/gallery/16.jpg",
+    "/images/gallery/17.jpg",
+    "/images/gallery/18.jpg"
+  ]
+}
