@@ -12,8 +12,11 @@ export default async function handler(req: any, res: any) {
   // Repository details
   const owner = process.env.GITHUB_OWNER || 'camilleson';
   const repo = process.env.GITHUB_REPO || 'DHs2KY';
-  // Use a timestamp to prevent file naming collisions
-  const path = `public/images/gallery/${Date.now()}-${fileName.replace(/\s+/g, '_')}`;
+  
+  // Sanitize file name and use timestamp to prevent collisions
+  const cleanFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+  const webPath = `images/gallery/${Date.now()}-${cleanFileName}`;
+  const githubPath = `public/${webPath}`;
   const token = process.env.GITHUB_TOKEN;
 
   if (!token) {
@@ -23,7 +26,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${githubPath}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -36,7 +39,7 @@ export default async function handler(req: any, res: any) {
     });
 
     if (response.ok) {
-      return res.status(200).json({ success: true, message: '업로드 성공!', path: `/${path}` });
+      return res.status(200).json({ success: true, message: '업로드 성공!', path: `/${webPath}` });
     } else {
       const errorData = await response.json();
       console.error('GitHub API Error:', errorData);

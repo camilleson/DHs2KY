@@ -195,6 +195,62 @@ export default function SecretAdmin() {
   );
 }
 
+// Client-side image compression using HTML5 Canvas
+function compressImage(file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.85): Promise<{ base64: string; fileName: string }> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas context not available'));
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Compress to JPEG
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        const base64 = dataUrl.split(',')[1];
+        
+        // Generate new filename with .jpg extension
+        const originalName = file.name;
+        const lastDotIdx = originalName.lastIndexOf('.');
+        const nameWithoutExt = lastDotIdx !== -1 ? originalName.substring(0, lastDotIdx) : originalName;
+        // Clean name
+        const cleanName = nameWithoutExt.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const fileName = `${cleanName}.jpg`;
+
+        resolve({ base64, fileName });
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+}
+
 // Reusable Upload Component
 function UploadSection({ title, onSuccess }: { title: string, onSuccess: (path: string) => void }) {
   const [file, setFile] = useState<File | null>(null);
@@ -222,32 +278,29 @@ function UploadSection({ title, onSuccess }: { title: string, onSuccess: (path: 
     if (!file) return;
     setStatus('uploading');
     try {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const base64Data = reader.result as string;
-        const pureBase64 = base64Data.split(',')[1];
+      // Compress the image before uploading to avoid Vercel 4.5MB payload limit
+      const { base64, fileName } = await compressImage(file);
 
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fileName: file.name, base64Content: pureBase64 }),
-        });
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName, base64Content: base64 }),
+      });
 
-        const data = await res.json();
-        if (res.ok && data.path) {
-          setStatus('idle');
-          setFile(null);
-          setPreview(null);
-          onSuccess(data.path);
-        } else {
-          setStatus('error');
-          setErrorMsg(data.error || '업로드 중 문제가 발생했습니다.');
-        }
-      };
+      const data = await res.json();
+      if (res.ok && data.path) {
+        setStatus('idle');
+        setFile(null);
+        setPreview(null);
+        onSuccess(data.path);
+      } else {
+        setStatus('error');
+        setErrorMsg(data.error || '업로드 중 문제가 발생했습니다.');
+      }
     } catch (err) {
+      console.error('Upload compression error:', err);
       setStatus('error');
-      setErrorMsg('업로드 통신 에러');
+      setErrorMsg('업로드 중 문제가 발생했습니다.');
     }
   };
 

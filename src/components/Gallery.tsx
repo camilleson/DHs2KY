@@ -30,13 +30,15 @@ export default function Gallery() {
 
   const goToPrev = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    if (IMAGES.length === 0) return;
     setSelectedIndex((prev) => (prev - 1 + IMAGES.length) % IMAGES.length);
-  }, []);
+  }, [IMAGES.length]);
 
   const goToNext = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    if (IMAGES.length === 0) return;
     setSelectedIndex((prev) => (prev + 1) % IMAGES.length);
-  }, []);
+  }, [IMAGES.length]);
 
   const openModal = (index: number) => {
     setSelectedIndex(index);
