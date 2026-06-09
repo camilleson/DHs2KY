@@ -1,8 +1,8 @@
 {
   "mainPhoto": "/images/gallery/main.png",
   "galleryPhotos": [
-    "/images/gallery/2.JPEG",
     "/images/gallery/1.JPEG",
+    "/images/gallery/2.JPEG",
     "/images/gallery/3.JPG",
     "/images/gallery/4.jpg",
     "/images/gallery/5.jpg",
