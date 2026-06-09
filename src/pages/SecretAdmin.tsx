@@ -199,10 +199,8 @@ export default function SecretAdmin() {
 function compressImage(file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.85): Promise<{ base64: string; fileName: string }> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.readAsDataURL(file);
     reader.onload = (e) => {
       const img = new Image();
-      img.src = e.target?.result as string;
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let width = img.width;
@@ -246,8 +244,10 @@ function compressImage(file: File, maxWidth = 1200, maxHeight = 1200, quality = 
         resolve({ base64, fileName });
       };
       img.onerror = (err) => reject(err);
+      img.src = e.target?.result as string;
     };
     reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
   });
 }
 
