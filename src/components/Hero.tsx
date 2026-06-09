@@ -1,8 +1,13 @@
 import React from 'react';
 import FlowerParticles from './FlowerParticles';
-import weddingImg from '../assets/청첩장.png';
+import { useConfig } from '../hooks/useConfig';
 
 export default function Hero() {
+  const { config, loading } = useConfig();
+  
+  // Fallback to the default image while loading, or if missing
+  const mainImage = config?.mainPhoto || '/images/gallery/main.png';
+
   return (
     <section
       className="relative w-full min-h-[100vh] flex flex-col justify-between items-center py-10 overflow-hidden bg-cover bg-center"
@@ -25,9 +30,9 @@ export default function Hero() {
       {/* Center Image */}
       <div className="z-10 w-[85%] max-w-[380px] aspect-[4/5] relative my-2 fade-in mx-auto">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center transition-all duration-700"
           style={{
-            backgroundImage: `url(${weddingImg})`,
+            backgroundImage: `url('${mainImage}')`,
             maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)',
             WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)'
           }}

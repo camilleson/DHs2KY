@@ -2,34 +2,14 @@ import React, { useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
-import img1 from '../assets/wedding-snap/1.JPEG';
-import img2 from '../assets/wedding-snap/2.JPEG';
-import img3 from '../assets/wedding-snap/3.jpg';
-import img4 from '../assets/wedding-snap/4.jpg';
-import img5 from '../assets/wedding-snap/5.jpg';
-import img6 from '../assets/wedding-snap/6.jpg';
-import img7 from '../assets/wedding-snap/7.jpg';
-import img8 from '../assets/wedding-snap/8.JPG';
-import img9 from '../assets/wedding-snap/9.jpg';
-import img10 from '../assets/wedding-snap/10.jpg';
-import img11 from '../assets/wedding-snap/11.jpg';
-import img12 from '../assets/wedding-snap/12.jpg';
-import img13 from '../assets/wedding-snap/13.jpg';
-import img14 from '../assets/wedding-snap/14.jpg';
-import img15 from '../assets/wedding-snap/15.jpg';
-import img16 from '../assets/wedding-snap/16.jpg';
-import img17 from '../assets/wedding-snap/17.jpg';
-import img18 from '../assets/wedding-snap/18.jpg';
-
-const IMAGES = [
-  img1, img2, img3, img4, img5, img6, img7, img8, img9,
-  img10, img11, img12, img13, img14, img15, img16, img17, img18
-];
+import { useConfig } from '../hooks/useConfig';
 
 const SWIPE_THRESHOLD = 50;
 const ARROW_RESET_DELAY_MS = 150;
 
 export default function Gallery() {
+  const { config } = useConfig();
+  const IMAGES = config?.galleryPhotos || [];
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);

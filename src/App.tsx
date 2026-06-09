@@ -10,6 +10,7 @@ import AudioPlayer from './components/AudioPlayer';
 import Share from './components/Share';
 import BakeryTour from './components/BakeryTour';
 import ClickParticles from './components/ClickParticles';
+import SecretAdmin from './pages/SecretAdmin';
 
 
 const KAKAO_MAP_URL = 'https://map.naver.com/p/search/the%20bmk/place/33794156?c=15.00,0,0,3,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605191517&locale=ko&svcName=map_pcv5&searchText=the%20bmk';
@@ -19,6 +20,10 @@ function App() {
   if (window.location.pathname === '/map') {
     window.location.replace(KAKAO_MAP_URL);
     return null;
+  }
+
+  if (window.location.pathname === '/20231216') {
+    return <SecretAdmin />;
   }
 
   // Simple intersection observer for fade-in animations
