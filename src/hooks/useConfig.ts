@@ -5,26 +5,18 @@ export interface AppConfig {
   galleryPhotos: string[];
 }
 
-let cachedConfig: AppConfig | null = null;
-
 export function useConfig() {
-  const [config, setConfig] = useState<AppConfig | null>(cachedConfig);
-  const [loading, setLoading] = useState(!cachedConfig);
+  const [config, setConfig] = useState<AppConfig | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (cachedConfig) {
-      setLoading(false);
-      return;
-    }
-
     fetch('/data/config.json?' + new Date().getTime()) // Prevent caching
       .then(res => {
         if (!res.ok) throw new Error('Failed to load config');
         return res.json();
       })
       .then(data => {
-        cachedConfig = data;
         setConfig(data);
         setLoading(false);
       })

@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
+import { useConfig } from '../hooks/useConfig';
+
+const SITE_URL = 'https://dh-s2-ky.vercel.app';
 
 export default function Share() {
+  const { config } = useConfig();
+
   // Initialize Kakao SDK if needed (assuming app key is available)
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
@@ -22,12 +27,17 @@ export default function Share() {
   const handleKakaoShare = () => {
     if (window.Kakao) {
       try {
+        // Use the dynamic mainPhoto from config if available, else fallback
+        const thumbUrl = config?.mainPhoto
+          ? `${SITE_URL}${config.mainPhoto}`
+          : `${SITE_URL}/images/gallery/main.png`;
+
         window.Kakao.Share.sendCustom({
           templateId: KAKAO_TEMPLATE_ID,
           templateArgs: {
-            THU: 'https://dh-s2-ky.vercel.app/wedding-invitation.png',
-            SR1: 'https://dh-s2-ky.vercel.app',
-            SR2: 'https://dh-s2-ky.vercel.app/map',
+            THU: thumbUrl,
+            SR1: SITE_URL,
+            SR2: `${SITE_URL}/map`,
           },
         });
       } catch (error) {
