@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 
 export interface AppConfig {
   mainPhoto: string;
+  backgroundMusic?: string;
   galleryPhotos: string[];
 }
+
 
 export function useConfig() {
   const [config, setConfig] = useState<AppConfig | null>(null);

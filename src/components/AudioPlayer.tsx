@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import diveAudio from '../assets/Dive.mp3';
+import { useConfig } from '../hooks/useConfig';
+
+const DEFAULT_MUSIC = '/audio/background.mp3';
 
 export default function AudioPlayer() {
+  const { config } = useConfig();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isManuallyPaused, setIsManuallyPaused] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Use config music URL or fallback to default
+  const musicSrc = config?.backgroundMusic || DEFAULT_MUSIC;
 
   // 3.5초 후 배경음악 안내 배너 사라짐
   useEffect(() => {
@@ -19,12 +25,12 @@ export default function AudioPlayer() {
   useEffect(() => {
     const playAudio = async () => {
       if (!audioRef.current || isPlaying || isManuallyPaused) return;
-      
+
       try {
         audioRef.current.volume = 0.5;
         await audioRef.current.play();
         setIsPlaying(true);
-        
+
         // 재생 성공 시 이벤트 리스너 제거
         window.removeEventListener('click', playAudio);
         window.removeEventListener('touchstart', playAudio);
@@ -83,7 +89,7 @@ export default function AudioPlayer() {
           ref={audioRef}
           loop
           autoPlay
-          src={diveAudio}
+          src={musicSrc}
         />
         <button
           onClick={togglePlay}
