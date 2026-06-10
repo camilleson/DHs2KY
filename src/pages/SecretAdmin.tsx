@@ -301,13 +301,20 @@ export default function SecretAdmin() {
                 <p className="text-sm text-gray-500">청첩장 메인에 들어갈 초대 인사말을 작성해주세요.</p>
               </div>
               <textarea
-                value={config.greetingMessage || ''}
+                value={config.greetingMessage ?? `봄날의 햇살처럼 따뜻하고,
+가을의 바람처럼 편안한 사람을 만났습니다.
+
+함께 걷는 길, 때로는 비바람이 불어도
+서로의 온기로 꼭 안아주며 평생을 함께하겠습니다.
+
+부부라는 이름의 첫 시작,
+그 설렘의 순간에 소중한 분들을 초대합니다.`}
                 onChange={(e) => {
                   setConfig({ ...config, greetingMessage: e.target.value });
                   setSaveStatus('idle');
                 }}
-                placeholder="봄날의 햇살처럼 따뜻하고..."
-                className="w-full h-40 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none resize-y text-sm leading-relaxed"
+                placeholder="인사말을 입력하세요..."
+                className="w-full h-48 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none resize-y text-sm leading-relaxed"
               />
             </div>
 
