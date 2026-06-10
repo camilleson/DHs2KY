@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 export interface AppConfig {
   mainPhoto: string;
+  mainBackgroundPhoto?: string;
   backgroundMusic?: string;
   customBackgroundMusics?: { label: string; value: string }[];
   galleryPhotos: string[];

@@ -23,7 +23,7 @@ export default function Hero() {
   return (
     <section
       className="relative w-full min-h-[100vh] flex flex-col justify-between items-center py-10 overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: 'url("/main-texture4.png")' }}
+      style={{ backgroundImage: `url("${config?.mainBackgroundPhoto || '/main-texture4.png'}")` }}
     >
       <FlowerParticles />
       {/* Subtle Noise Background overlaying the texture */}

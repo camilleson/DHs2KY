@@ -8,6 +8,16 @@ const DEFAULT_MUSIC_OPTIONS = [
   { label: 'Dive (현재 기본 음악)', value: '/audio/background.mp3' },
 ];
 
+// ─── Background options ──────────────────────────────────────────────────────
+const BACKGROUND_OPTIONS = [
+  { label: '기본 배경', value: '/main-texture4.png' },
+  { label: '배경 1', value: '/images/backgrounds/KakaoTalk_20260610_171222833.jpg' },
+  ...Array.from({ length: 15 }).map((_, i) => ({
+    label: `배경 ${i + 2}`,
+    value: `/images/backgrounds/KakaoTalk_20260610_171222833_${(i + 1).toString().padStart(2, '0')}.jpg`
+  }))
+];
+
 // ─── Pointer-based Drag State ────────────────────────────────────────────────
 interface DragState {
   fromIndex: number;
@@ -173,6 +183,50 @@ export default function SecretAdmin() {
                     alert('메인 사진이 변경되었습니다. [설정 저장 및 배포하기]를 눌러야 최종 반영됩니다.');
                   }}
                 />
+              </div>
+            </div>
+
+            {/* ── 섹션 1.5: 메인 배경 사진 ── */}
+            <div className="bg-white p-6 rounded-2xl shadow-xl">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">메인 배경 이미지</h3>
+              <p className="text-sm text-gray-500 mb-4">청첩장 첫 화면의 배경 이미지를 선택하세요. 기본 배경을 선택하면 현재(기본) 배경으로 돌아갑니다.</p>
+              
+              {/* Preview */}
+              <div className="mb-6 aspect-[4/6] max-w-[240px] mx-auto border border-gray-300 rounded-lg overflow-hidden relative bg-cover bg-center shadow-inner" style={{ backgroundImage: `url("${config.mainBackgroundPhoto || '/main-texture4.png'}")` }}>
+                {/* Simulated Hero layout for preview */}
+                <div className="absolute inset-0 flex flex-col justify-between items-center py-6 pointer-events-none">
+                  <h1 className="font-cursive text-2xl text-[#333333] font-light">Dongho</h1>
+                  <div className="w-[75%] aspect-[4/5] relative my-auto">
+                    {config.mainPhoto && (
+                      <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)', WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)' }}></div>
+                    )}
+                  </div>
+                  <h1 className="font-cursive text-2xl text-[#333333] font-light">Kayoung</h1>
+                </div>
+              </div>
+
+              {/* Selection Grid */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                {BACKGROUND_OPTIONS.map((opt) => (
+                  <div 
+                    key={opt.value}
+                    onClick={() => {
+                      setConfig({ ...config, mainBackgroundPhoto: opt.value });
+                      setSaveStatus('idle');
+                    }}
+                    className={clsx(
+                      "cursor-pointer rounded-lg border-2 overflow-hidden transition-all aspect-[3/4] relative bg-cover bg-center",
+                      (config.mainBackgroundPhoto || '/main-texture4.png') === opt.value
+                        ? "border-indigo-500 ring-2 ring-indigo-300"
+                        : "border-transparent hover:border-gray-300"
+                    )}
+                    style={{ backgroundImage: `url("${opt.value}")` }}
+                  >
+                    <div className="absolute inset-x-0 bottom-0 bg-black/60 text-white text-[11px] text-center py-1 font-medium">
+                      {opt.label}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
