@@ -1,6 +1,6 @@
 {
   "mainPhoto": "/images/gallery/1781005612892-802620362.880189.jpg",
-  "backgroundMusic": "/audio/background.mp3",
+  "backgroundMusic": "/audio/1781053165067-darling.mp3",
   "galleryPhotos": [
     "/images/gallery/1.JPEG",
     "/images/gallery/1781005652961-802625424.679033.jpg",
@@ -22,5 +22,11 @@
     "/images/gallery/18.jpg"
   ],
   "videoType": "youtube",
-  "youtubeUrl": ""
+  "youtubeUrl": "",
+  "customBackgroundMusics": [
+    {
+      "label": "darling.mp3",
+      "value": "/audio/1781053165067-darling.mp3"
+    }
+  ]
 }
