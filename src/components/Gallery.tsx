@@ -32,7 +32,7 @@ export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const touchStartX = useRef<number | null>(null);
@@ -179,8 +179,8 @@ export default function Gallery() {
           </div>
 
           {/* Image Container */}
-          <div 
-            className="flex-1 overflow-hidden relative flex items-center justify-center select-none touch-none"
+          <div
+            className="flex-1 overflow-hidden relative flex items-center justify-center select-none touch-none w-full"
             style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -190,21 +190,34 @@ export default function Gallery() {
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}
           >
-            <img
-              src={IMAGES[selectedIndex]}
-              alt={`Fullscreen ${selectedIndex + 1}`}
-              onLoad={(e) => handleImageLoad(selectedIndex, e)}
-              className={`transition-all duration-300 pointer-events-none mx-auto ${
-                orientations[selectedIndex] === 'landscape'
-                  ? 'w-[90%] max-w-[500px] h-auto object-contain'
-                  : 'w-[85%] max-w-[320px] aspect-[2/3] object-cover'
-              }`}
+            <div
+              className="relative w-full h-full flex items-center justify-center"
               style={{
-                transform: `translateX(${dragOffset}px)`,
-                transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                transform: `translateX(${dragOffset * 0.3}px)`, // Slight parallax drag effect
+                transition: isDragging ? 'none' : 'transform 0.3s ease-out',
               }}
-              draggable={false}
-            />
+            >
+              {IMAGES.map((src, index) => (
+                <div 
+                  key={index} 
+                  className={`absolute inset-0 w-full h-full flex items-center justify-center px-4 transition-opacity duration-500 ease-in-out ${
+                    index === selectedIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                  }`}
+                >
+                  <img
+                    src={src}
+                    alt={`Fullscreen ${index + 1}`}
+                    onLoad={(e) => handleImageLoad(index, e)}
+                    className={`pointer-events-none mx-auto ${orientations[index] === 'landscape'
+                        ? 'w-full max-w-[500px] h-auto object-contain'
+                        : 'w-full max-w-[320px] aspect-[2/3] object-cover'
+                      }`}
+                    draggable={false}
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Bottom Navigation */}
