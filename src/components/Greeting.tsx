@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
 import { Phone, Mail, X } from 'lucide-react';
+import { useConfig } from '../hooks/useConfig';
+
+const DEFAULT_GREETING = `봄날의 햇살처럼 따뜻하고,
+가을의 바람처럼 편안한 사람을 만났습니다.
+
+함께 걷는 길, 때로는 비바람이 불어도
+서로의 온기로 꼭 안아주며 평생을 함께하겠습니다.
+
+부부라는 이름의 첫 시작,
+그 설렘의 순간에 소중한 분들을 초대합니다.`;
 
 export default function Greeting() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const { config } = useConfig();
+  
+  const greetingText = config?.greetingMessage || DEFAULT_GREETING;
 
   return (
     <section className="py-14 px-6 text-center bg-white fade-in">
@@ -10,19 +23,8 @@ export default function Greeting() {
         <h3 className="font-serif text-[22px] tracking-[0.15em] text-[#111]">INVITATION</h3>
       </div>
       
-      <div className="font-sans text-[13px] leading-[1.9] text-[#444] mb-10 tracking-wide">
-        <p>봄날의 햇살처럼 따뜻하고,</p>
-        <p>가을의 바람처럼 편안한 사람을 만났습니다.</p>
-        
-        <div className="h-4"></div>
-        
-        <p>함께 걷는 길, 때로는 비바람이 불어도</p>
-        <p>서로의 온기로 꼭 안아주며 평생을 함께하겠습니다.</p>
-        
-        <div className="h-4"></div>
-        
-        <p>부부라는 이름의 첫 시작,</p>
-        <p>그 설렘의 순간에 소중한 분들을 초대합니다.</p>
+      <div className="font-sans text-[13px] leading-[1.9] text-[#444] mb-10 tracking-wide whitespace-pre-wrap">
+        {greetingText}
       </div>
 
       <div className="flex flex-col gap-5 items-center font-sans text-[16px] mb-16">

@@ -5,9 +5,8 @@ export interface AppConfig {
   backgroundMusic?: string;
   customBackgroundMusics?: { label: string; value: string }[];
   galleryPhotos: string[];
-  videoType?: 'youtube' | 'upload';
   youtubeUrl?: string;
-  uploadedVideoUrl?: string;
+  greetingMessage?: string;
 }
 
 

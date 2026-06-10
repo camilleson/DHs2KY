@@ -7,6 +7,25 @@ import { useConfig } from '../hooks/useConfig';
 const SWIPE_THRESHOLD = 50;
 const ARROW_RESET_DELAY_MS = 150;
 
+function ImageWithSkeleton({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div
+      className={`w-full aspect-square cursor-pointer overflow-hidden relative ${!loaded ? 'bg-gray-200 animate-pulse' : 'bg-gray-100'}`}
+      onClick={onClick}
+    >
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-all duration-700 hover:scale-105 ${loaded ? 'opacity-100' : 'opacity-0 scale-105'}`}
+        loading="lazy"
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
+  );
+}
+
 export default function Gallery() {
   const { config } = useConfig();
   const IMAGES = config?.galleryPhotos || [];
@@ -113,18 +132,12 @@ export default function Gallery() {
         {/* Grid View */}
         <div className="grid grid-cols-3 gap-[2px] mb-6">
           {visibleImages.map((src, index) => (
-            <div
+            <ImageWithSkeleton
               key={index}
-              className="w-full aspect-square cursor-pointer overflow-hidden bg-gray-100"
+              src={src}
+              alt={`Gallery thumbnail ${index + 1}`}
               onClick={() => openModal(index)}
-            >
-              <img
-                src={src}
-                alt={`Gallery thumbnail ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                loading="lazy"
-              />
-            </div>
+            />
           ))}
         </div>
 
