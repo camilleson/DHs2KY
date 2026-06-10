@@ -5,9 +5,11 @@ import { useConfig } from '../hooks/useConfig';
 export default function Hero() {
   const { config } = useConfig();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [bgLoaded, setBgLoaded] = useState(false);
 
   // Only show image after config is loaded — no fallback to avoid flash of wrong image
   const mainImage = config?.mainPhoto ?? null;
+  const bgImage = config?.mainBackgroundPhoto || '/main-texture4.png';
 
   useEffect(() => {
     if (mainImage) {
@@ -20,11 +22,27 @@ export default function Hero() {
     }
   }, [mainImage]);
 
+  useEffect(() => {
+    if (bgImage) {
+      setBgLoaded(false);
+      const img = new Image();
+      img.src = bgImage;
+      img.onload = () => {
+        setBgLoaded(true);
+      };
+    }
+  }, [bgImage]);
+
   return (
     <section
-      className="relative w-full min-h-[100vh] flex flex-col justify-between items-center py-10 overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: `url("${config?.mainBackgroundPhoto || '/main-texture4.png'}")` }}
+      className="relative w-full min-h-[100vh] flex flex-col justify-between items-center py-10 overflow-hidden"
     >
+      {/* Background Image with Fade */}
+      <div
+        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out z-[-1] ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
+        style={{ backgroundImage: `url("${bgImage}")` }}
+      ></div>
+
       <FlowerParticles />
       {/* Subtle Noise Background overlaying the texture */}
       <div
