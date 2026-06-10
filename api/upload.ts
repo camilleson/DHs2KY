@@ -23,10 +23,13 @@ export default async function handler(req: any, res: any) {
   let commitMessage: string;
 
   if (fileType === 'audio') {
-    // Audio always saved as background.mp3 (fixed path, overwrite)
-    webPath = 'audio/background.mp3';
+    webPath = `audio/${Date.now()}-${cleanFileName}`;
     githubPath = `public/${webPath}`;
-    commitMessage = `배경음악 업데이트: ${fileName} (Secret Admin)`;
+    commitMessage = `배경음악 추가: ${fileName} (Secret Admin)`;
+  } else if (fileType === 'video') {
+    webPath = `videos/${Date.now()}-${cleanFileName}`;
+    githubPath = `public/${webPath}`;
+    commitMessage = `동영상 추가: ${fileName} (Secret Admin)`;
   } else {
     // Images get timestamp prefix to avoid collisions
     webPath = `images/gallery/${Date.now()}-${cleanFileName}`;
@@ -41,23 +44,11 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    // For audio, we need the current SHA to update the file
-    let sha: string | undefined;
-    if (fileType === 'audio') {
-      const getRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${githubPath}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (getRes.ok) {
-        const existing = await getRes.json();
-        sha = existing.sha;
-      }
-    }
 
     const body: Record<string, string> = {
       message: commitMessage,
       content: base64Content,
     };
-    if (sha) body.sha = sha;
 
     const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${githubPath}`, {
       method: 'PUT',

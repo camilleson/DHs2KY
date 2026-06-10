@@ -225,19 +225,166 @@ export default function SecretAdmin() {
                 </div>
               </div>
 
+              {/* 사용자 지정 음악 선택 */}
+              {(config.customBackgroundMusics && config.customBackgroundMusics.length > 0) && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">업로드된 사용자 지정 음악</h4>
+                  <div className="space-y-2">
+                    {config.customBackgroundMusics.map((opt, idx) => (
+                      <div
+                        key={opt.value}
+                        className={clsx(
+                          "flex items-center justify-between p-3 rounded-lg border transition-colors",
+                          config.backgroundMusic === opt.value
+                            ? "border-indigo-400 bg-indigo-50"
+                            : "border-gray-200 hover:border-indigo-300"
+                        )}
+                      >
+                        <label className="flex items-center gap-3 cursor-pointer flex-1">
+                          <input
+                            type="radio"
+                            name="music"
+                            value={opt.value}
+                            checked={config.backgroundMusic === opt.value}
+                            onChange={() => {
+                              setConfig({ ...config, backgroundMusic: opt.value });
+                              setSaveStatus('idle');
+                            }}
+                            className="accent-indigo-500"
+                          />
+                          <span className="text-sm text-gray-700 truncate">{opt.label}</span>
+                        </label>
+                        <button
+                          onClick={() => {
+                            if (!confirm('이 음악을 리스트에서 삭제하시겠습니까?')) return;
+                            const newMusics = [...config.customBackgroundMusics!];
+                            newMusics.splice(idx, 1);
+                            setConfig({
+                              ...config,
+                              customBackgroundMusics: newMusics,
+                              backgroundMusic: config.backgroundMusic === opt.value ? DEFAULT_MUSIC_OPTIONS[0].value : config.backgroundMusic
+                            });
+                            setSaveStatus('idle');
+                          }}
+                          className="ml-2 p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                          title="삭제하기"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* 새 음악 업로드 */}
               <div className="border-t pt-6">
                 <h4 className="text-sm font-semibold text-gray-700 mb-3">직접 음악 업로드 (MP3 / M4A / AAC)</h4>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-indigo-400 transition-colors">
                   <AudioUploadSection
-                    onSuccess={(path) => {
-                      setConfig({ ...config, backgroundMusic: path });
+                    onSuccess={(path, fileName) => {
+                      const newMusics = config.customBackgroundMusics ? [...config.customBackgroundMusics] : [];
+                      newMusics.push({ label: fileName, value: path });
+                      setConfig({ ...config, backgroundMusic: path, customBackgroundMusics: newMusics });
                       setSaveStatus('idle');
                       alert('음악이 업로드되었습니다. [설정 저장 및 배포하기]를 눌러야 최종 반영됩니다.');
                     }}
                   />
                 </div>
               </div>
+            </div>
+
+            {/* ── 섹션 2.5: 동영상 관리 ── */}
+            <div className="bg-white p-6 rounded-2xl shadow-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-800">동영상 관리</h3>
+                  <p className="text-sm text-gray-500">유튜브 영상을 연결하거나 짧은 동영상을 직접 업로드하세요.</p>
+                </div>
+              </div>
+
+              {/* 현재 비디오 타입 설정 */}
+              <div className="mb-6 flex flex-wrap gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="videoType" 
+                    value="youtube"
+                    checked={config.videoType !== 'upload'} 
+                    onChange={() => { setConfig({ ...config, videoType: 'youtube' }); setSaveStatus('idle'); }}
+                    className="accent-red-500"
+                  />
+                  <span className="text-sm font-medium text-gray-700">유튜브 URL 사용 (기본)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="videoType" 
+                    value="upload"
+                    checked={config.videoType === 'upload'} 
+                    onChange={() => { setConfig({ ...config, videoType: 'upload' }); setSaveStatus('idle'); }}
+                    className="accent-red-500"
+                  />
+                  <span className="text-sm font-medium text-gray-700">직접 업로드</span>
+                </label>
+              </div>
+
+              {/* 유튜브 URL 입력 */}
+              {config.videoType !== 'upload' && (
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">유튜브 동영상 주소</label>
+                  <input
+                    type="text"
+                    value={config.youtubeUrl || ''}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    onChange={(e) => {
+                      setConfig({ ...config, youtubeUrl: e.target.value });
+                      setSaveStatus('idle');
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">입력하지 않으면 기본 웨딩 샘플 동영상이 보여집니다.</p>
+                </div>
+              )}
+
+              {/* 직접 업로드 */}
+              {config.videoType === 'upload' && (
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div>
+                      <span className="text-sm font-semibold text-gray-700">현재 업로드된 영상: </span>
+                      {config.uploadedVideoUrl ? (
+                        <span className="text-sm text-blue-600 break-all">{config.uploadedVideoUrl}</span>
+                      ) : (
+                        <span className="text-sm text-gray-400">없음</span>
+                      )}
+                    </div>
+                    {config.uploadedVideoUrl && (
+                      <button
+                        onClick={() => {
+                          if (!confirm('업로드된 영상을 제거하시겠습니까? (목록에서만 제외됩니다)')) return;
+                          setConfig({ ...config, uploadedVideoUrl: undefined });
+                          setSaveStatus('idle');
+                        }}
+                        className="p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors ml-2 flex-shrink-0"
+                        title="삭제하기"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-red-400 transition-colors bg-white">
+                    <VideoUploadSection
+                      onSuccess={(path) => {
+                        setConfig({ ...config, uploadedVideoUrl: path });
+                        setSaveStatus('idle');
+                        alert('동영상이 업로드되었습니다. [설정 저장 및 배포하기]를 눌러야 최종 반영됩니다.');
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* ── 섹션 3: 갤러리 사진 관리 ── */}
@@ -450,7 +597,7 @@ function UploadSection({ title, accept, onSuccess }: { title: string; accept: st
 }
 
 // ─── Audio Upload Section ─────────────────────────────────────────────────────
-function AudioUploadSection({ onSuccess }: { onSuccess: (path: string) => void }) {
+function AudioUploadSection({ onSuccess }: { onSuccess: (path: string, fileName: string) => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -481,7 +628,7 @@ function AudioUploadSection({ onSuccess }: { onSuccess: (path: string) => void }
         const data = await res.json();
         if (res.ok && data.path) {
           setStatus('idle'); setFile(null);
-          onSuccess(data.path);
+          onSuccess(data.path, file.name);
         } else {
           setStatus('error'); setErrorMsg(data.error || '업로드 중 문제가 발생했습니다.');
         }
@@ -513,6 +660,76 @@ function AudioUploadSection({ onSuccess }: { onSuccess: (path: string) => void }
           )}
         >
           {status === 'uploading' ? <><Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" /> 서버로 전송 중...</> : '배경음악 업로드'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Video Upload Section ─────────────────────────────────────────────────────
+function VideoUploadSection({ onSuccess }: { onSuccess: (path: string) => void }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<'idle' | 'uploading' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      if (!selected.type.startsWith('video/')) { alert('동영상 파일만 업로드 가능합니다.'); return; }
+      setFile(selected);
+      setStatus('idle');
+      setErrorMsg('');
+    }
+  };
+
+  const upload = async () => {
+    if (!file) return;
+    setStatus('uploading');
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64Data = reader.result as string;
+        const base64 = base64Data.split(',')[1];
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileName: file.name, base64Content: base64, fileType: 'video' }),
+        });
+        const data = await res.json();
+        if (res.ok && data.path) {
+          setStatus('idle'); setFile(null);
+          onSuccess(data.path);
+        } else {
+          setStatus('error'); setErrorMsg(data.error || '업로드 중 문제가 발생했습니다.');
+        }
+      };
+      reader.onerror = () => { setStatus('error'); setErrorMsg('파일 읽기 실패'); };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Video upload error:', err);
+      setStatus('error'); setErrorMsg('업로드 중 문제가 발생했습니다.');
+    }
+  };
+
+  return (
+    <div className="w-full flex flex-col items-center">
+      <div className="space-y-2 text-center w-full">
+        <Upload className="mx-auto h-10 w-10 text-gray-400 mb-2" />
+        {file && <p className="text-sm text-gray-600 mb-2">🎬 {file.name}</p>}
+        <label className="relative cursor-pointer bg-red-50 px-4 py-2 rounded-md font-medium text-red-600 hover:bg-red-100 transition-colors inline-block w-full">
+          <span>{file ? '다른 동영상 선택' : '동영상 파일 선택 (10MB 이하 권장)'}</span>
+          <input type="file" className="sr-only" accept="video/*" onChange={handleChange} />
+        </label>
+        {status === 'error' && <p className="text-red-500 text-xs mt-2">{errorMsg}</p>}
+        <button
+          onClick={upload}
+          disabled={!file || status === 'uploading'}
+          className={clsx(
+            "w-full mt-3 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white transition-colors",
+            (!file || status === 'uploading') ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
+          )}
+        >
+          {status === 'uploading' ? <><Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" /> 서버로 전송 중...</> : '동영상 업로드'}
         </button>
       </div>
     </div>

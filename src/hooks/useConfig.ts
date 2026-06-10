@@ -3,7 +3,11 @@ import { useState, useEffect } from 'react';
 export interface AppConfig {
   mainPhoto: string;
   backgroundMusic?: string;
+  customBackgroundMusics?: { label: string; value: string }[];
   galleryPhotos: string[];
+  videoType?: 'youtube' | 'upload';
+  youtubeUrl?: string;
+  uploadedVideoUrl?: string;
 }
 
 
