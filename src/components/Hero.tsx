@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FlowerParticles from './FlowerParticles';
 import { useConfig } from '../hooks/useConfig';
 
 export default function Hero() {
   const { config } = useConfig();
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Only show image after config is loaded — no fallback to avoid flash of wrong image
   const mainImage = config?.mainPhoto ?? null;
+
+  useEffect(() => {
+    if (mainImage) {
+      setImageLoaded(false);
+      const img = new Image();
+      img.src = mainImage;
+      img.onload = () => {
+        setImageLoaded(true);
+      };
+    }
+  }, [mainImage]);
 
   return (
     <section
@@ -28,10 +40,10 @@ export default function Hero() {
       </div>
 
       {/* Center Image — only render once config is loaded */}
-      <div className="z-10 w-[85%] max-w-[380px] aspect-[4/5] relative my-2 fade-in mx-auto">
+      <div className="z-10 w-[85%] max-w-[380px] aspect-[4/5] relative my-2 mx-auto">
         {mainImage && (
           <div
-            className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
+            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             style={{
               backgroundImage: `url('${mainImage}')`,
               maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)',
