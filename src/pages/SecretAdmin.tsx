@@ -605,7 +605,8 @@ function AudioUploadSection({ onSuccess }: { onSuccess: (path: string, fileName:
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
-      if (!selected.type.startsWith('audio/')) { alert('오디오 파일만 업로드 가능합니다.'); return; }
+      const isAudio = selected.type.startsWith('audio/') || selected.name.toLowerCase().match(/\.(mp3|m4a|aac|wav)$/);
+      if (!isAudio) { alert('오디오 파일만 업로드 가능합니다.'); return; }
       setFile(selected);
       setStatus('idle');
       setErrorMsg('');
@@ -648,7 +649,7 @@ function AudioUploadSection({ onSuccess }: { onSuccess: (path: string, fileName:
         {file && <p className="text-sm text-gray-600 mb-2">🎵 {file.name}</p>}
         <label className="relative cursor-pointer bg-indigo-50 px-4 py-2 rounded-md font-medium text-indigo-600 hover:bg-indigo-100 transition-colors inline-block w-full">
           <span>{file ? '다른 음악 파일 선택' : '음악 파일 선택 (MP3 / M4A / AAC)'}</span>
-          <input type="file" className="sr-only" accept="audio/*" onChange={handleChange} />
+          <input type="file" className="sr-only" accept="audio/*, .mp3, .m4a, .aac, .wav" onChange={handleChange} />
         </label>
         {status === 'error' && <p className="text-red-500 text-xs mt-2">{errorMsg}</p>}
         <button
@@ -675,7 +676,8 @@ function VideoUploadSection({ onSuccess }: { onSuccess: (path: string) => void }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
-      if (!selected.type.startsWith('video/')) { alert('동영상 파일만 업로드 가능합니다.'); return; }
+      const isVideo = selected.type.startsWith('video/') || selected.name.toLowerCase().match(/\.(mp4|mov|webm|mkv)$/);
+      if (!isVideo) { alert('동영상 파일만 업로드 가능합니다.'); return; }
       setFile(selected);
       setStatus('idle');
       setErrorMsg('');
@@ -718,7 +720,7 @@ function VideoUploadSection({ onSuccess }: { onSuccess: (path: string) => void }
         {file && <p className="text-sm text-gray-600 mb-2">🎬 {file.name}</p>}
         <label className="relative cursor-pointer bg-red-50 px-4 py-2 rounded-md font-medium text-red-600 hover:bg-red-100 transition-colors inline-block w-full">
           <span>{file ? '다른 동영상 선택' : '동영상 파일 선택 (10MB 이하 권장)'}</span>
-          <input type="file" className="sr-only" accept="video/*" onChange={handleChange} />
+          <input type="file" className="sr-only" accept="video/*, .mp4, .mov, .webm, .mkv" onChange={handleChange} />
         </label>
         {status === 'error' && <p className="text-red-500 text-xs mt-2">{errorMsg}</p>}
         <button
