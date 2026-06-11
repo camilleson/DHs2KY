@@ -829,13 +829,16 @@ function compressImage(file: File, maxWidth = 1200, maxHeight = 1200, quality = 
         const ctx = canvas.getContext('2d');
         if (!ctx) { reject(new Error('Canvas context not available')); return; }
         ctx.drawImage(img, 0, 0, width, height);
-        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        const isPng = file.type === 'image/png';
+        const mimeType = isPng ? 'image/png' : 'image/jpeg';
+        const dataUrl = canvas.toDataURL(mimeType, quality);
         const base64 = dataUrl.split(',')[1];
         const originalName = file.name;
         const lastDotIdx = originalName.lastIndexOf('.');
         const nameWithoutExt = lastDotIdx !== -1 ? originalName.substring(0, lastDotIdx) : originalName;
         const cleanName = nameWithoutExt.replace(/[^a-zA-Z0-9.-]/g, '_');
-        resolve({ base64, fileName: `${cleanName}.jpg` });
+        const ext = isPng ? 'png' : 'jpg';
+        resolve({ base64, fileName: `${cleanName}.${ext}` });
       };
       img.onerror = (err) => reject(err);
       img.src = e.target?.result as string;
