@@ -152,7 +152,7 @@ export default function Hero() {
       )}
 
       {/* Center Image — only render once config is loaded */}
-      <div className="z-10 w-[78%] max-w-[350px] aspect-[4/5] relative my-1 mx-auto flex-shrink min-h-0">
+      <div className="z-10 w-[82%] max-w-[365px] aspect-[4/5] relative my-1 mx-auto flex-shrink min-h-0">
         {mainImage && !isNoEffect && (
           <div
             className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
