@@ -9,7 +9,8 @@ export default function Hero() {
 
   // Only show image after config is loaded — no fallback to avoid flash of wrong image
   const mainImage = config?.mainPhoto ?? null;
-  const bgImage = config?.mainBackgroundPhoto || '/main-texture4.png';
+  const isNoEffect = config?.mainBackgroundPhoto === 'none';
+  const bgImage = isNoEffect ? mainImage : (config?.mainBackgroundPhoto || '/main-texture4.png');
 
   useEffect(() => {
     if (mainImage) {
@@ -52,14 +53,14 @@ export default function Hero() {
 
       {/* Top Name */}
       <div className="z-10 w-full text-center fade-in pt-2">
-        <h1 className="font-cursive text-[clamp(36px,10vw,50px)] text-[#333333] font-light tracking-wide">
+        <h1 className="font-cursive text-[clamp(36px,10vw,50px)] font-light tracking-wide" style={{ color: config?.heroTextColor || '#333333' }}>
           Dongho
         </h1>
       </div>
 
       {/* Center Image — only render once config is loaded */}
       <div className="z-10 w-[85%] max-w-[380px] aspect-[4/5] relative my-2 mx-auto">
-        {mainImage && (
+        {mainImage && !isNoEffect && (
           <div
             className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             style={{
@@ -73,26 +74,26 @@ export default function Hero() {
 
       {/* Bottom Name */}
       <div className="z-10 w-full text-center fade-in pt-2 pb-10">
-        <h1 className="font-cursive text-[clamp(36px,10vw,50px)] text-[#333333] font-light tracking-wide">
+        <h1 className="font-cursive text-[clamp(36px,10vw,50px)] font-light tracking-wide" style={{ color: config?.heroTextColor || '#333333' }}>
           Kayoung
         </h1>
       </div>
 
       {/* Details at Bottom */}
-      <div className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-6 whitespace-nowrap">
+      <div className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-6 whitespace-nowrap" style={{ color: config?.heroBottomTextColor || '#000000' }}>
         <div className="text-left">
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest text-black font-bold mb-1 whitespace-nowrap">
+          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold mb-1 whitespace-nowrap">
             THE BMK WEDDING
           </p>
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest text-black font-bold whitespace-nowrap">
+          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold whitespace-nowrap">
             ASTIN HALL
           </p>
         </div>
         <div className="text-right">
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest text-black font-bold mb-1 whitespace-nowrap">
+          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold mb-1 whitespace-nowrap">
             2026. 10. 17 SAT
           </p>
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest text-black font-bold whitespace-nowrap">
+          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold whitespace-nowrap">
             03:00 PM
           </p>
         </div>

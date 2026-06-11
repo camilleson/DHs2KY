@@ -10,6 +10,7 @@ const DEFAULT_MUSIC_OPTIONS = [
 
 // ─── Background options ──────────────────────────────────────────────────────
 const BACKGROUND_OPTIONS = [
+  { label: '아무 효과 없음', value: 'none' },
   { label: '기본 배경', value: '/main-texture4.png' },
   { label: '배경 1', value: '/images/backgrounds/KakaoTalk_20260610_171222833.jpg' },
   ...Array.from({ length: 15 }).map((_, i) => ({
@@ -192,16 +193,51 @@ export default function SecretAdmin() {
               <p className="text-sm text-gray-500 mb-4">청첩장 첫 화면의 배경 이미지를 선택하세요. 기본 배경을 선택하면 현재(기본) 배경으로 돌아갑니다.</p>
               
               {/* Preview */}
-              <div className="mb-6 aspect-[4/6] max-w-[240px] mx-auto border border-gray-300 rounded-lg overflow-hidden relative bg-cover bg-center shadow-inner" style={{ backgroundImage: `url("${config.mainBackgroundPhoto || '/main-texture4.png'}")` }}>
+              <div className="mb-6 aspect-[4/6] max-w-[240px] mx-auto border border-gray-300 rounded-lg overflow-hidden relative bg-cover bg-center shadow-inner" style={{ backgroundImage: `url("${config.mainBackgroundPhoto === 'none' ? config.mainPhoto : (config.mainBackgroundPhoto || '/main-texture4.png')}")` }}>
                 {/* Simulated Hero layout for preview */}
                 <div className="absolute inset-0 flex flex-col justify-between items-center py-6 pointer-events-none">
-                  <h1 className="font-cursive text-2xl text-[#333333] font-light">Dongho</h1>
+                  <h1 className="font-cursive text-2xl font-light" style={{ color: config.heroTextColor || '#333333' }}>Dongho</h1>
                   <div className="w-[75%] aspect-[4/5] relative my-auto">
-                    {config.mainPhoto && (
+                    {config.mainPhoto && config.mainBackgroundPhoto !== 'none' && (
                       <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)', WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)' }}></div>
                     )}
                   </div>
-                  <h1 className="font-cursive text-2xl text-[#333333] font-light">Kayoung</h1>
+                  <div className="w-full text-center">
+                    <h1 className="font-cursive text-2xl font-light mb-2" style={{ color: config.heroTextColor || '#333333' }}>Kayoung</h1>
+                    <div className="flex justify-between px-4 opacity-90" style={{ color: config.heroBottomTextColor || '#000000' }}>
+                      <span className="text-[8px] font-bold">10. 17 SAT</span>
+                      <span className="text-[8px] font-bold">03:00 PM</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Text Color Pickers */}
+              <div className="mb-6 flex flex-col sm:flex-row items-center justify-center gap-6 bg-gray-50 py-4 px-2 rounded-lg border border-gray-200">
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-semibold text-gray-700">상단 이름 색상:</label>
+                  <input 
+                    type="color" 
+                    value={config.heroTextColor || '#333333'} 
+                    onChange={(e) => {
+                      setConfig({ ...config, heroTextColor: e.target.value });
+                      setSaveStatus('idle');
+                    }}
+                    className="w-9 h-9 p-0 border-0 rounded cursor-pointer"
+                  />
+                </div>
+                <div className="hidden sm:block w-px h-8 bg-gray-300"></div>
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-semibold text-gray-700">하단 정보 색상:</label>
+                  <input 
+                    type="color" 
+                    value={config.heroBottomTextColor || '#000000'} 
+                    onChange={(e) => {
+                      setConfig({ ...config, heroBottomTextColor: e.target.value });
+                      setSaveStatus('idle');
+                    }}
+                    className="w-9 h-9 p-0 border-0 rounded cursor-pointer"
+                  />
                 </div>
               </div>
 
@@ -220,7 +256,7 @@ export default function SecretAdmin() {
                         ? "border-indigo-500 ring-2 ring-indigo-300"
                         : "border-transparent hover:border-gray-300"
                     )}
-                    style={{ backgroundImage: `url("${opt.value}")` }}
+                    style={{ backgroundImage: `url("${opt.value === 'none' ? config.mainPhoto : opt.value}")` }}
                   >
                     <div className="absolute inset-x-0 bottom-0 bg-black/60 text-white text-[11px] text-center py-1 font-medium">
                       {opt.label}

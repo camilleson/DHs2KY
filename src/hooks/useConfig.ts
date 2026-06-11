@@ -8,6 +8,8 @@ export interface AppConfig {
   galleryPhotos: string[];
   youtubeUrl?: string;
   greetingMessage?: string;
+  heroTextColor?: string;
+  heroBottomTextColor?: string;
 }
 
 
