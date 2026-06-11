@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Upload, Image as ImageIcon, Loader2, Save, Trash2, Music, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
 import type { AppConfig } from '../hooks/useConfig';
+import { AnimatedText } from '../components/Hero';
 
 // ─── Default music options ───────────────────────────────────────────────────
 const DEFAULT_MUSIC_OPTIONS = [
@@ -258,7 +259,12 @@ export default function SecretAdmin() {
                 {/* Simulated Hero layout for preview */}
                 <div className="absolute inset-0 flex flex-col justify-between items-center py-6 pointer-events-none">
                   {!config.hideHeroText && (
-                    <h1 className="font-cursive text-2xl font-light inline-block" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroTopNameX || 0}px, ${config.heroTopNameY || 0}px)` }}>{config.heroTopName || 'Dongho'}</h1>
+                    <AnimatedText 
+                      text={config.heroTopName || 'Dongho'}
+                      animation={config.heroTextAnimation}
+                      className="font-cursive text-2xl font-light inline-block" 
+                      style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroTopNameX || 0}px, ${config.heroTopNameY || 0}px)` }} 
+                    />
                   )}
                   <div className="w-[75%] aspect-[4/5] relative my-auto">
                     {config.mainPhoto && config.mainBackgroundPhoto !== 'none' && (
@@ -267,7 +273,12 @@ export default function SecretAdmin() {
                   </div>
                   <div className="w-full text-center">
                     {!config.hideHeroText && (
-                      <h1 className="font-cursive text-2xl font-light mb-2 inline-block" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroBottomNameX || 0}px, ${config.heroBottomNameY || 0}px)` }}>{config.heroBottomName || 'Kayoung'}</h1>
+                      <AnimatedText 
+                        text={config.heroBottomName || 'Kayoung'}
+                        animation={config.heroTextAnimation}
+                        className="font-cursive text-2xl font-light mb-2 inline-block" 
+                        style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroBottomNameX || 0}px, ${config.heroBottomNameY || 0}px)` }} 
+                      />
                     )}
                     <div className="flex justify-between px-4 opacity-90" style={{ color: config.heroBottomTextColor || '#000000' }}>
                       <span className="text-[8px] font-bold">10. 17 SAT</span>

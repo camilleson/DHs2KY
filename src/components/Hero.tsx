@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import FlowerParticles from './FlowerParticles';
 import { useConfig } from '../hooks/useConfig';
 
-function AnimatedText({ text, animation, style, className }: { text: string; animation?: string; style?: React.CSSProperties; className?: string }) {
+export function AnimatedText({ text, animation, style, className }: { text: string; animation?: string; style?: React.CSSProperties; className?: string }) {
   if (!animation || animation === 'none') {
     return <h1 className={className} style={style}>{text}</h1>;
   }
