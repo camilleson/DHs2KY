@@ -1,6 +1,6 @@
 {
   "mainPhoto": "/images/gallery/1781073420595-67DA327B-EC4B-4ABE-A678-6BDA49E4D2ED.jpg",
-  "backgroundMusic": "/audio/background.mp3",
+  "backgroundMusic": "/audio/1781053165067-darling.mp3",
   "galleryPhotos": [
     "/images/gallery/1.JPEG",
     "/images/gallery/1781005652961-802625424.679033.jpg",
@@ -34,7 +34,7 @@
   "heroTextColor": "#ffffee",
   "heroBottomTextColor": "#ffffff",
   "stickers": [],
-  "heroTopNameY": 25,
+  "heroTopNameY": 49,
   "heroBottomNameY": -60,
   "heroTextScale": 1.4,
   "kakaoThumbnail": "/images/gallery/1781144883777-kakao_thumb_1781144882962.jpg",
