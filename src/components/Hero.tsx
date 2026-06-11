@@ -161,14 +161,14 @@ export default function Hero() {
       )}
 
       {/* Center Image — only render once config is loaded */}
-      <div className="z-10 w-full max-w-[450px] aspect-[3/4] relative my-1 mx-auto flex-shrink min-h-0">
+      <div className="z-10 w-[88%] max-w-[390px] aspect-[4/5] relative my-1 mx-auto flex-shrink min-h-0">
         {mainImage && !isNoEffect && (
           <div
             className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             style={{
               backgroundImage: `url('${mainImage}')`,
-              maskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)',
-              WebkitMaskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)'
+              maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)',
+              WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)'
             }}
           ></div>
         )}

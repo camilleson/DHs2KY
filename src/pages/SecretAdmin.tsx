@@ -270,9 +270,9 @@ export default function SecretAdmin() {
                     </div>
                   )}
                   
-                  <div className="z-10 w-full aspect-[3/4] relative my-1 mx-auto flex-shrink min-h-0">
+                  <div className="z-10 w-[85%] max-w-[200px] aspect-[4/5] relative my-1 mx-auto">
                     {config.mainPhoto && config.mainBackgroundPhoto !== 'none' && (
-                      <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)', WebkitMaskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)' }}></div>
+                      <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)', WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)' }}></div>
                     )}
                   </div>
                   
