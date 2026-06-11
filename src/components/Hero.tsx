@@ -55,13 +55,14 @@ export default function Hero() {
       {!config?.hideHeroText && (
         <div className="z-10 w-full text-center fade-in pt-2">
           <h1 
-            className="font-cursive font-light tracking-wide" 
+            className="font-cursive font-light tracking-wide inline-block" 
             style={{ 
               color: config?.heroTextColor || '#333333',
-              fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`
+              fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`,
+              transform: `translate(${config?.heroTopNameX || 0}px, ${config?.heroTopNameY || 0}px)`
             }}
           >
-            Dongho
+            {config?.heroTopName || 'Dongho'}
           </h1>
         </div>
       )}
@@ -84,13 +85,14 @@ export default function Hero() {
       {!config?.hideHeroText && (
         <div className="z-10 w-full text-center fade-in pt-2 pb-10">
           <h1 
-            className="font-cursive font-light tracking-wide" 
+            className="font-cursive font-light tracking-wide inline-block" 
             style={{ 
               color: config?.heroTextColor || '#333333',
-              fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`
+              fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`,
+              transform: `translate(${config?.heroBottomNameX || 0}px, ${config?.heroBottomNameY || 0}px)`
             }}
           >
-            Kayoung
+            {config?.heroBottomName || 'Kayoung'}
           </h1>
         </div>
       )}

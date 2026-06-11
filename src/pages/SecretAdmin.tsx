@@ -197,7 +197,7 @@ export default function SecretAdmin() {
                 {/* Simulated Hero layout for preview */}
                 <div className="absolute inset-0 flex flex-col justify-between items-center py-6 pointer-events-none">
                   {!config.hideHeroText && (
-                    <h1 className="font-cursive text-2xl font-light" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})` }}>Dongho</h1>
+                    <h1 className="font-cursive text-2xl font-light inline-block" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroTopNameX || 0}px, ${config.heroTopNameY || 0}px)` }}>{config.heroTopName || 'Dongho'}</h1>
                   )}
                   <div className="w-[75%] aspect-[4/5] relative my-auto">
                     {config.mainPhoto && config.mainBackgroundPhoto !== 'none' && (
@@ -206,7 +206,7 @@ export default function SecretAdmin() {
                   </div>
                   <div className="w-full text-center">
                     {!config.hideHeroText && (
-                      <h1 className="font-cursive text-2xl font-light mb-2" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})` }}>Kayoung</h1>
+                      <h1 className="font-cursive text-2xl font-light mb-2 inline-block" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroBottomNameX || 0}px, ${config.heroBottomNameY || 0}px)` }}>{config.heroBottomName || 'Kayoung'}</h1>
                     )}
                     <div className="flex justify-between px-4 opacity-90" style={{ color: config.heroBottomTextColor || '#000000' }}>
                       <span className="text-[8px] font-bold">10. 17 SAT</span>
@@ -245,9 +245,9 @@ export default function SecretAdmin() {
                 </div>
               </div>
 
-              {/* Text Size and Visibility Options */}
-              <div className="mb-6 flex flex-col sm:flex-row items-center justify-center gap-6 bg-gray-50 py-4 px-4 rounded-lg border border-gray-200">
-                <div className="flex items-center gap-2">
+              {/* Text Size, Name, and Position Options */}
+              <div className="mb-6 flex flex-col gap-4 bg-gray-50 py-4 px-4 rounded-lg border border-gray-200">
+                <div className="flex items-center gap-2 mb-2">
                   <input
                     type="checkbox"
                     id="hideHeroText"
@@ -262,10 +262,10 @@ export default function SecretAdmin() {
                 </div>
                 
                 {!config.hideHeroText && (
-                  <>
-                    <div className="hidden sm:block w-px h-8 bg-gray-300"></div>
-                    <div className="flex items-center gap-3 w-full sm:w-auto justify-center">
-                      <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">이름 크기 조절:</label>
+                  <div className="flex flex-col gap-4">
+                    {/* Size Adjustment */}
+                    <div className="flex items-center gap-3">
+                      <label className="text-sm font-semibold text-gray-700 whitespace-nowrap w-24">이름 크기:</label>
                       <input 
                         type="range" 
                         min="0.5" 
@@ -276,11 +276,72 @@ export default function SecretAdmin() {
                           setConfig({ ...config, heroTextScale: parseFloat(e.target.value) });
                           setSaveStatus('idle');
                         }}
-                        className="w-24 sm:w-32 accent-indigo-600 cursor-pointer"
+                        className="flex-1 accent-indigo-600 cursor-pointer"
                       />
                       <span className="text-xs text-gray-500 w-8">{config.heroTextScale || 1.0}x</span>
                     </div>
-                  </>
+
+                    {/* Top Name Config */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-white p-3 rounded border border-gray-200 shadow-sm">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">상단 이름 텍스트</label>
+                        <input
+                          type="text"
+                          value={config.heroTopName ?? 'Dongho'}
+                          onChange={(e) => {
+                            setConfig({ ...config, heroTopName: e.target.value });
+                            setSaveStatus('idle');
+                          }}
+                          className="w-full text-sm border-gray-300 rounded px-2 py-1.5 focus:ring-indigo-400 focus:border-indigo-400 border outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">가로(X) 위치 조정</label>
+                        <div className="flex items-center gap-2">
+                          <input type="range" min="-150" max="150" value={config.heroTopNameX || 0} onChange={(e) => { setConfig({ ...config, heroTopNameX: parseInt(e.target.value) }); setSaveStatus('idle'); }} className="flex-1 accent-indigo-600" />
+                          <span className="text-[10px] text-gray-500 w-6 text-right">{config.heroTopNameX || 0}px</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">세로(Y) 위치 조정</label>
+                        <div className="flex items-center gap-2">
+                          <input type="range" min="-150" max="150" value={config.heroTopNameY || 0} onChange={(e) => { setConfig({ ...config, heroTopNameY: parseInt(e.target.value) }); setSaveStatus('idle'); }} className="flex-1 accent-indigo-600" />
+                          <span className="text-[10px] text-gray-500 w-6 text-right">{config.heroTopNameY || 0}px</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Name Config */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-white p-3 rounded border border-gray-200 shadow-sm">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">하단 이름 텍스트</label>
+                        <input
+                          type="text"
+                          value={config.heroBottomName ?? 'Kayoung'}
+                          onChange={(e) => {
+                            setConfig({ ...config, heroBottomName: e.target.value });
+                            setSaveStatus('idle');
+                          }}
+                          className="w-full text-sm border-gray-300 rounded px-2 py-1.5 focus:ring-indigo-400 focus:border-indigo-400 border outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">가로(X) 위치 조정</label>
+                        <div className="flex items-center gap-2">
+                          <input type="range" min="-150" max="150" value={config.heroBottomNameX || 0} onChange={(e) => { setConfig({ ...config, heroBottomNameX: parseInt(e.target.value) }); setSaveStatus('idle'); }} className="flex-1 accent-indigo-600" />
+                          <span className="text-[10px] text-gray-500 w-6 text-right">{config.heroBottomNameX || 0}px</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">세로(Y) 위치 조정</label>
+                        <div className="flex items-center gap-2">
+                          <input type="range" min="-150" max="150" value={config.heroBottomNameY || 0} onChange={(e) => { setConfig({ ...config, heroBottomNameY: parseInt(e.target.value) }); setSaveStatus('idle'); }} className="flex-1 accent-indigo-600" />
+                          <span className="text-[10px] text-gray-500 w-6 text-right">{config.heroBottomNameY || 0}px</span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
                 )}
               </div>
 

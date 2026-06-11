@@ -12,6 +12,12 @@ export interface AppConfig {
   heroBottomTextColor?: string;
   hideHeroText?: boolean;
   heroTextScale?: number;
+  heroTopName?: string;
+  heroTopNameX?: number;
+  heroTopNameY?: number;
+  heroBottomName?: string;
+  heroBottomNameX?: number;
+  heroBottomNameY?: number;
 }
 
 
