@@ -40,6 +40,7 @@ export default function VideoSection() {
             playsInline
             webkit-playsinline="true"
             preload="metadata"
+            poster={config?.localVideoPoster}
           >
             Your browser does not support the video tag.
           </video>
