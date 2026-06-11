@@ -257,42 +257,61 @@ export default function SecretAdmin() {
                 style={{ backgroundImage: `url("${config.mainBackgroundPhoto === 'none' ? config.mainPhoto : (config.mainBackgroundPhoto || '/main-texture4.png')}")` }}
               >
                 {/* Simulated Hero layout for preview */}
-                <div className="absolute inset-0 flex flex-col justify-between items-center py-6 pointer-events-none">
+                <div className="absolute inset-0 flex flex-col justify-between items-center py-4 pointer-events-none">
                   {!config.hideHeroText && (
-                    <AnimatedText 
-                      key={config.heroTextAnimation + 'top'}
-                      text={config.heroTopName || 'Dongho'}
-                      animation={config.heroTextAnimation}
-                      className="font-cursive text-2xl font-light inline-block" 
-                      style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroTopNameX || 0}px, ${config.heroTopNameY || 0}px)` }} 
-                    />
+                    <div className="z-10 w-full text-center pt-2">
+                      <AnimatedText 
+                        key={config.heroTextAnimation + 'top'}
+                        text={config.heroTopName || 'Dongho'}
+                        animation={config.heroTextAnimation}
+                        className="font-cursive font-light tracking-wide inline-block" 
+                        style={{ color: config.heroTextColor || '#333333', fontSize: `calc(24px * ${config.heroTextScale || 1})`, transform: `translate(${config.heroTopNameX || 0}px, ${config.heroTopNameY || 0}px)` }} 
+                      />
+                    </div>
                   )}
-                  <div className="w-[75%] aspect-[4/5] relative my-auto">
+                  
+                  <div className="z-10 w-[85%] max-w-[200px] aspect-[4/5] relative my-1 mx-auto">
                     {config.mainPhoto && config.mainBackgroundPhoto !== 'none' && (
                       <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)', WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)' }}></div>
                     )}
                   </div>
-                  <div className="w-full text-center">
-                    {!config.hideHeroText && (
+                  
+                  {!config.hideHeroText && (
+                    <div className="z-10 w-full text-center pt-1 pb-4">
                       <AnimatedText 
                         key={config.heroTextAnimation + 'bottom'}
                         text={config.heroBottomName || 'Kayoung'}
                         animation={config.heroTextAnimation}
                         delay={config.heroTextAnimation === 'typewriter' ? (config.heroTopName || 'Dongho').length * 0.15 : 0}
-                        className="font-cursive text-2xl font-light mb-2 inline-block" 
-                        style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroBottomNameX || 0}px, ${config.heroBottomNameY || 0}px)` }} 
+                        className="font-cursive font-light tracking-wide inline-block" 
+                        style={{ color: config.heroTextColor || '#333333', fontSize: `calc(24px * ${config.heroTextScale || 1})`, transform: `translate(${config.heroBottomNameX || 0}px, ${config.heroBottomNameY || 0}px)` }} 
                       />
-                    )}
-                    <div 
-                      className="flex justify-between px-4 opacity-90" 
-                      style={{ 
-                        color: config.heroBottomTextColor || '#000000',
-                        transform: `translate(${config.heroDetailsX || 0}px, ${config.heroDetailsY || 0}px)`,
-                        fontSize: `calc(clamp(8px, 2vw, 10px) * ${config.heroDetailsScale || 1})`
-                      }}
-                    >
-                      <span className="font-bold">10. 17 SAT</span>
-                      <span className="font-bold">03:00 PM</span>
+                    </div>
+                  )}
+                  
+                  <div 
+                    className="z-10 w-full px-4 flex justify-between items-end mt-auto pb-[30px] whitespace-nowrap opacity-90" 
+                    style={{ 
+                      color: config.heroBottomTextColor || '#000000',
+                      transform: `translate(${config.heroDetailsX || 0}px, ${config.heroDetailsY || 0}px)`,
+                      fontSize: `calc(8px * ${config.heroDetailsScale || 1})`
+                    }}
+                  >
+                    <div className="text-left">
+                      <p className="font-sans tracking-widest font-bold mb-[2px] whitespace-nowrap">
+                        THE BMK WEDDING
+                      </p>
+                      <p className="font-sans tracking-widest font-bold whitespace-nowrap">
+                        ASTIN HALL
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-sans tracking-widest font-bold mb-[2px] whitespace-nowrap">
+                        2026. 10. 17 SAT
+                      </p>
+                      <p className="font-sans tracking-widest font-bold whitespace-nowrap">
+                        03:00 PM
+                      </p>
                     </div>
                   </div>
                 </div>
