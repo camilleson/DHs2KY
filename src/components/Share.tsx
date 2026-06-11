@@ -27,10 +27,12 @@ export default function Share() {
   const handleKakaoShare = () => {
     if (window.Kakao) {
       try {
-        // Use the dynamic mainPhoto from config if available, else fallback
-        const thumbUrl = config?.mainPhoto
-          ? `${SITE_URL}${config.mainPhoto}`
-          : `${SITE_URL}/images/gallery/main.png`;
+        // Use kakaoThumbnail if available, else fallback to mainPhoto
+        const thumbUrl = config?.kakaoThumbnail
+          ? `${SITE_URL}${config.kakaoThumbnail}`
+          : config?.mainPhoto
+            ? `${SITE_URL}${config.mainPhoto}`
+            : `${SITE_URL}/images/gallery/main.png`;
 
         window.Kakao.Share.sendCustom({
           templateId: KAKAO_TEMPLATE_ID,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import html2canvas from 'html2canvas';
 import { Upload, Image as ImageIcon, Loader2, Save, Trash2, Music, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
 import type { AppConfig } from '../hooks/useConfig';
@@ -168,10 +169,32 @@ export default function SecretAdmin() {
     if (!config) return;
     setSaveStatus('saving');
     try {
+      let finalConfig = { ...config };
+      
+      if (previewRef.current) {
+        try {
+          const canvas = await html2canvas(previewRef.current, { useCORS: true, scale: 1 });
+          const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+          const resThumbnail = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileName: `kakao_thumb_${Date.now()}.jpg`, base64Content: base64, fileType: 'image' })
+          });
+          if (resThumbnail.ok) {
+            const data = await resThumbnail.json();
+            if (data.path) {
+              finalConfig.kakaoThumbnail = data.path;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to generate or upload kakao thumbnail", e);
+        }
+      }
+
       const res = await fetch('/api/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newConfig: config })
+        body: JSON.stringify({ newConfig: finalConfig })
       });
       if (res.ok) {
         setSaveStatus('success');

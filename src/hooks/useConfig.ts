@@ -19,6 +19,7 @@ export interface AppConfig {
   heroBottomNameX?: number;
   heroBottomNameY?: number;
   stickers?: Sticker[];
+  kakaoThumbnail?: string;
 }
 
 export interface Sticker {
