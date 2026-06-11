@@ -36,17 +36,34 @@ export interface Sticker {
   scale: number; // scale multiplier
 }
 
+let cachedConfigPromise: Promise<AppConfig> | null = null;
+let cachedConfig: AppConfig | null = null;
+
 export function useConfig() {
-  const [config, setConfig] = useState<AppConfig | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [config, setConfig] = useState<AppConfig | null>(cachedConfig);
+  const [loading, setLoading] = useState(!cachedConfig);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    fetch('/data/config.json?' + new Date().getTime()) // Prevent caching
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to load config');
-        return res.json();
-      })
+    if (cachedConfig) {
+      setConfig(cachedConfig);
+      setLoading(false);
+      return;
+    }
+
+    if (!cachedConfigPromise) {
+      cachedConfigPromise = fetch('/data/config.json?' + new Date().getTime()) // Prevent caching
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to load config');
+          return res.json();
+        })
+        .then(data => {
+          cachedConfig = data;
+          return data;
+        });
+    }
+
+    cachedConfigPromise
       .then(data => {
         setConfig(data);
         setLoading(false);

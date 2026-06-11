@@ -31,11 +31,25 @@ function App() {
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.fade-in').forEach((el) => {
-      observer.observe(el);
+    const observeElements = () => {
+      document.querySelectorAll('.fade-in').forEach((el) => {
+        observer.observe(el);
+      });
+    };
+
+    observeElements();
+
+    // Observe future DOM changes to catch dynamically rendered fade-in elements
+    const mutationObserver = new MutationObserver(() => {
+      observeElements();
     });
 
-    return () => observer.disconnect();
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+      mutationObserver.disconnect();
+    };
   }, [loading]);
 
   // /map 경로 접속 시 카카오맵으로 즉시 리다이렉트
