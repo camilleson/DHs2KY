@@ -33,8 +33,23 @@ export default function VideoSection() {
 
   const youtubeUrl = config?.youtubeUrl || '';
   const isLocal = config?.videoType === 'local';
+  const isNone = config?.videoType === 'none';
+  const noVideoImages = config?.noVideoImages || [];
 
   if (hasError) return null;
+
+  if (isNone) {
+    if (!noVideoImages.length) return null;
+    return (
+      <>
+        {noVideoImages.map((imgUrl, idx) => (
+          <section key={idx} className="w-full bg-black fade-in">
+            <img src={imgUrl} alt={`Section Image ${idx + 1}`} className="w-full block" />
+          </section>
+        ))}
+      </>
+    );
+  }
 
   return (
     <section className="w-full bg-black fade-in">

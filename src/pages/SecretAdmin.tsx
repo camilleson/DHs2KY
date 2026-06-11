@@ -35,6 +35,10 @@ export default function SecretAdmin() {
   // Pointer-events drag state (replaces HTML5 drag + touch approach)
   const [dragState, setDragState] = useState<DragState | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+  const [noVideoDragState, setNoVideoDragState] = useState<DragState | null>(null);
+  const noVideoCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const configRef = useRef<AppConfig | null>(null);
 
   useEffect(() => {
@@ -106,6 +110,48 @@ export default function SecretAdmin() {
     setDragState(null);
   }, [dragState]);
 
+  // ── No Video Images Pointer drag handlers ─────────────────────────────────
+  const handleNoVideoGripPointerDown = useCallback((e: React.PointerEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    setNoVideoDragState({ fromIndex: index, toIndex: index });
+  }, []);
+
+  const handleNoVideoGripPointerMove = useCallback((e: React.PointerEvent, _index: number) => {
+    if (!noVideoDragState) return;
+    e.preventDefault();
+    const { clientX, clientY } = e;
+    for (let i = 0; i < noVideoCardRefs.current.length; i++) {
+      const card = noVideoCardRefs.current[i];
+      if (!card) continue;
+      const rect = card.getBoundingClientRect();
+      if (clientX >= rect.left && clientX <= rect.right &&
+          clientY >= rect.top && clientY <= rect.bottom) {
+        if (i !== noVideoDragState.toIndex) {
+          setNoVideoDragState(prev => prev ? { ...prev, toIndex: i } : null);
+        }
+        break;
+      }
+    }
+  }, [noVideoDragState]);
+
+  const handleNoVideoGripPointerUp = useCallback((_e: React.PointerEvent, _index: number) => {
+    if (!noVideoDragState || !configRef.current) {
+      setNoVideoDragState(null);
+      return;
+    }
+    const { fromIndex, toIndex } = noVideoDragState;
+    if (fromIndex !== toIndex && configRef.current.noVideoImages) {
+      const newImages = [...configRef.current.noVideoImages];
+      const [moved] = newImages.splice(fromIndex, 1);
+      newImages.splice(toIndex, 0, moved);
+      setConfig({ ...configRef.current, noVideoImages: newImages });
+      setSaveStatus('idle');
+    }
+    setNoVideoDragState(null);
+  }, [noVideoDragState]);
+
   // ── Sticker Pointer Handlers ──
   const handleStickerPointerDown = useCallback((e: React.PointerEvent, id: string) => {
     e.preventDefault();
@@ -161,6 +207,14 @@ export default function SecretAdmin() {
     if (!confirm('정말 이 사진을 갤러리에서 제외하시겠습니까? (파일은 삭제되지 않습니다)')) return;
     const newPhotos = config.galleryPhotos.filter((_, i) => i !== index);
     setConfig({ ...config, galleryPhotos: newPhotos });
+    setSaveStatus('idle');
+  };
+
+  const removeNoVideoImage = (index: number) => {
+    if (!config || !config.noVideoImages) return;
+    if (!confirm('정말 이 사진을 제외하시겠습니까? (파일은 삭제되지 않습니다)')) return;
+    const newImages = config.noVideoImages.filter((_, i) => i !== index);
+    setConfig({ ...config, noVideoImages: newImages });
     setSaveStatus('idle');
   };
 
@@ -784,7 +838,7 @@ export default function SecretAdmin() {
                       type="radio" 
                       name="videoType" 
                       value="youtube" 
-                      checked={config.videoType !== 'local'} 
+                      checked={config.videoType !== 'local' && config.videoType !== 'none'} 
                       onChange={() => {
                         setConfig({ ...config, videoType: 'youtube' });
                         setSaveStatus('idle');
@@ -807,11 +861,105 @@ export default function SecretAdmin() {
                     />
                     <span className="text-sm text-gray-700">내 동영상 (기본 식전영상)</span>
                   </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="videoType" 
+                      value="none" 
+                      checked={config.videoType === 'none'} 
+                      onChange={() => {
+                        setConfig({ ...config, videoType: 'none', noVideoImages: config.noVideoImages || [] });
+                        setSaveStatus('idle');
+                      }}
+                      className="accent-red-500"
+                    />
+                    <span className="text-sm text-gray-700">비디오 선택안함 (이미지 대체)</span>
+                  </label>
                 </div>
               </div>
 
-              {/* 유튜브 URL 입력 / 내 동영상 안내 */}
-              {config.videoType !== 'local' ? (
+              {/* 유튜브 URL 입력 / 내 동영상 안내 / 대체 이미지 */}
+              {config.videoType === 'none' ? (
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="text-center mb-4">
+                    <p className="text-sm text-gray-700 font-medium mb-1">✅ 비디오 대신 이미지가 보여집니다.</p>
+                    <p className="text-xs text-gray-500">이미지 하나당 한 섹션을 차지하게 되며, 순서를 드래그하여 변경할 수 있습니다.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-4">
+                    {(config.noVideoImages || []).map((photoUrl, idx) => {
+                      const isDragging = noVideoDragState?.fromIndex === idx;
+                      const isDropTarget = noVideoDragState !== null &&
+                        noVideoDragState.toIndex === idx &&
+                        noVideoDragState.fromIndex !== idx;
+
+                      return (
+                        <div
+                          key={photoUrl + idx}
+                          ref={el => { noVideoCardRefs.current[idx] = el; }}
+                          className={clsx(
+                            "relative group border rounded-lg overflow-hidden flex flex-col transition-all duration-150 select-none",
+                            isDragging && "opacity-50 scale-95 border-gray-300",
+                            isDropTarget && "border-blue-400 ring-2 ring-blue-300",
+                            !isDragging && !isDropTarget && "border-gray-200"
+                          )}
+                        >
+                          {/* Index badge */}
+                          <div className="absolute bottom-1 left-1 z-10 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded pointer-events-none">
+                            {idx + 1}
+                          </div>
+
+                          {/* Delete button */}
+                          <button
+                            onClick={() => removeNoVideoImage(idx)}
+                            className="absolute top-1 right-1 z-10 bg-white p-1 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 shadow"
+                            title="제외하기"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Photo */}
+                          <div className="h-28 bg-gray-100 relative">
+                            <img
+                              src={photoUrl}
+                              className="w-full h-full object-cover pointer-events-none"
+                              alt={`No Video ${idx + 1}`}
+                              draggable={false}
+                            />
+                          </div>
+
+                          {/* Grip handle */}
+                          <div
+                            className={clsx(
+                              "flex items-center justify-center gap-1 py-2 bg-gray-50 border-t border-gray-100 text-gray-400 text-xs select-none",
+                              noVideoDragState ? "cursor-grabbing" : "cursor-grab hover:bg-gray-100 hover:text-gray-600"
+                            )}
+                            style={{ touchAction: 'none', userSelect: 'none' }}
+                            onPointerDown={(e) => handleNoVideoGripPointerDown(e, idx)}
+                            onPointerMove={(e) => handleNoVideoGripPointerMove(e, idx)}
+                            onPointerUp={(e) => handleNoVideoGripPointerUp(e, idx)}
+                            onPointerCancel={() => setNoVideoDragState(null)}
+                          >
+                            <GripVertical className="w-4 h-4" />
+                            <span className="text-[11px]">드래그</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="max-w-md mx-auto border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                    <UploadSection
+                      title="대체 이미지 업로드"
+                      accept="image/*"
+                      onSuccess={(path) => {
+                        setConfig({ ...config, noVideoImages: [...(config.noVideoImages || []), path] });
+                        setSaveStatus('idle');
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : config.videoType !== 'local' ? (
                 <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">유튜브 동영상 주소</label>
                   <input
