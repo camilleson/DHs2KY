@@ -19,14 +19,14 @@ export default function Greeting() {
   const greetingText = config?.greetingMessage || DEFAULT_GREETING;
 
   return (
-    <section className="relative py-14 px-6 text-center fade-in">
+    <section className="relative -mt-32 pt-36 pb-14 px-6 text-center fade-in z-0">
       {/* Background Image with top fade-in transition */}
       <div 
         className="absolute inset-0 bg-cover bg-center z-0"
         style={{ 
           backgroundImage: `url(${invitationBg})`,
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)'
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 100%)'
         }}
       ></div>
       {/* Light overlay to ensure text is readable against the background */}

@@ -116,8 +116,8 @@ export default function Hero() {
         className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out z-[-1] ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
         style={{ 
           backgroundImage: `url("${bgImage}")`,
-          maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)'
+          maskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)'
         }}
       ></div>
 
