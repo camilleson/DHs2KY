@@ -34,9 +34,8 @@
   "heroTextColor": "#ffffff",
   "heroBottomTextColor": "#ffffff",
   "stickers": [],
-  "heroTopNameY": 18,
-  "heroBottomNameY": -31,
-  "heroTextScale": 1.3,
-  "kakaoThumbnail": "/images/gallery/1781144883777-kakao_thumb_1781144882962.jpg",
-  "heroTextAnimation": "typewriter"
+  "heroTopNameY": 25,
+  "heroBottomNameY": -18,
+  "heroTextScale": 1.4,
+  "kakaoThumbnail": "/images/gallery/1781144883777-kakao_thumb_1781144882962.jpg"
 }
