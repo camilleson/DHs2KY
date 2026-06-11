@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import FlowerParticles from './FlowerParticles';
 import { useConfig } from '../hooks/useConfig';
 
@@ -77,6 +78,12 @@ export default function Hero() {
   const { config } = useConfig();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
+  const [heroHeight, setHeroHeight] = useState<string | number>('100vh');
+
+  useEffect(() => {
+    // Set fixed height on mount to prevent mobile browser URL bar scroll jumps
+    setHeroHeight(window.innerHeight);
+  }, []);
 
   // Only show image after config is loaded — no fallback to avoid flash of wrong image
   const mainImage = config?.mainPhoto ?? null;
@@ -108,18 +115,20 @@ export default function Hero() {
   }, [bgImage]);
 
   return (
-    <section className="relative w-full flex flex-col items-center overflow-hidden z-10">
-      {/* Background Image that drives the height of the Hero section so it's never cropped */}
-      <div className="relative w-full flex-shrink-0">
-        <img 
-          src={bgImage} 
-          alt="Hero Background"
-          className={`w-full h-auto block transition-opacity duration-[1500ms] ease-in-out ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
+    <section 
+      className="relative w-full flex flex-col items-center overflow-hidden z-10"
+      style={{ height: heroHeight }}
+    >
+      {/* Background Image that covers the entire Hero section */}
+      <div className="absolute inset-0 w-full h-full">
+        <div 
+          className={`w-full h-full bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={{ 
+            backgroundImage: `url('${bgImage}')`,
             WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 140px), rgba(0,0,0,0.8) calc(100% - 100px), rgba(0,0,0,0.4) calc(100% - 50px), rgba(0,0,0,0) 100%)',
             maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 140px), rgba(0,0,0,0.8) calc(100% - 100px), rgba(0,0,0,0.4) calc(100% - 50px), rgba(0,0,0,0) 100%)'
           }}
-        />
+        ></div>
         
         {/* Absolute overlay for particles and noise to match image size */}
         <div className="absolute inset-0 pointer-events-none">
@@ -132,7 +141,7 @@ export default function Hero() {
       </div>
 
       {/* Absolute overlay for all text to sit on top of the image */}
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-between items-center py-6 pointer-events-none">
+      <div className="relative w-full h-full flex flex-col justify-between items-center py-6 pointer-events-none z-10">
 
 
       {/* Top Name */}
@@ -152,14 +161,14 @@ export default function Hero() {
       )}
 
       {/* Center Image — only render once config is loaded */}
-      <div className="z-10 w-[88%] max-w-[390px] aspect-[4/5] relative my-1 mx-auto flex-shrink min-h-0">
+      <div className="z-10 w-full max-w-[450px] aspect-[3/4] relative my-1 mx-auto flex-shrink min-h-0">
         {mainImage && !isNoEffect && (
           <div
             className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             style={{
               backgroundImage: `url('${mainImage}')`,
-              maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)',
-              WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)'
+              maskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)',
+              WebkitMaskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)'
             }}
           ></div>
         )}
@@ -202,7 +211,7 @@ export default function Hero() {
 
       {/* Details at Bottom */}
       <div 
-        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-[20px] whitespace-nowrap pointer-events-auto" 
+        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-[20px] whitespace-nowrap pointer-events-auto mb-8" 
         style={{ 
           color: config?.heroBottomTextColor || '#000000',
           transform: `translate(${config?.heroDetailsX || 0}px, ${config?.heroDetailsY || 0}px)`,
@@ -226,6 +235,13 @@ export default function Hero() {
           </p>
         </div>
       </div>
+      
+      {/* Scroll Down Indicator */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce z-20 text-[#aaa] pointer-events-auto cursor-pointer"
+           onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}>
+        <ChevronDown size={24} strokeWidth={1.5} />
+      </div>
+
       </div>
     </section>
   );
