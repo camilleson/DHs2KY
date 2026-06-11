@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 
 import { useConfig } from '../hooks/useConfig';
@@ -176,75 +177,84 @@ export default function Gallery() {
       </div>
 
       {/* Fullscreen Modal */}
-      {isModalOpen && createPortal(
-        <div className="fixed inset-0 z-[9999] bg-white flex flex-col">
-          {/* Top bar */}
-          <div className="flex justify-end p-4">
-            <button onClick={closeModal} className="p-2 text-gray-500 hover:text-black">
-              {/* Using a simple SVG for X if lucide 'X' is not imported, but let's import it if we can. Actually we can just use an SVG to avoid adding missing imports if we forgot. */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-
-          {/* Image Container */}
-          <div
-            className="flex-1 overflow-hidden relative flex items-center justify-center select-none touch-none w-full"
-            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-          >
-            <div
-              className="relative w-full h-full flex items-center justify-center"
-              style={{
-                transform: `translateX(${dragOffset * 0.3}px)`, // Slight parallax drag effect
-                transition: isDragging ? 'none' : 'transform 0.3s ease-out',
-              }}
+      {createPortal(
+        <AnimatePresence>
+          {isModalOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-[9999] bg-white flex flex-col"
             >
-              {IMAGES.map((src, index) => (
-                <div 
-                  key={index} 
-                  className={`absolute inset-0 w-full h-full flex items-center justify-center px-4 transition-opacity duration-500 ease-in-out ${
-                    index === selectedIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-                  }`}
-                >
-                  <img
-                    src={src}
-                    alt={`Fullscreen ${index + 1}`}
-                    onLoad={(e) => handleImageLoad(index, e)}
-                    className={`pointer-events-none mx-auto ${orientations[index] === 'landscape'
-                        ? 'w-full max-w-[500px] h-auto object-contain'
-                        : 'w-full max-w-[320px] aspect-[2/3] object-cover'
-                      }`}
-                    draggable={false}
-                    onContextMenu={(e) => e.preventDefault()}
-                    loading="lazy"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+              {/* Top bar */}
+              <div className="flex justify-end p-4">
+                <button onClick={closeModal} className="p-2 text-gray-500 hover:text-black">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
 
-          {/* Bottom Navigation */}
-          <div className="flex items-center justify-between px-6 py-6 pb-12">
-            <button onClick={goToPrev} className="p-2 text-gray-400 hover:text-black transition-colors">
-              <ChevronLeft className="w-6 h-6" strokeWidth={1} />
-            </button>
-            <span className="text-[14px] text-gray-600 tracking-widest font-light">
-              {selectedIndex + 1} / {IMAGES.length}
-            </span>
-            <button onClick={goToNext} className="p-2 text-gray-400 hover:text-black transition-colors">
-              <ChevronRight className="w-6 h-6" strokeWidth={1} />
-            </button>
-          </div>
-        </div>,
+              {/* Image Container */}
+              <div
+                className="flex-1 overflow-hidden relative flex items-center justify-center select-none touch-none w-full"
+                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div
+                  className="relative w-full h-full flex items-center justify-center"
+                  style={{
+                    transform: `translateX(${dragOffset * 0.3}px)`, // Slight parallax drag effect
+                    transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+                  }}
+                >
+                  {IMAGES.map((src, index) => (
+                    <div 
+                      key={index} 
+                      className={`absolute inset-0 w-full h-full flex items-center justify-center px-4 transition-opacity duration-500 ease-in-out ${
+                        index === selectedIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                      }`}
+                    >
+                      <img
+                        src={src}
+                        alt={`Fullscreen ${index + 1}`}
+                        onLoad={(e) => handleImageLoad(index, e)}
+                        className={`pointer-events-none mx-auto ${orientations[index] === 'landscape'
+                            ? 'w-full max-w-[500px] h-auto object-contain'
+                            : 'w-full max-w-[320px] aspect-[2/3] object-cover'
+                          }`}
+                        draggable={false}
+                        onContextMenu={(e) => e.preventDefault()}
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Navigation */}
+              <div className="flex items-center justify-between px-6 py-6 pb-12">
+                <button onClick={goToPrev} className="p-2 text-gray-400 hover:text-black transition-colors">
+                  <ChevronLeft className="w-6 h-6" strokeWidth={1} />
+                </button>
+                <span className="text-[14px] text-gray-600 tracking-widest font-light">
+                  {selectedIndex + 1} / {IMAGES.length}
+                </span>
+                <button onClick={goToNext} className="p-2 text-gray-400 hover:text-black transition-colors">
+                  <ChevronRight className="w-6 h-6" strokeWidth={1} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
         document.body
       )}
     </section>
