@@ -313,93 +313,6 @@ export default function SecretAdmin() {
                 ))}
               </div>
 
-              {/* Sticker Controls */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-semibold text-gray-700">스티커(장식) 추가 및 위치 이동</h4>
-                  {selectedStickerId && (
-                    <button 
-                      onClick={() => {
-                        const newStickers = config.stickers?.filter(s => s.id !== selectedStickerId);
-                        setConfig({ ...config, stickers: newStickers });
-                        setSelectedStickerId(null);
-                        setSaveStatus('idle');
-                      }}
-                      className="text-xs text-red-600 hover:bg-red-50 px-2 py-1 rounded border border-red-200 transition-colors"
-                    >
-                      선택된 스티커 삭제
-                    </button>
-                  )}
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  {/* Upload Sticker */}
-                  <div className="flex-1 w-full">
-                    <label className="relative cursor-pointer bg-white border border-dashed border-gray-300 px-4 py-2.5 rounded-md font-medium text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center justify-center w-full text-sm">
-                      <span>+ 새 스티커 이미지 업로드</span>
-                      <input 
-                        type="file" 
-                        className="sr-only" 
-                        accept="image/*" 
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-                          
-                          // Set uploading state if needed, or just standard alert. A simple toast would be better but alert is fine for now.
-                          try {
-                            const { base64, fileName } = await compressImage(file, 800, 800); // smaller max for stickers
-                            const res = await fetch('/api/upload', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ fileName: `sticker_${fileName}`, base64Content: base64, fileType: 'image' }),
-                            });
-                            const data = await res.json();
-                            if (res.ok && data.path) {
-                              const newSticker = {
-                                id: Date.now().toString(),
-                                src: data.path,
-                                x: 50,
-                                y: 50,
-                                scale: 1.0
-                              };
-                              setConfig({ ...config, stickers: [...(config.stickers || []), newSticker] });
-                              setSelectedStickerId(newSticker.id);
-                              setSaveStatus('idle');
-                            } else {
-                              alert('스티커 업로드 실패: ' + (data.error || '알 수 없는 오류'));
-                            }
-                          } catch (err) {
-                            console.error(err);
-                            alert('업로드 중 오류 발생');
-                          }
-                          e.target.value = ''; // reset
-                        }} 
-                      />
-                    </label>
-                  </div>
-
-                  {/* Scale selected sticker */}
-                  <div className={clsx("flex-1 w-full flex items-center gap-3 p-2 rounded", !selectedStickerId && "opacity-40 pointer-events-none")}>
-                    <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">크기 조절:</label>
-                    <input 
-                      type="range" 
-                      min="0.2" 
-                      max="3.0" 
-                      step="0.1"
-                      value={config.stickers?.find(s => s.id === selectedStickerId)?.scale || 1.0} 
-                      onChange={(e) => {
-                        const newScale = parseFloat(e.target.value);
-                        const newStickers = config.stickers?.map(s => s.id === selectedStickerId ? { ...s, scale: newScale } : s);
-                        setConfig({ ...config, stickers: newStickers });
-                        setSaveStatus('idle');
-                      }}
-                      className="flex-1 accent-indigo-600"
-                    />
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-3 text-center">위의 미리보기 화면에서 이미지를 직접 드래그하여 위치를 조절하세요.</p>
-              </div>
-
               {/* Text Color Pickers */}
               <div className="mb-6 flex flex-col sm:flex-row items-center justify-center gap-6 bg-gray-50 py-4 px-2 rounded-lg border border-gray-200">
                 <div className="flex items-center gap-3">
@@ -544,6 +457,93 @@ export default function SecretAdmin() {
 
                   </div>
                 )}
+              </div>
+
+              {/* Sticker Controls */}
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-semibold text-gray-700">스티커(장식) 추가 및 위치 이동</h4>
+                  {selectedStickerId && (
+                    <button 
+                      onClick={() => {
+                        const newStickers = config.stickers?.filter(s => s.id !== selectedStickerId);
+                        setConfig({ ...config, stickers: newStickers });
+                        setSelectedStickerId(null);
+                        setSaveStatus('idle');
+                      }}
+                      className="text-xs text-red-600 hover:bg-red-50 px-2 py-1 rounded border border-red-200 transition-colors"
+                    >
+                      선택된 스티커 삭제
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  {/* Upload Sticker */}
+                  <div className="flex-1 w-full">
+                    <label className="relative cursor-pointer bg-white border border-dashed border-gray-300 px-4 py-2.5 rounded-md font-medium text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center justify-center w-full text-sm">
+                      <span>+ 새 스티커 이미지 업로드</span>
+                      <input 
+                        type="file" 
+                        className="sr-only" 
+                        accept="image/*" 
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          
+                          // Set uploading state if needed, or just standard alert. A simple toast would be better but alert is fine for now.
+                          try {
+                            const { base64, fileName } = await compressImage(file, 800, 800); // smaller max for stickers
+                            const res = await fetch('/api/upload', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ fileName: `sticker_${fileName}`, base64Content: base64, fileType: 'image' }),
+                            });
+                            const data = await res.json();
+                            if (res.ok && data.path) {
+                              const newSticker = {
+                                id: Date.now().toString(),
+                                src: data.path,
+                                x: 50,
+                                y: 50,
+                                scale: 1.0
+                              };
+                              setConfig({ ...config, stickers: [...(config.stickers || []), newSticker] });
+                              setSelectedStickerId(newSticker.id);
+                              setSaveStatus('idle');
+                            } else {
+                              alert('스티커 업로드 실패: ' + (data.error || '알 수 없는 오류'));
+                            }
+                          } catch (err) {
+                            console.error(err);
+                            alert('업로드 중 오류 발생');
+                          }
+                          e.target.value = ''; // reset
+                        }} 
+                      />
+                    </label>
+                  </div>
+
+                  {/* Scale selected sticker */}
+                  <div className={clsx("flex-1 w-full flex items-center gap-3 p-2 rounded", !selectedStickerId && "opacity-40 pointer-events-none")}>
+                    <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">크기 조절:</label>
+                    <input 
+                      type="range" 
+                      min="0.2" 
+                      max="3.0" 
+                      step="0.1"
+                      value={config.stickers?.find(s => s.id === selectedStickerId)?.scale || 1.0} 
+                      onChange={(e) => {
+                        const newScale = parseFloat(e.target.value);
+                        const newStickers = config.stickers?.map(s => s.id === selectedStickerId ? { ...s, scale: newScale } : s);
+                        setConfig({ ...config, stickers: newStickers });
+                        setSaveStatus('idle');
+                      }}
+                      className="flex-1 accent-indigo-600"
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-3 text-center">위의 미리보기 화면에서 이미지를 직접 드래그하여 위치를 조절하세요.</p>
               </div>
 
               {/* Selection Grid */}
