@@ -278,6 +278,7 @@ export default function SecretAdmin() {
                         key={config.heroTextAnimation + 'bottom'}
                         text={config.heroBottomName || 'Kayoung'}
                         animation={config.heroTextAnimation}
+                        delay={config.heroTextAnimation === 'typewriter' ? (config.heroTopName || 'Dongho').length * 0.15 : 0}
                         className="font-cursive text-2xl font-light mb-2 inline-block" 
                         style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})`, transform: `translate(${config.heroBottomNameX || 0}px, ${config.heroBottomNameY || 0}px)` }} 
                       />

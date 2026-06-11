@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import FlowerParticles from './FlowerParticles';
 import { useConfig } from '../hooks/useConfig';
 
-export function AnimatedText({ text, animation, style, className }: { text: string; animation?: string; style?: React.CSSProperties; className?: string }) {
+export function AnimatedText({ text, animation, style, className, delay = 0 }: { text: string; animation?: string; style?: React.CSSProperties; className?: string; delay?: number }) {
   if (!animation || animation === 'none') {
     return <h1 className={className} style={style}>{text}</h1>;
   }
@@ -14,7 +14,7 @@ export function AnimatedText({ text, animation, style, className }: { text: stri
         initial={{ opacity: 0 }} 
         whileInView={{ opacity: 1 }} 
         viewport={{ once: true }}
-        transition={{ duration: 1.5 }}
+        transition={{ duration: 1.5, delay }}
         className={className} 
         style={style}
       >
@@ -29,7 +29,7 @@ export function AnimatedText({ text, animation, style, className }: { text: stri
         initial={{ opacity: 0, y: 30 }} 
         whileInView={{ opacity: 1, y: 0 }} 
         viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
+        transition={{ duration: 1.2, ease: "easeOut", delay }}
         className={className} 
         style={style}
       >
@@ -44,7 +44,7 @@ export function AnimatedText({ text, animation, style, className }: { text: stri
       hidden: { opacity: 1 },
       visible: {
         opacity: 1,
-        transition: { staggerChildren: 0.15 },
+        transition: { staggerChildren: 0.15, delayChildren: delay },
       },
     };
     const child = {
@@ -160,6 +160,7 @@ export default function Hero() {
           <AnimatedText
             text={config?.heroBottomName || 'Kayoung'}
             animation={config?.heroTextAnimation}
+            delay={config?.heroTextAnimation === 'typewriter' ? (config?.heroTopName || 'Dongho').length * 0.15 : 0}
             className="font-cursive font-light tracking-wide inline-block"
             style={{
               color: config?.heroTextColor || '#333333',
