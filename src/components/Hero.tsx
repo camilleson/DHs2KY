@@ -114,7 +114,11 @@ export default function Hero() {
       {/* Background Image with Fade */}
       <div
         className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out z-[-1] ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ backgroundImage: `url("${bgImage}")` }}
+        style={{ 
+          backgroundImage: `url("${bgImage}")`,
+          maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)'
+        }}
       ></div>
 
       <FlowerParticles />
@@ -209,8 +213,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Smooth bottom white gradient overlay to dissolve into Greeting section */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none z-0"></div>
+
     </section>
   );
 }

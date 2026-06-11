@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Phone, Mail, X } from 'lucide-react';
 import { useConfig } from '../hooks/useConfig';
+import invitationBg from '../assets/invitation.jpg';
 
 const DEFAULT_GREETING = `봄날의 햇살처럼 따뜻하고,
 가을의 바람처럼 편안한 사람을 만났습니다.
@@ -18,16 +19,28 @@ export default function Greeting() {
   const greetingText = config?.greetingMessage || DEFAULT_GREETING;
 
   return (
-    <section className="py-14 px-6 text-center bg-white fade-in">
-      <div className="mb-12">
+    <section className="relative py-14 px-6 text-center fade-in">
+      {/* Background Image with top fade-in transition */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{ 
+          backgroundImage: `url(${invitationBg})`,
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)'
+        }}
+      ></div>
+      {/* Light overlay to ensure text is readable against the background */}
+      <div className="absolute inset-0 bg-white/40 z-0 mix-blend-overlay"></div>
+
+      <div className="relative z-10 mb-12">
         <h3 className="font-serif text-[22px] tracking-[0.15em] text-[#111]">INVITATION</h3>
       </div>
       
-      <div className="font-sans text-[13px] leading-[1.9] text-[#444] mb-10 tracking-wide whitespace-pre-wrap">
+      <div className="relative z-10 font-sans text-[13px] leading-[1.9] text-[#444] mb-10 tracking-wide whitespace-pre-wrap">
         {greetingText}
       </div>
 
-      <div className="flex flex-col gap-5 items-center font-sans text-[16px] mb-16">
+      <div className="relative z-10 flex flex-col gap-5 items-center font-sans text-[16px] mb-16">
         <div className="flex items-center gap-3">
           <span className="text-[#333] font-medium">남택천 · 손향남</span>
           <span className="text-[14px] text-[#888]">의</span>
@@ -44,7 +57,7 @@ export default function Greeting() {
 
       <button 
         onClick={() => setIsContactModalOpen(true)}
-        className="bg-[#f4f4f4] text-[#555] font-sans text-[15px] py-4 px-12 rounded-sm tracking-widest hover:bg-[#eaeaea] transition-colors"
+        className="relative z-10 bg-[#f4f4f4] text-[#555] font-sans text-[15px] py-4 px-12 rounded-sm tracking-widest hover:bg-[#eaeaea] transition-colors"
       >
         축하 연락하기
       </button>
