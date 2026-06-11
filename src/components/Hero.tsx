@@ -1,6 +1,77 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import FlowerParticles from './FlowerParticles';
 import { useConfig } from '../hooks/useConfig';
+
+function AnimatedText({ text, animation, style, className }: { text: string; animation?: string; style?: React.CSSProperties; className?: string }) {
+  if (!animation || animation === 'none') {
+    return <h1 className={className} style={style}>{text}</h1>;
+  }
+
+  if (animation === 'fade-in') {
+    return (
+      <motion.h1 
+        initial={{ opacity: 0 }} 
+        whileInView={{ opacity: 1 }} 
+        viewport={{ once: true }}
+        transition={{ duration: 1.5 }}
+        className={className} 
+        style={style}
+      >
+        {text}
+      </motion.h1>
+    );
+  }
+
+  if (animation === 'slide-up') {
+    return (
+      <motion.h1 
+        initial={{ opacity: 0, y: 30 }} 
+        whileInView={{ opacity: 1, y: 0 }} 
+        viewport={{ once: true }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className={className} 
+        style={style}
+      >
+        {text}
+      </motion.h1>
+    );
+  }
+
+  if (animation === 'typewriter') {
+    const letters = text.split("");
+    const container = {
+      hidden: { opacity: 1 },
+      visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.15 },
+      },
+    };
+    const child = {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { duration: 0.1 } },
+    };
+
+    return (
+      <motion.h1
+        className={className}
+        style={{ ...style, display: 'inline-block' }}
+        variants={container}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        {letters.map((letter, index) => (
+          <motion.span variants={child} key={index} style={{ display: 'inline-block', whiteSpace: letter === ' ' ? 'pre' : 'normal' }}>
+            {letter}
+          </motion.span>
+        ))}
+      </motion.h1>
+    );
+  }
+
+  return <h1 className={className} style={style}>{text}</h1>;
+}
 
 export default function Hero() {
   const { config } = useConfig();
@@ -56,16 +127,16 @@ export default function Hero() {
       {/* Top Name */}
       {!config?.hideHeroText && (
         <div className="z-10 w-full text-center fade-in pt-2">
-          <h1
+          <AnimatedText
+            text={config?.heroTopName || 'Dongho'}
+            animation={config?.heroTextAnimation}
             className="font-cursive font-light tracking-wide inline-block"
             style={{
               color: config?.heroTextColor || '#333333',
               fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`,
               transform: `translate(${config?.heroTopNameX || 0}px, ${config?.heroTopNameY || 0}px)`
             }}
-          >
-            {config?.heroTopName || 'Dongho'}
-          </h1>
+          />
         </div>
       )}
 
@@ -86,16 +157,16 @@ export default function Hero() {
       {/* Bottom Name */}
       {!config?.hideHeroText && (
         <div className="z-10 w-full text-center fade-in pt-2 pb-10">
-          <h1
+          <AnimatedText
+            text={config?.heroBottomName || 'Kayoung'}
+            animation={config?.heroTextAnimation}
             className="font-cursive font-light tracking-wide inline-block"
             style={{
               color: config?.heroTextColor || '#333333',
               fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`,
               transform: `translate(${config?.heroBottomNameX || 0}px, ${config?.heroBottomNameY || 0}px)`
             }}
-          >
-            {config?.heroBottomName || 'Kayoung'}
-          </h1>
+          />
         </div>
       )}
 

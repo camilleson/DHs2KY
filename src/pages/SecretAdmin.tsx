@@ -452,6 +452,23 @@ export default function SecretAdmin() {
                       <span className="text-xs text-gray-500 w-8">{config.heroTextScale || 1.0}x</span>
                     </div>
 
+                    <div className="flex items-center gap-3 bg-white p-3 rounded border border-gray-200 shadow-sm mt-3">
+                      <label className="text-sm font-semibold text-gray-700 w-24">애니메이션 효과</label>
+                      <select
+                        value={config.heroTextAnimation || 'none'}
+                        onChange={(e) => {
+                          setConfig({ ...config, heroTextAnimation: e.target.value as AppConfig['heroTextAnimation'] });
+                          setSaveStatus('idle');
+                        }}
+                        className="flex-1 text-sm border-gray-300 rounded px-2 py-1.5 focus:ring-indigo-400 focus:border-indigo-400 border outline-none"
+                      >
+                        <option value="none">효과 없음</option>
+                        <option value="fade-in">서서히 나타나기 (Fade-in)</option>
+                        <option value="slide-up">아래에서 위로 (Slide-up)</option>
+                        <option value="typewriter">타자 치듯 쓰기 (Typewriter)</option>
+                      </select>
+                    </div>
+
                     {/* Top Name Config */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-white p-3 rounded border border-gray-200 shadow-sm">
                       <div>
