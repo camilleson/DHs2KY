@@ -198,22 +198,23 @@ export default function Hero() {
         className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-16 whitespace-nowrap" 
         style={{ 
           color: config?.heroBottomTextColor || '#000000',
-          transform: `translate(${config?.heroDetailsX || 0}px, ${config?.heroDetailsY || 0}px)`
+          transform: `translate(${config?.heroDetailsX || 0}px, ${config?.heroDetailsY || 0}px)`,
+          fontSize: `calc(clamp(10px, 3vw, 12px) * ${config?.heroDetailsScale || 1})`
         }}
       >
         <div className="text-left">
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold mb-1 whitespace-nowrap">
+          <p className="font-sans tracking-widest font-bold mb-1 whitespace-nowrap">
             THE BMK WEDDING
           </p>
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold whitespace-nowrap">
+          <p className="font-sans tracking-widest font-bold whitespace-nowrap">
             ASTIN HALL
           </p>
         </div>
         <div className="text-right">
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold mb-1 whitespace-nowrap">
+          <p className="font-sans tracking-widest font-bold mb-1 whitespace-nowrap">
             2026. 10. 17 SAT
           </p>
-          <p className="font-sans text-[clamp(10px,3vw,12px)] tracking-widest font-bold whitespace-nowrap">
+          <p className="font-sans tracking-widest font-bold whitespace-nowrap">
             03:00 PM
           </p>
         </div>

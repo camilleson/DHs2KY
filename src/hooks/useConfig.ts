@@ -18,6 +18,7 @@ export interface AppConfig {
   heroBottomName?: string;
   heroBottomNameX?: number;
   heroBottomNameY?: number;
+  heroDetailsScale?: number;
   heroDetailsX?: number;
   heroDetailsY?: number;
   stickers?: Sticker[];

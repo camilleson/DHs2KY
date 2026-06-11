@@ -287,11 +287,12 @@ export default function SecretAdmin() {
                       className="flex justify-between px-4 opacity-90" 
                       style={{ 
                         color: config.heroBottomTextColor || '#000000',
-                        transform: `translate(${config.heroDetailsX || 0}px, ${config.heroDetailsY || 0}px)`
+                        transform: `translate(${config.heroDetailsX || 0}px, ${config.heroDetailsY || 0}px)`,
+                        fontSize: `calc(clamp(8px, 2vw, 10px) * ${config.heroDetailsScale || 1})`
                       }}
                     >
-                      <span className="text-[8px] font-bold">10. 17 SAT</span>
-                      <span className="text-[8px] font-bold">03:00 PM</span>
+                      <span className="font-bold">10. 17 SAT</span>
+                      <span className="font-bold">03:00 PM</span>
                     </div>
                   </div>
                 </div>
@@ -463,16 +464,23 @@ export default function SecretAdmin() {
                     </div>
 
                     {/* Bottom Details Position Config */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white p-3 rounded border border-gray-200 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-white p-3 rounded border border-gray-200 shadow-sm">
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">하단 정보 가로(X) 위치 조정</label>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">하단 정보 크기 조절</label>
+                        <div className="flex items-center gap-2">
+                          <input type="range" min="0.5" max="2.0" step="0.1" value={config.heroDetailsScale || 1.0} onChange={(e) => { setConfig({ ...config, heroDetailsScale: parseFloat(e.target.value) }); setSaveStatus('idle'); }} className="flex-1 accent-indigo-600" />
+                          <span className="text-[10px] text-gray-500 w-6 text-right">{config.heroDetailsScale || 1.0}x</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">가로(X) 위치 조정</label>
                         <div className="flex items-center gap-2">
                           <input type="range" min="-150" max="150" value={config.heroDetailsX || 0} onChange={(e) => { setConfig({ ...config, heroDetailsX: parseInt(e.target.value) }); setSaveStatus('idle'); }} className="flex-1 accent-indigo-600" />
                           <span className="text-[10px] text-gray-500 w-6 text-right">{config.heroDetailsX || 0}px</span>
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">하단 정보 세로(Y) 위치 조정</label>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">세로(Y) 위치 조정</label>
                         <div className="flex items-center gap-2">
                           <input type="range" min="-150" max="150" value={config.heroDetailsY || 0} onChange={(e) => { setConfig({ ...config, heroDetailsY: parseInt(e.target.value) }); setSaveStatus('idle'); }} className="flex-1 accent-indigo-600" />
                           <span className="text-[10px] text-gray-500 w-6 text-right">{config.heroDetailsY || 0}px</span>
