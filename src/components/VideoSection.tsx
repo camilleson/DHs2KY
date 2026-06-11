@@ -1,7 +1,7 @@
 import React from 'react';
 import { useConfig } from '../hooks/useConfig';
 
-import localVideoUrl from '../assets/식전영상.mp4';
+import localVideoUrl from '../assets/wedding-video.mp4';
 
 function getYoutubeEmbedUrl(url?: string) {
   const defaultUrl = 'https://www.youtube.com/embed/XO77YuyMOek?start=9';
