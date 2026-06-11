@@ -38,5 +38,6 @@
   "heroBottomNameY": -60,
   "heroTextScale": 1.4,
   "kakaoThumbnail": "/images/gallery/1781144883777-kakao_thumb_1781144882962.jpg",
-  "heroTextAnimation": "typewriter"
+  "heroTextAnimation": "typewriter",
+  "localVideoPoster": "/images/gallery/1781164719842-IMG_5365.jpg"
 }
