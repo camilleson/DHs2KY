@@ -132,12 +132,12 @@ export default function Hero() {
       </div>
 
       {/* Absolute overlay for all text to sit on top of the image */}
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-between items-center py-10 pointer-events-none">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-between items-center py-6 pointer-events-none">
 
 
       {/* Top Name */}
       {!config?.hideHeroText && (
-        <div className="z-10 w-full text-center fade-in pt-2 pointer-events-auto">
+        <div className="z-10 w-full text-center fade-in pt-1 pointer-events-auto">
           <AnimatedText
             text={config?.heroTopName || 'Dongho'}
             animation={config?.heroTextAnimation}
@@ -152,7 +152,7 @@ export default function Hero() {
       )}
 
       {/* Center Image — only render once config is loaded */}
-      <div className="z-10 w-[85%] max-w-[380px] aspect-[4/5] relative my-2 mx-auto">
+      <div className="z-10 w-[70%] max-w-[320px] aspect-[4/5] relative my-1 mx-auto flex-shrink min-h-0">
         {mainImage && !isNoEffect && (
           <div
             className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -167,7 +167,7 @@ export default function Hero() {
 
       {/* Bottom Name */}
       {!config?.hideHeroText && (
-        <div className="z-10 w-full text-center fade-in pt-2 pb-10 pointer-events-auto">
+        <div className="z-10 w-full text-center fade-in pt-1 pb-4 pointer-events-auto">
           <AnimatedText
             text={config?.heroBottomName || 'Kayoung'}
             animation={config?.heroTextAnimation}
@@ -202,7 +202,7 @@ export default function Hero() {
 
       {/* Details at Bottom */}
       <div 
-        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-[40px] whitespace-nowrap pointer-events-auto" 
+        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-[20px] whitespace-nowrap pointer-events-auto" 
         style={{ 
           color: config?.heroBottomTextColor || '#000000',
           transform: `translate(${config?.heroDetailsX || 0}px, ${config?.heroDetailsY || 0}px)`,
