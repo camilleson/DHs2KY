@@ -202,7 +202,7 @@ export default function Hero() {
 
       {/* Details at Bottom */}
       <div 
-        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-[150px] whitespace-nowrap pointer-events-auto" 
+        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-[40px] whitespace-nowrap pointer-events-auto" 
         style={{ 
           color: config?.heroBottomTextColor || '#000000',
           transform: `translate(${config?.heroDetailsX || 0}px, ${config?.heroDetailsY || 0}px)`,
