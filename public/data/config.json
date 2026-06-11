@@ -33,13 +33,8 @@
   "mainBackgroundPhoto": "none",
   "heroTextColor": "#ffffff",
   "heroBottomTextColor": "#ffffff",
-  "stickers": [
-    {
-      "id": "1781143192831",
-      "src": "/images/gallery/1781143191861-sticker_IMG_5365.jpg",
-      "x": 18.75,
-      "y": 15.46296296296292,
-      "scale": 1
-    }
-  ]
+  "stickers": [],
+  "heroTopNameY": 18,
+  "heroBottomNameY": -13,
+  "heroTextScale": 1.4
 }
