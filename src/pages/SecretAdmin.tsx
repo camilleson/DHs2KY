@@ -270,9 +270,9 @@ export default function SecretAdmin() {
                     </div>
                   )}
                   
-                  <div className="z-10 w-[85%] max-w-[200px] aspect-[4/5] relative my-1 mx-auto">
+                  <div className="z-10 w-full aspect-[3/4] relative my-1 mx-auto flex-shrink min-h-0">
                     {config.mainPhoto && config.mainBackgroundPhoto !== 'none' && (
-                      <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)', WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)' }}></div>
+                      <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)', WebkitMaskImage: 'radial-gradient(65% 65%, black 75%, transparent 100%)' }}></div>
                     )}
                   </div>
                   
@@ -290,7 +290,7 @@ export default function SecretAdmin() {
                   )}
                   
                   <div 
-                    className="z-10 w-full px-4 flex justify-between items-end mt-auto pb-[30px] whitespace-nowrap opacity-90" 
+                    className="z-10 w-full px-4 flex justify-between items-end mt-auto pb-[10px] whitespace-nowrap opacity-90 mb-4" 
                     style={{ 
                       color: config.heroBottomTextColor || '#000000',
                       transform: `translate(${config.heroDetailsX || 0}px, ${config.heroDetailsY || 0}px)`,
