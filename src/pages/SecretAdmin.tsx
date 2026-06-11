@@ -833,18 +833,30 @@ export default function SecretAdmin() {
                     <p className="text-xs text-gray-500">기본 제공되는 식전영상(MP4)이 직접 재생되며, 안드로이드와 아이폰 환경에서 모두 잘 재생됩니다.</p>
                   </div>
                   
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">동영상 썸네일(포스터) 이미지 주소</label>
-                  <input
-                    type="text"
-                    value={config.localVideoPoster || ''}
-                    placeholder="이미지 URL을 입력하세요 (예: https://...)"
-                    onChange={(e) => {
-                      setConfig({ ...config, localVideoPoster: e.target.value });
-                      setSaveStatus('idle');
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none"
-                  />
-                  <p className="text-xs text-gray-500 mt-2">입력하지 않으면 동영상의 첫 프레임이나 빈 화면이 썸네일로 보여집니다.</p>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 mt-4">동영상 썸네일(포스터) 이미지 업로드</label>
+                  <div className="border border-gray-300 rounded-lg p-4 bg-white">
+                    {config.localVideoPoster ? (
+                      <div className="relative inline-block">
+                        <img src={config.localVideoPoster} alt="Video Poster" className="h-32 object-contain rounded border" />
+                        <button 
+                          onClick={() => { setConfig({ ...config, localVideoPoster: '' }); setSaveStatus('idle'); }}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <UploadSection
+                        title="썸네일 이미지 업로드"
+                        accept="image/*"
+                        onSuccess={(path) => {
+                          setConfig({ ...config, localVideoPoster: path });
+                          setSaveStatus('idle');
+                        }}
+                      />
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">업로드하지 않으면 동영상의 첫 프레임이나 빈 화면이 썸네일로 보여집니다.</p>
                 </div>
               )}
             </div>
