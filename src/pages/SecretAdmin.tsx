@@ -1112,7 +1112,7 @@ export default function SecretAdmin() {
 }
 
 // ─── Client-side image compression ───────────────────────────────────────────
-function compressImage(file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.85): Promise<{ base64: string; fileName: string }> {
+function compressImage(file: File, maxWidth = 2048, maxHeight = 2048, quality = 0.95): Promise<{ base64: string; fileName: string }> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
