@@ -11,13 +11,18 @@ import Share from './components/Share';
 import BakeryTour from './components/BakeryTour';
 import ClickParticles from './components/ClickParticles';
 import SecretAdmin from './pages/SecretAdmin';
+import { useConfig } from './hooks/useConfig';
 
 
 const KAKAO_MAP_URL = 'https://map.naver.com/p/search/the%20bmk/place/33794156?c=15.00,0,0,3,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605191517&locale=ko&svcName=map_pcv5&searchText=the%20bmk';
 
 function App() {
+  const { loading } = useConfig();
+
   // Simple intersection observer for fade-in animations
   useEffect(() => {
+    if (loading) return;
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -31,7 +36,7 @@ function App() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [loading]);
 
   // /map 경로 접속 시 카카오맵으로 즉시 리다이렉트
   if (window.location.pathname === '/map') {
@@ -41,6 +46,10 @@ function App() {
 
   if (window.location.pathname === '/20231216') {
     return <SecretAdmin />;
+  }
+
+  if (loading) {
+    return <div className="max-w-md mx-auto bg-[#fcfcfc] min-h-screen relative shadow-2xl"></div>;
   }
 
   return (
