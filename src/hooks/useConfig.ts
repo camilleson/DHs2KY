@@ -18,6 +18,8 @@ export interface AppConfig {
   heroBottomName?: string;
   heroBottomNameX?: number;
   heroBottomNameY?: number;
+  heroDetailsX?: number;
+  heroDetailsY?: number;
   stickers?: Sticker[];
   heroTextAnimation?: 'none' | 'fade-in' | 'slide-up' | 'typewriter';
 }
