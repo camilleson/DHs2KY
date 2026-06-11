@@ -14,12 +14,15 @@ function ImageWithSkeleton({ src, alt, onClick }: { src: string; alt: string; on
     <div
       className={`w-full aspect-square cursor-pointer overflow-hidden relative ${!loaded ? 'bg-gray-200 animate-pulse' : 'bg-gray-100'}`}
       onClick={onClick}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-cover transition-all duration-700 hover:scale-105 ${loaded ? 'opacity-100' : 'opacity-0 scale-105'}`}
+        className={`pointer-events-none w-full h-full object-cover transition-all duration-700 hover:scale-105 ${loaded ? 'opacity-100' : 'opacity-0 scale-105'}`}
         loading="lazy"
+        draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
         onLoad={() => setLoaded(true)}
       />
     </div>
@@ -213,6 +216,7 @@ export default function Gallery() {
                         : 'w-full max-w-[320px] aspect-[2/3] object-cover'
                       }`}
                     draggable={false}
+                    onContextMenu={(e) => e.preventDefault()}
                     loading="lazy"
                   />
                 </div>

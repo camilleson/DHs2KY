@@ -52,11 +52,19 @@ export default function Hero() {
       ></div>
 
       {/* Top Name */}
-      <div className="z-10 w-full text-center fade-in pt-2">
-        <h1 className="font-cursive text-[clamp(36px,10vw,50px)] font-light tracking-wide" style={{ color: config?.heroTextColor || '#333333' }}>
-          Dongho
-        </h1>
-      </div>
+      {!config?.hideHeroText && (
+        <div className="z-10 w-full text-center fade-in pt-2">
+          <h1 
+            className="font-cursive font-light tracking-wide" 
+            style={{ 
+              color: config?.heroTextColor || '#333333',
+              fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`
+            }}
+          >
+            Dongho
+          </h1>
+        </div>
+      )}
 
       {/* Center Image — only render once config is loaded */}
       <div className="z-10 w-[85%] max-w-[380px] aspect-[4/5] relative my-2 mx-auto">
@@ -73,11 +81,19 @@ export default function Hero() {
       </div>
 
       {/* Bottom Name */}
-      <div className="z-10 w-full text-center fade-in pt-2 pb-10">
-        <h1 className="font-cursive text-[clamp(36px,10vw,50px)] font-light tracking-wide" style={{ color: config?.heroTextColor || '#333333' }}>
-          Kayoung
-        </h1>
-      </div>
+      {!config?.hideHeroText && (
+        <div className="z-10 w-full text-center fade-in pt-2 pb-10">
+          <h1 
+            className="font-cursive font-light tracking-wide" 
+            style={{ 
+              color: config?.heroTextColor || '#333333',
+              fontSize: `calc(clamp(36px, 10vw, 50px) * ${config?.heroTextScale || 1})`
+            }}
+          >
+            Kayoung
+          </h1>
+        </div>
+      )}
 
       {/* Details at Bottom */}
       <div className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-6 whitespace-nowrap" style={{ color: config?.heroBottomTextColor || '#000000' }}>

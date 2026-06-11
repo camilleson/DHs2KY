@@ -10,6 +10,8 @@ export interface AppConfig {
   greetingMessage?: string;
   heroTextColor?: string;
   heroBottomTextColor?: string;
+  hideHeroText?: boolean;
+  heroTextScale?: number;
 }
 
 

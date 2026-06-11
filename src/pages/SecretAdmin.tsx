@@ -196,14 +196,18 @@ export default function SecretAdmin() {
               <div className="mb-6 aspect-[4/6] max-w-[240px] mx-auto border border-gray-300 rounded-lg overflow-hidden relative bg-cover bg-center shadow-inner" style={{ backgroundImage: `url("${config.mainBackgroundPhoto === 'none' ? config.mainPhoto : (config.mainBackgroundPhoto || '/main-texture4.png')}")` }}>
                 {/* Simulated Hero layout for preview */}
                 <div className="absolute inset-0 flex flex-col justify-between items-center py-6 pointer-events-none">
-                  <h1 className="font-cursive text-2xl font-light" style={{ color: config.heroTextColor || '#333333' }}>Dongho</h1>
+                  {!config.hideHeroText && (
+                    <h1 className="font-cursive text-2xl font-light" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})` }}>Dongho</h1>
+                  )}
                   <div className="w-[75%] aspect-[4/5] relative my-auto">
                     {config.mainPhoto && config.mainBackgroundPhoto !== 'none' && (
                       <div className="absolute inset-0 bg-cover bg-center opacity-100" style={{ backgroundImage: `url('${config.mainPhoto}')`, maskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)', WebkitMaskImage: 'radial-gradient(55% 55%, black 70%, transparent 90%)' }}></div>
                     )}
                   </div>
                   <div className="w-full text-center">
-                    <h1 className="font-cursive text-2xl font-light mb-2" style={{ color: config.heroTextColor || '#333333' }}>Kayoung</h1>
+                    {!config.hideHeroText && (
+                      <h1 className="font-cursive text-2xl font-light mb-2" style={{ color: config.heroTextColor || '#333333', fontSize: `calc(1.5rem * ${config.heroTextScale || 1})` }}>Kayoung</h1>
+                    )}
                     <div className="flex justify-between px-4 opacity-90" style={{ color: config.heroBottomTextColor || '#000000' }}>
                       <span className="text-[8px] font-bold">10. 17 SAT</span>
                       <span className="text-[8px] font-bold">03:00 PM</span>
@@ -239,6 +243,45 @@ export default function SecretAdmin() {
                     className="w-9 h-9 p-0 border-0 rounded cursor-pointer"
                   />
                 </div>
+              </div>
+
+              {/* Text Size and Visibility Options */}
+              <div className="mb-6 flex flex-col sm:flex-row items-center justify-center gap-6 bg-gray-50 py-4 px-4 rounded-lg border border-gray-200">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="hideHeroText"
+                    checked={config.hideHeroText || false}
+                    onChange={(e) => {
+                      setConfig({ ...config, hideHeroText: e.target.checked });
+                      setSaveStatus('idle');
+                    }}
+                    className="w-4 h-4 text-indigo-600 rounded border-gray-300 cursor-pointer"
+                  />
+                  <label htmlFor="hideHeroText" className="text-sm font-semibold text-gray-700 cursor-pointer">메인 이름 숨기기</label>
+                </div>
+                
+                {!config.hideHeroText && (
+                  <>
+                    <div className="hidden sm:block w-px h-8 bg-gray-300"></div>
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-center">
+                      <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">이름 크기 조절:</label>
+                      <input 
+                        type="range" 
+                        min="0.5" 
+                        max="2.0" 
+                        step="0.1"
+                        value={config.heroTextScale || 1.0} 
+                        onChange={(e) => {
+                          setConfig({ ...config, heroTextScale: parseFloat(e.target.value) });
+                          setSaveStatus('idle');
+                        }}
+                        className="w-24 sm:w-32 accent-indigo-600 cursor-pointer"
+                      />
+                      <span className="text-xs text-gray-500 w-8">{config.heroTextScale || 1.0}x</span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Selection Grid */}
