@@ -775,21 +775,63 @@ export default function SecretAdmin() {
                 </div>
               </div>
 
-              {/* 유튜브 URL 입력 */}
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">유튜브 동영상 주소</label>
-                <input
-                  type="text"
-                  value={config.youtubeUrl || ''}
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  onChange={(e) => {
-                    setConfig({ ...config, youtubeUrl: e.target.value });
-                    setSaveStatus('idle');
-                  }}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none"
-                />
-                <p className="text-xs text-gray-500 mt-2">입력하지 않으면 기본 웨딩 샘플 동영상이 보여집니다.</p>
+              {/* 동영상 타입 선택 */}
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-4">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">동영상 소스 선택</label>
+                <div className="flex gap-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="videoType" 
+                      value="youtube" 
+                      checked={config.videoType !== 'local'} 
+                      onChange={() => {
+                        setConfig({ ...config, videoType: 'youtube' });
+                        setSaveStatus('idle');
+                      }}
+                      className="accent-red-500"
+                    />
+                    <span className="text-sm text-gray-700">유튜브 영상 연결</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="videoType" 
+                      value="local" 
+                      checked={config.videoType === 'local'} 
+                      onChange={() => {
+                        setConfig({ ...config, videoType: 'local' });
+                        setSaveStatus('idle');
+                      }}
+                      className="accent-red-500"
+                    />
+                    <span className="text-sm text-gray-700">내 동영상 (기본 식전영상)</span>
+                  </label>
+                </div>
               </div>
+
+              {/* 유튜브 URL 입력 / 내 동영상 안내 */}
+              {config.videoType !== 'local' ? (
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">유튜브 동영상 주소</label>
+                  <input
+                    type="text"
+                    value={config.youtubeUrl || ''}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    onChange={(e) => {
+                      setConfig({ ...config, youtubeUrl: e.target.value });
+                      setSaveStatus('idle');
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">입력하지 않으면 기본 웨딩 샘플 동영상이 보여집니다.</p>
+                </div>
+              ) : (
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
+                  <p className="text-sm text-gray-700 font-medium mb-1">✅ 내 동영상 (식전영상) 모드가 적용되었습니다.</p>
+                  <p className="text-xs text-gray-500">기본 제공되는 식전영상(MP4)이 직접 재생되며, 안드로이드와 아이폰 환경에서 모두 잘 재생됩니다.</p>
+                </div>
+              )}
             </div>
 
             {/* ── 섹션 3: 갤러리 사진 관리 ── */}

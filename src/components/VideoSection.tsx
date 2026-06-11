@@ -1,6 +1,8 @@
 import React from 'react';
 import { useConfig } from '../hooks/useConfig';
 
+import localVideoUrl from '../assets/식전영상.mp4';
+
 function getYoutubeEmbedUrl(url?: string) {
   const defaultUrl = 'https://www.youtube.com/embed/XO77YuyMOek?start=9';
   if (!url) return defaultUrl;
@@ -25,19 +27,33 @@ function getYoutubeEmbedUrl(url?: string) {
 export default function VideoSection() {
   const { config } = useConfig();
   const youtubeUrl = config?.youtubeUrl || '';
+  const isLocal = config?.videoType === 'local';
 
   return (
     <section className="w-full bg-black fade-in">
       <div className="relative w-full aspect-video flex items-center justify-center">
-        <iframe 
-          width="100%" 
-          height="100%" 
-          src={getYoutubeEmbedUrl(youtubeUrl)} 
-          title="Wedding Video" 
-          frameBorder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          allowFullScreen
-        ></iframe>
+        {isLocal ? (
+          <video 
+            src={localVideoUrl}
+            className="w-full h-full object-contain"
+            controls
+            playsInline
+            webkit-playsinline="true"
+            preload="metadata"
+          >
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <iframe 
+            width="100%" 
+            height="100%" 
+            src={getYoutubeEmbedUrl(youtubeUrl)} 
+            title="Wedding Video" 
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowFullScreen
+          ></iframe>
+        )}
       </div>
     </section>
   );
