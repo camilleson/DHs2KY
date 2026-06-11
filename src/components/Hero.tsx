@@ -81,7 +81,7 @@ export default function Hero() {
   // Only show image after config is loaded — no fallback to avoid flash of wrong image
   const mainImage = config?.mainPhoto ?? null;
   const isNoEffect = config?.mainBackgroundPhoto === 'none';
-  const bgImage = isNoEffect ? mainImage : (config?.mainBackgroundPhoto || '/main-texture4.png');
+  const bgImage = isNoEffect ? (mainImage || undefined) : (config?.mainBackgroundPhoto || '/main-texture4.png');
 
   useEffect(() => {
     if (mainImage) {
@@ -108,29 +108,36 @@ export default function Hero() {
   }, [bgImage]);
 
   return (
-    <section
-      className="relative w-full min-h-[100vh] flex flex-col justify-between items-center py-10 overflow-hidden z-10"
-    >
-      {/* Background Image with Fade */}
-      <div
-        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out z-[-1] ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ 
-          backgroundImage: `url("${bgImage}")`,
-          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%)',
-          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%)'
-        }}
-      ></div>
+    <section className="relative w-full flex flex-col items-center overflow-hidden z-10">
+      {/* Background Image that drives the height of the Hero section so it's never cropped */}
+      <div className="relative w-full flex-shrink-0">
+        <img 
+          src={bgImage} 
+          alt="Hero Background"
+          className={`w-full h-auto block transition-opacity duration-[1500ms] ease-in-out ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{ 
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 140px), rgba(0,0,0,0.8) calc(100% - 100px), rgba(0,0,0,0.4) calc(100% - 50px), rgba(0,0,0,0) 100%)',
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) calc(100% - 140px), rgba(0,0,0,0.8) calc(100% - 100px), rgba(0,0,0,0.4) calc(100% - 50px), rgba(0,0,0,0) 100%)'
+          }}
+        />
+        
+        {/* Absolute overlay for particles and noise to match image size */}
+        <div className="absolute inset-0 pointer-events-none">
+          <FlowerParticles />
+          <div
+            className="absolute inset-0 z-0 opacity-[0.03] mix-blend-overlay"
+            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
+          ></div>
+        </div>
+      </div>
 
-      <FlowerParticles />
-      {/* Subtle Noise Background overlaying the texture */}
-      <div
-        className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
-        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
-      ></div>
+      {/* Absolute overlay for all text to sit on top of the image */}
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-between items-center py-10 pointer-events-none">
+
 
       {/* Top Name */}
       {!config?.hideHeroText && (
-        <div className="z-10 w-full text-center fade-in pt-2">
+        <div className="z-10 w-full text-center fade-in pt-2 pointer-events-auto">
           <AnimatedText
             text={config?.heroTopName || 'Dongho'}
             animation={config?.heroTextAnimation}
@@ -160,7 +167,7 @@ export default function Hero() {
 
       {/* Bottom Name */}
       {!config?.hideHeroText && (
-        <div className="z-10 w-full text-center fade-in pt-2 pb-10">
+        <div className="z-10 w-full text-center fade-in pt-2 pb-10 pointer-events-auto">
           <AnimatedText
             text={config?.heroBottomName || 'Kayoung'}
             animation={config?.heroTextAnimation}
@@ -195,7 +202,7 @@ export default function Hero() {
 
       {/* Details at Bottom */}
       <div 
-        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-16 whitespace-nowrap" 
+        className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-[150px] whitespace-nowrap pointer-events-auto" 
         style={{ 
           color: config?.heroBottomTextColor || '#000000',
           transform: `translate(${config?.heroDetailsX || 0}px, ${config?.heroDetailsY || 0}px)`,
@@ -219,7 +226,7 @@ export default function Hero() {
           </p>
         </div>
       </div>
-
+      </div>
     </section>
   );
 }
