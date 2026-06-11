@@ -260,6 +260,7 @@ export default function SecretAdmin() {
                 <div className="absolute inset-0 flex flex-col justify-between items-center py-6 pointer-events-none">
                   {!config.hideHeroText && (
                     <AnimatedText 
+                      key={config.heroTextAnimation + 'top'}
                       text={config.heroTopName || 'Dongho'}
                       animation={config.heroTextAnimation}
                       className="font-cursive text-2xl font-light inline-block" 
@@ -274,6 +275,7 @@ export default function SecretAdmin() {
                   <div className="w-full text-center">
                     {!config.hideHeroText && (
                       <AnimatedText 
+                        key={config.heroTextAnimation + 'bottom'}
                         text={config.heroBottomName || 'Kayoung'}
                         animation={config.heroTextAnimation}
                         className="font-cursive text-2xl font-light mb-2 inline-block" 
