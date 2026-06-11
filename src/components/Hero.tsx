@@ -97,6 +97,24 @@ export default function Hero() {
         </div>
       )}
 
+      {/* Stickers Overlay */}
+      {config?.stickers?.map((sticker) => (
+        <img
+          key={sticker.id}
+          src={sticker.src}
+          alt="Decoration Sticker"
+          className="absolute z-20 pointer-events-none select-none"
+          style={{
+            left: `${sticker.x}%`,
+            top: `${sticker.y}%`,
+            transform: `translate(-50%, -50%) scale(${sticker.scale || 1})`,
+            maxWidth: '150px' // Base size, scaled by sticker.scale
+          }}
+          draggable={false}
+          onContextMenu={(e) => e.preventDefault()}
+        />
+      ))}
+
       {/* Details at Bottom */}
       <div className="z-10 w-full px-8 flex justify-between items-end fade-in mt-auto pb-6 whitespace-nowrap" style={{ color: config?.heroBottomTextColor || '#000000' }}>
         <div className="text-left">

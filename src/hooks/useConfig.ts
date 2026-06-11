@@ -18,8 +18,16 @@ export interface AppConfig {
   heroBottomName?: string;
   heroBottomNameX?: number;
   heroBottomNameY?: number;
+  stickers?: Sticker[];
 }
 
+export interface Sticker {
+  id: string;
+  src: string;
+  x: number; // percentage (0-100)
+  y: number; // percentage (0-100)
+  scale: number; // scale multiplier
+}
 
 export function useConfig() {
   const [config, setConfig] = useState<AppConfig | null>(null);
