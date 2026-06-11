@@ -23,7 +23,7 @@ export default function FlowerParticles() {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let petals: Petal[] = [];
+    const petals: Petal[] = [];
     // 모바일 기기 성능 최적화를 위해 적절한 갯수(25개) 유지
     const maxPetals = 25; 
 

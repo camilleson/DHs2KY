@@ -1,11 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 
 import { useConfig } from '../hooks/useConfig';
 
 const SWIPE_THRESHOLD = 50;
-const ARROW_RESET_DELAY_MS = 150;
 
 function ImageWithSkeleton({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
   const [loaded, setLoaded] = useState(false);
@@ -65,13 +64,22 @@ export default function Gallery() {
   const openModal = (index: number) => {
     setSelectedIndex(index);
     setIsModalOpen(true);
-    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = 'unset';
   };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.setProperty('overflow', 'hidden');
+    } else {
+      document.body.style.removeProperty('overflow');
+    }
+    return () => {
+      document.body.style.removeProperty('overflow');
+    };
+  }, [isModalOpen]);
 
   // Touch handlers for modal
   const handleTouchStart = (e: React.TouchEvent) => {

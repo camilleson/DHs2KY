@@ -16,16 +16,6 @@ import SecretAdmin from './pages/SecretAdmin';
 const KAKAO_MAP_URL = 'https://map.naver.com/p/search/the%20bmk/place/33794156?c=15.00,0,0,3,dh&isCorrectAnswer=true&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605191517&locale=ko&svcName=map_pcv5&searchText=the%20bmk';
 
 function App() {
-  // /map 경로 접속 시 카카오맵으로 즉시 리다이렉트
-  if (window.location.pathname === '/map') {
-    window.location.replace(KAKAO_MAP_URL);
-    return null;
-  }
-
-  if (window.location.pathname === '/20231216') {
-    return <SecretAdmin />;
-  }
-
   // Simple intersection observer for fade-in animations
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -42,6 +32,16 @@ function App() {
 
     return () => observer.disconnect();
   }, []);
+
+  // /map 경로 접속 시 카카오맵으로 즉시 리다이렉트
+  if (window.location.pathname === '/map') {
+    window.location.replace(KAKAO_MAP_URL);
+    return null;
+  }
+
+  if (window.location.pathname === '/20231216') {
+    return <SecretAdmin />;
+  }
 
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl overflow-x-hidden pb-10">

@@ -35,7 +35,10 @@ export default function SecretAdmin() {
   const [dragState, setDragState] = useState<DragState | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const configRef = useRef<AppConfig | null>(null);
-  configRef.current = config;
+
+  useEffect(() => {
+    configRef.current = config;
+  }, [config]);
 
   // ── Sticker State ──
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
@@ -151,7 +154,7 @@ export default function SecretAdmin() {
     }
   }, [stickerDragState]);
 
-  // ── Remove photo ──────────────────────────────────────────────────────────
+  // ── Handlers ─────────────────────────────────────────────────────────────
   const removePhoto = (index: number) => {
     if (!config) return;
     if (!confirm('정말 이 사진을 갤러리에서 제외하시겠습니까? (파일은 삭제되지 않습니다)')) return;

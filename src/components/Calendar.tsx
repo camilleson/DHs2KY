@@ -16,6 +16,7 @@ export default function Calendar() {
     const now = new Date().getTime();
     const distance = weddingDate - now;
     const daysLeft = Math.ceil(distance / (1000 * 60 * 60 * 24));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDDay(daysLeft > 0 ? daysLeft : 0);
   }, []);
 

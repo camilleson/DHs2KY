@@ -39,7 +39,9 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
   // 컴포넌트가 활성화될 때마다 이미지 에러 상태를 리셋하여 다시 시도할 수 있게 처리
   useEffect(() => {
     if (isActive) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGroomHasError(false);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBrideHasError(false);
     }
   }, [isActive]);
@@ -63,7 +65,7 @@ export default function FireworkOverlay({ isActive, onClose }: FireworkOverlayPr
     if (!ctx) return;
 
     let animationFrameId: number;
-    let particles: Particle[] = [];
+    const particles: Particle[] = [];
 
     // 캔버스 크기 맞춤 (부모 absolute 컨테이너 크기에 대응)
     const resizeCanvas = () => {

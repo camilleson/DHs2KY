@@ -14,6 +14,7 @@ export default function Hero() {
 
   useEffect(() => {
     if (mainImage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setImageLoaded(false);
       const img = new Image();
       img.src = mainImage;
@@ -25,6 +26,7 @@ export default function Hero() {
 
   useEffect(() => {
     if (bgImage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBgLoaded(false);
       const img = new Image();
       img.src = bgImage;
