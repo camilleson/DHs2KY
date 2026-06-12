@@ -26,6 +26,7 @@ export interface AppConfig {
   heroDetailsY?: number;
   stickers?: Sticker[];
   heroTextAnimation?: 'none' | 'fade-in' | 'slide-up' | 'typewriter';
+  kakaoThumbnail?: string;
 }
 
 export interface Sticker {

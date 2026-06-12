@@ -299,6 +299,28 @@ export default function SecretAdmin() {
               </div>
             </div>
 
+            {/* ── 섹션 1.2: 카카오톡 공유 썸네일 ── */}
+            <div className="bg-white p-6 rounded-2xl shadow-xl flex flex-col md:flex-row gap-6">
+              <div className="w-full md:w-1/3">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">카카오톡 공유 썸네일</h3>
+                <p className="text-sm text-gray-500 mb-4">카카오톡으로 공유할 때 표시되는 이미지를 설정합니다. (권장: 1:1 비율)</p>
+                <div className="border border-gray-200 rounded-lg overflow-hidden bg-gray-100 aspect-square relative">
+                  <img src={config.kakaoThumbnail || config.mainPhoto || '/images/gallery/main.png'} alt="Kakao Thumbnail" className="w-full h-full object-cover" />
+                </div>
+              </div>
+              <div className="w-full md:w-2/3 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                <UploadSection
+                  title="카카오톡 썸네일 사진 업로드"
+                  accept="image/*"
+                  onSuccess={(path) => {
+                    setConfig({ ...config, kakaoThumbnail: path });
+                    setSaveStatus('idle');
+                    alert('카카오톡 썸네일 사진이 변경되었습니다. [설정 저장 및 배포하기]를 눌러야 최종 반영됩니다.');
+                  }}
+                />
+              </div>
+            </div>
+
             {/* ── 섹션 1.5: 메인 배경 사진 ── */}
             <div className="bg-white p-6 rounded-2xl shadow-xl">
               <h3 className="text-xl font-bold text-gray-800 mb-2">메인 배경 이미지</h3>
