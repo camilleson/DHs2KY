@@ -20,6 +20,10 @@
     user-select: none !important;
     -webkit-user-drag: none !important;
   }
+  
+  .user-view img {
+    pointer-events: none !important;
+  }
 }
 
 /* Custom scrollbar to hide it for a cleaner mobile look */

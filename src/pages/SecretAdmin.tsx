@@ -819,6 +819,82 @@ export default function SecretAdmin() {
               />
             </div>
 
+            {/* ── 섹션 2.7: 중간 사진 관리 ── */}
+            <div className="bg-white p-6 rounded-2xl shadow-xl mb-6">
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-1">중간 사진 관리</h3>
+                <p className="text-sm text-gray-500">동영상 영역 아래에 추가적으로 보여질 사진을 관리합니다.</p>
+              </div>
+
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-4">
+                  {(config.noVideoImages || []).map((photoUrl, idx) => {
+                    const isDragging = noVideoDragState?.fromIndex === idx;
+                    const isDropTarget = noVideoDragState !== null &&
+                      noVideoDragState.toIndex === idx &&
+                      noVideoDragState.fromIndex !== idx;
+
+                    return (
+                      <div
+                        key={photoUrl + idx}
+                        ref={el => { noVideoCardRefs.current[idx] = el; }}
+                        className={clsx(
+                          "relative group border rounded-lg overflow-hidden flex flex-col transition-all duration-150 select-none",
+                          isDragging && "opacity-50 scale-95 border-gray-300",
+                          isDropTarget && "border-blue-400 ring-2 ring-blue-300",
+                          !isDragging && !isDropTarget && "border-gray-200"
+                        )}
+                      >
+                        <div className="absolute bottom-1 left-1 z-10 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded pointer-events-none">
+                          {idx + 1}
+                        </div>
+                        <button
+                          onClick={() => removeNoVideoImage(idx)}
+                          className="absolute top-1 right-1 z-10 bg-white p-1 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 shadow"
+                          title="제외하기"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                        <div className="h-28 bg-gray-100 relative">
+                          <img
+                            src={photoUrl}
+                            className="w-full h-full object-cover pointer-events-none"
+                            alt={`Middle Photo ${idx + 1}`}
+                            draggable={false}
+                          />
+                        </div>
+                        <div
+                          className={clsx(
+                            "flex items-center justify-center gap-1 py-2 bg-gray-50 border-t border-gray-100 text-gray-400 text-xs select-none",
+                            noVideoDragState ? "cursor-grabbing" : "cursor-grab hover:bg-gray-100 hover:text-gray-600"
+                          )}
+                          style={{ touchAction: 'none', userSelect: 'none' }}
+                          onPointerDown={(e) => handleNoVideoGripPointerDown(e, idx)}
+                          onPointerMove={(e) => handleNoVideoGripPointerMove(e, idx)}
+                          onPointerUp={(e) => handleNoVideoGripPointerUp(e, idx)}
+                          onPointerCancel={() => setNoVideoDragState(null)}
+                        >
+                          <GripVertical className="w-4 h-4" />
+                          <span className="text-[11px]">드래그</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="max-w-md mx-auto border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                  <UploadSection
+                    title="중간 사진 업로드"
+                    accept="image/*"
+                    onSuccess={(path) => {
+                      setConfig({ ...config, noVideoImages: [...(config.noVideoImages || []), path] });
+                      setSaveStatus('idle');
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* ── 섹션 2.8: 동영상 관리 ── */}
             <div className="bg-white p-6 rounded-2xl shadow-xl">
               <div className="flex items-center gap-3 mb-4">
@@ -868,12 +944,12 @@ export default function SecretAdmin() {
                       value="none" 
                       checked={config.videoType === 'none'} 
                       onChange={() => {
-                        setConfig({ ...config, videoType: 'none', noVideoImages: config.noVideoImages || [] });
+                        setConfig({ ...config, videoType: 'none' });
                         setSaveStatus('idle');
                       }}
                       className="accent-red-500"
                     />
-                    <span className="text-sm text-gray-700">비디오 선택안함 (이미지 대체)</span>
+                    <span className="text-sm text-gray-700">비디오 선택안함 (숨김)</span>
                   </label>
                 </div>
               </div>
@@ -882,81 +958,7 @@ export default function SecretAdmin() {
               {config.videoType === 'none' ? (
                 <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <div className="text-center mb-4">
-                    <p className="text-sm text-gray-700 font-medium mb-1">✅ 비디오 대신 이미지가 보여집니다.</p>
-                    <p className="text-xs text-gray-500">이미지 하나당 한 섹션을 차지하게 되며, 순서를 드래그하여 변경할 수 있습니다.</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-4">
-                    {(config.noVideoImages || []).map((photoUrl, idx) => {
-                      const isDragging = noVideoDragState?.fromIndex === idx;
-                      const isDropTarget = noVideoDragState !== null &&
-                        noVideoDragState.toIndex === idx &&
-                        noVideoDragState.fromIndex !== idx;
-
-                      return (
-                        <div
-                          key={photoUrl + idx}
-                          ref={el => { noVideoCardRefs.current[idx] = el; }}
-                          className={clsx(
-                            "relative group border rounded-lg overflow-hidden flex flex-col transition-all duration-150 select-none",
-                            isDragging && "opacity-50 scale-95 border-gray-300",
-                            isDropTarget && "border-blue-400 ring-2 ring-blue-300",
-                            !isDragging && !isDropTarget && "border-gray-200"
-                          )}
-                        >
-                          {/* Index badge */}
-                          <div className="absolute bottom-1 left-1 z-10 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded pointer-events-none">
-                            {idx + 1}
-                          </div>
-
-                          {/* Delete button */}
-                          <button
-                            onClick={() => removeNoVideoImage(idx)}
-                            className="absolute top-1 right-1 z-10 bg-white p-1 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 shadow"
-                            title="제외하기"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Photo */}
-                          <div className="h-28 bg-gray-100 relative">
-                            <img
-                              src={photoUrl}
-                              className="w-full h-full object-cover pointer-events-none"
-                              alt={`No Video ${idx + 1}`}
-                              draggable={false}
-                            />
-                          </div>
-
-                          {/* Grip handle */}
-                          <div
-                            className={clsx(
-                              "flex items-center justify-center gap-1 py-2 bg-gray-50 border-t border-gray-100 text-gray-400 text-xs select-none",
-                              noVideoDragState ? "cursor-grabbing" : "cursor-grab hover:bg-gray-100 hover:text-gray-600"
-                            )}
-                            style={{ touchAction: 'none', userSelect: 'none' }}
-                            onPointerDown={(e) => handleNoVideoGripPointerDown(e, idx)}
-                            onPointerMove={(e) => handleNoVideoGripPointerMove(e, idx)}
-                            onPointerUp={(e) => handleNoVideoGripPointerUp(e, idx)}
-                            onPointerCancel={() => setNoVideoDragState(null)}
-                          >
-                            <GripVertical className="w-4 h-4" />
-                            <span className="text-[11px]">드래그</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="max-w-md mx-auto border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
-                    <UploadSection
-                      title="대체 이미지 업로드"
-                      accept="image/*"
-                      onSuccess={(path) => {
-                        setConfig({ ...config, noVideoImages: [...(config.noVideoImages || []), path] });
-                        setSaveStatus('idle');
-                      }}
-                    />
+                    <p className="text-sm text-gray-700 font-medium mb-1">✅ 동영상 영역이 숨김 처리됩니다.</p>
                   </div>
                 </div>
               ) : config.videoType !== 'local' ? (

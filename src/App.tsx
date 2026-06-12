@@ -11,6 +11,7 @@ import Share from './components/Share';
 import BakeryTour from './components/BakeryTour';
 import ClickParticles from './components/ClickParticles';
 import SecretAdmin from './pages/SecretAdmin';
+import MiddlePhotoSection from './components/MiddlePhotoSection';
 import { useConfig } from './hooks/useConfig';
 
 
@@ -67,13 +68,17 @@ function App() {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen relative shadow-2xl overflow-x-hidden pb-10">
+    <div 
+      className="user-view max-w-md mx-auto bg-white min-h-screen relative shadow-2xl overflow-x-hidden pb-10"
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <ClickParticles />
       <AudioPlayer />
       <Hero />
       <Greeting />
       <Calendar />
       <VideoSection />
+      <MiddlePhotoSection />
       <Gallery />
       <Location />
       <Account />
