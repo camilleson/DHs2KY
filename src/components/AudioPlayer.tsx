@@ -6,7 +6,6 @@ const DEFAULT_MUSIC = '/audio/background.mp3';
 export default function AudioPlayer() {
   const { config } = useConfig();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isManuallyPaused, setIsManuallyPaused] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -21,52 +20,17 @@ export default function AudioPlayer() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 자동재생 시도 (브라우저 정책 우회)
-  useEffect(() => {
-    const playAudio = async () => {
-      if (!audioRef.current || isPlaying || isManuallyPaused) return;
 
-      try {
-        audioRef.current.volume = 0.5;
-        await audioRef.current.play();
-        setIsPlaying(true);
-
-        // 재생 성공 시 이벤트 리스너 제거
-        window.removeEventListener('click', playAudio);
-        window.removeEventListener('touchstart', playAudio);
-        window.removeEventListener('scroll', playAudio);
-      } catch (err) {
-        // 브라우저가 아직 상호작용을 요구함
-      }
-    };
-
-    if (!isManuallyPaused) {
-      // 1. 마운트 시 즉시 시도
-      playAudio();
-
-      // 2. 사용자의 첫 상호작용 시 자동재생 시도 (클릭, 터치, 스크롤)
-      window.addEventListener('click', playAudio, { passive: true });
-      window.addEventListener('touchstart', playAudio, { passive: true });
-      window.addEventListener('scroll', playAudio, { passive: true });
-    }
-
-    return () => {
-      window.removeEventListener('click', playAudio);
-      window.removeEventListener('touchstart', playAudio);
-      window.removeEventListener('scroll', playAudio);
-    };
-  }, [isPlaying, isManuallyPaused]);
 
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
-        setIsManuallyPaused(true); // 사용자가 직접 멈춤
       } else {
+        audioRef.current.volume = 0.5;
         audioRef.current.play();
         setIsPlaying(true);
-        setIsManuallyPaused(false); // 사용자가 다시 재생시킴
       }
     }
   };
@@ -88,7 +52,6 @@ export default function AudioPlayer() {
         <audio
           ref={audioRef}
           loop
-          autoPlay
           src={musicSrc}
         />
         <button
