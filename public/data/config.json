@@ -1,5 +1,5 @@
 {
-  "mainPhoto": "/images/gallery/1781186535583-064A5153_1_____________-_________________________Original.jpg",
+  "mainPhoto": "/images/gallery/1783691121661-064A5153_1_______________re_Original.jpg",
   "backgroundMusic": "/audio/background.mp3",
   "galleryPhotos": [
     "/images/gallery/1781005652961-802625424.679033.jpg",
@@ -19,7 +19,21 @@
     "/images/gallery/1781013093704-IMG_5347.jpg",
     "/images/gallery/16.jpg",
     "/images/gallery/17.jpg",
-    "/images/gallery/18.jpg"
+    "/images/gallery/18.jpg",
+    "/images/gallery/1783691166665-064A3224__1__re_Original.jpg",
+    "/images/gallery/1783691177270-IMG_5648.jpg",
+    "/images/gallery/1783691221033-064A3700__1__re_Original.jpg",
+    "/images/gallery/1783691203949-064A3789__1__re_Original.jpg",
+    "/images/gallery/1783691291538-IMG_5645.jpg",
+    "/images/gallery/1783691324763-064A4784__1__re_Original.jpg",
+    "/images/gallery/1783691349080-064A5267__1__re_Original.jpg",
+    "/images/gallery/1783691369064-IMG_5646.jpg",
+    "/images/gallery/1783691378985-IMG_5649.jpg",
+    "/images/gallery/1783691401901-4M1A6447__1__re_Original.jpg",
+    "/images/gallery/1783691419150-4M1A6779__1__re_Original.jpg",
+    "/images/gallery/1783691439696-IMG_5644.jpg",
+    "/images/gallery/1783691450650-4M1A6181__1__re_Original.jpg",
+    "/images/gallery/1783691473295-4M1A7243__1__re_Original.jpg"
   ],
   "videoType": "none",
   "youtubeUrl": "",
@@ -37,7 +51,7 @@
   "heroTopNameY": 49,
   "heroBottomNameY": -60,
   "heroTextScale": 1.4,
-  "kakaoThumbnail": "/images/gallery/1781144883777-kakao_thumb_1781144882962.jpg",
+  "kakaoThumbnail": "/images/gallery/1783691137285-064A5153_1_______________re_Original.jpg",
   "heroTextAnimation": "typewriter",
   "localVideoPoster": "/images/gallery/1781165065230-IMG_5279.jpg",
   "noVideoImages": [
