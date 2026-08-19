@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Upload, Image as ImageIcon, Loader2, Save, Trash2, Music, GripVertical } from 'lucide-react';
+import { Upload, Image as ImageIcon, Loader2, Save, Trash2, Music, GripVertical, Bus } from 'lucide-react';
 import clsx from 'clsx';
 import type { AppConfig } from '../hooks/useConfig';
 import { AnimatedText } from '../components/Hero';
@@ -1123,6 +1123,367 @@ export default function SecretAdmin() {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* ── 섹션 4: 전세버스(대절버스) 안내 관리 ── */}
+            <div className="bg-white p-6 rounded-2xl shadow-xl space-y-6">
+              <div className="flex items-center justify-between border-b pb-4">
+                <div className="flex items-center gap-3">
+                  <Bus className="w-6 h-6 text-indigo-600" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">전세버스(대절버스) 안내 관리</h3>
+                    <p className="text-sm text-gray-500">청첩장의 오시는 길(LOCATION) 아래에 표시되는 전세버스 안내 카드를 설정합니다.</p>
+                  </div>
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={config.charterBus?.enabled !== false}
+                    onChange={(e) => {
+                      setConfig({
+                        ...config,
+                        charterBus: {
+                          ...(config.charterBus || {}),
+                          enabled: e.target.checked
+                        }
+                      });
+                      setSaveStatus('idle');
+                    }}
+                    className="w-4 h-4 text-indigo-600 rounded border-gray-300 cursor-pointer"
+                  />
+                  <span className="text-sm font-semibold text-gray-700">섹션 표시</span>
+                </label>
+              </div>
+
+              {config.charterBus?.enabled === false ? (
+                <div className="p-6 bg-gray-50 rounded-xl text-center border border-dashed border-gray-300">
+                  <p className="text-sm text-gray-500 font-medium">전세버스 안내 섹션이 현재 숨김 상태입니다.</p>
+                  <p className="text-xs text-gray-400 mt-1">상단의 '섹션 표시' 체크박스를 체크하면 청첩장에 표시됩니다.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* 입력 폼 (7 cols) */}
+                  <div className="lg:col-span-7 space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">카드 메인 제목</label>
+                      <input
+                        type="text"
+                        value={config.charterBus?.title !== undefined ? config.charterBus.title : '전세버스 안내'}
+                        placeholder="예: 전세버스 안내, 피로연 안내 등"
+                        onChange={(e) => {
+                          setConfig({
+                            ...config,
+                            charterBus: { ...(config.charterBus || {}), title: e.target.value }
+                          });
+                          setSaveStatus('idle');
+                        }}
+                        className="w-full text-sm border-gray-300 rounded-lg px-3 py-2 border focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none font-medium"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">상단 서브 안내 문구</label>
+                      <textarea
+                        rows={2}
+                        value={config.charterBus?.subtitle !== undefined ? config.charterBus.subtitle : '멀리서 귀한 걸음 해주시는 하객 여러분께서\n편히 오실 수 있도록 전세버스를 마련하였습니다.'}
+                        placeholder="하객분들께 전할 짧은 인사말을 입력하세요."
+                        onChange={(e) => {
+                          setConfig({
+                            ...config,
+                            charterBus: { ...(config.charterBus || {}), subtitle: e.target.value }
+                          });
+                          setSaveStatus('idle');
+                        }}
+                        className="w-full text-sm border-gray-300 rounded-lg px-3 py-2 border focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none resize-y"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* 1. 출발일시 */}
+                      <div className={clsx("p-3 rounded-lg border transition-all", config.charterBus?.departureTimeEnabled !== false ? "bg-white border-gray-200" : "bg-gray-50 border-gray-200 opacity-60")}>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <label className="flex items-center gap-1.5 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={config.charterBus?.departureTimeEnabled !== false}
+                              onChange={(e) => {
+                                setConfig({
+                                  ...config,
+                                  charterBus: { ...(config.charterBus || {}), departureTimeEnabled: e.target.checked }
+                                });
+                                setSaveStatus('idle');
+                              }}
+                              className="w-3.5 h-3.5 text-indigo-600 rounded cursor-pointer"
+                            />
+                            <span className="text-xs font-bold text-gray-700">1. 출발일시</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={config.charterBus?.departureTimeLabel ?? '[출발일시]'}
+                            disabled={config.charterBus?.departureTimeEnabled === false}
+                            onChange={(e) => {
+                              setConfig({
+                                ...config,
+                                charterBus: { ...(config.charterBus || {}), departureTimeLabel: e.target.value }
+                              });
+                              setSaveStatus('idle');
+                            }}
+                            className="text-[11px] w-20 px-1 py-0.5 border border-gray-200 rounded text-gray-600 outline-none disabled:bg-gray-100"
+                            placeholder="[라벨]"
+                          />
+                        </div>
+                        <textarea
+                          rows={2}
+                          disabled={config.charterBus?.departureTimeEnabled === false}
+                          value={config.charterBus?.departureTime !== undefined ? config.charterBus.departureTime : '0000년 0월 0일(0요일)\n오전 00시 00분 출발'}
+                          placeholder="예: 2026년 10월 17일(토)&#10;오전 10시 30분 출발"
+                          onChange={(e) => {
+                            setConfig({
+                              ...config,
+                              charterBus: { ...(config.charterBus || {}), departureTime: e.target.value }
+                            });
+                            setSaveStatus('idle');
+                          }}
+                          className="w-full text-sm border-gray-300 rounded-lg px-2.5 py-1.5 border focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none resize-y disabled:bg-gray-100"
+                        />
+                      </div>
+
+                      {/* 2. 탑승장소 */}
+                      <div className={clsx("p-3 rounded-lg border transition-all", config.charterBus?.boardingPlaceEnabled !== false ? "bg-white border-gray-200" : "bg-gray-50 border-gray-200 opacity-60")}>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <label className="flex items-center gap-1.5 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={config.charterBus?.boardingPlaceEnabled !== false}
+                              onChange={(e) => {
+                                setConfig({
+                                  ...config,
+                                  charterBus: { ...(config.charterBus || {}), boardingPlaceEnabled: e.target.checked }
+                                });
+                                setSaveStatus('idle');
+                              }}
+                              className="w-3.5 h-3.5 text-indigo-600 rounded cursor-pointer"
+                            />
+                            <span className="text-xs font-bold text-gray-700">2. 탑승장소</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={config.charterBus?.boardingPlaceLabel ?? '[탑승장소]'}
+                            disabled={config.charterBus?.boardingPlaceEnabled === false}
+                            onChange={(e) => {
+                              setConfig({
+                                ...config,
+                                charterBus: { ...(config.charterBus || {}), boardingPlaceLabel: e.target.value }
+                              });
+                              setSaveStatus('idle');
+                            }}
+                            className="text-[11px] w-20 px-1 py-0.5 border border-gray-200 rounded text-gray-600 outline-none disabled:bg-gray-100"
+                            placeholder="[라벨]"
+                          />
+                        </div>
+                        <textarea
+                          rows={2}
+                          disabled={config.charterBus?.boardingPlaceEnabled === false}
+                          value={config.charterBus?.boardingPlace !== undefined ? config.charterBus.boardingPlace : '00시 00구 00역 0번 출구 앞'}
+                          placeholder="예: 서울역 1번 출구 앞"
+                          onChange={(e) => {
+                            setConfig({
+                              ...config,
+                              charterBus: { ...(config.charterBus || {}), boardingPlace: e.target.value }
+                            });
+                            setSaveStatus('idle');
+                          }}
+                          className="w-full text-sm border-gray-300 rounded-lg px-2.5 py-1.5 border focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none resize-y disabled:bg-gray-100"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* 3. 복귀일시 */}
+                      <div className={clsx("p-3 rounded-lg border transition-all", config.charterBus?.returnTimeEnabled !== false ? "bg-white border-gray-200" : "bg-gray-50 border-gray-200 opacity-60")}>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <label className="flex items-center gap-1.5 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={config.charterBus?.returnTimeEnabled !== false}
+                              onChange={(e) => {
+                                setConfig({
+                                  ...config,
+                                  charterBus: { ...(config.charterBus || {}), returnTimeEnabled: e.target.checked }
+                                });
+                                setSaveStatus('idle');
+                              }}
+                              className="w-3.5 h-3.5 text-indigo-600 rounded cursor-pointer"
+                            />
+                            <span className="text-xs font-bold text-gray-700">3. 복귀일시</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={config.charterBus?.returnTimeLabel ?? '[복귀일시]'}
+                            disabled={config.charterBus?.returnTimeEnabled === false}
+                            onChange={(e) => {
+                              setConfig({
+                                ...config,
+                                charterBus: { ...(config.charterBus || {}), returnTimeLabel: e.target.value }
+                              });
+                              setSaveStatus('idle');
+                            }}
+                            className="text-[11px] w-20 px-1 py-0.5 border border-gray-200 rounded text-gray-600 outline-none disabled:bg-gray-100"
+                            placeholder="[라벨]"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          disabled={config.charterBus?.returnTimeEnabled === false}
+                          value={config.charterBus?.returnTime !== undefined ? config.charterBus.returnTime : '예식 종료 후 오후 00시 00분 출발 예정'}
+                          placeholder="예: 예식 종료 후 오후 5시 출발 예정"
+                          onChange={(e) => {
+                            setConfig({
+                              ...config,
+                              charterBus: { ...(config.charterBus || {}), returnTime: e.target.value }
+                            });
+                            setSaveStatus('idle');
+                          }}
+                          className="w-full text-sm border-gray-300 rounded-lg px-2.5 py-1.5 border focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none disabled:bg-gray-100"
+                        />
+                      </div>
+
+                      {/* 4. 차량번호 */}
+                      <div className={clsx("p-3 rounded-lg border transition-all", config.charterBus?.busNumberEnabled !== false ? "bg-white border-gray-200" : "bg-gray-50 border-gray-200 opacity-60")}>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <label className="flex items-center gap-1.5 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={config.charterBus?.busNumberEnabled !== false}
+                              onChange={(e) => {
+                                setConfig({
+                                  ...config,
+                                  charterBus: { ...(config.charterBus || {}), busNumberEnabled: e.target.checked }
+                                });
+                                setSaveStatus('idle');
+                              }}
+                              className="w-3.5 h-3.5 text-indigo-600 rounded cursor-pointer"
+                            />
+                            <span className="text-xs font-bold text-gray-700">4. 차량번호 / 버스명</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={config.charterBus?.busNumberLabel ?? '[차량번호]'}
+                            disabled={config.charterBus?.busNumberEnabled === false}
+                            onChange={(e) => {
+                              setConfig({
+                                ...config,
+                                charterBus: { ...(config.charterBus || {}), busNumberLabel: e.target.value }
+                              });
+                              setSaveStatus('idle');
+                            }}
+                            className="text-[11px] w-20 px-1 py-0.5 border border-gray-200 rounded text-gray-600 outline-none disabled:bg-gray-100"
+                            placeholder="[라벨]"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          disabled={config.charterBus?.busNumberEnabled === false}
+                          value={config.charterBus?.busNumber !== undefined ? config.charterBus.busNumber : '전세버스 〇〇〇〇호'}
+                          placeholder="예: 관광버스 경기 70바 1234"
+                          onChange={(e) => {
+                            setConfig({
+                              ...config,
+                              charterBus: { ...(config.charterBus || {}), busNumber: e.target.value }
+                            });
+                            setSaveStatus('idle');
+                          }}
+                          className="w-full text-sm border-gray-300 rounded-lg px-2.5 py-1.5 border focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none disabled:bg-gray-100"
+                        />
+                      </div>
+                    </div>
+
+                    {/* 5. 유의사항 */}
+                    <div className={clsx("p-3 rounded-lg border transition-all", config.charterBus?.notesEnabled !== false ? "bg-white border-gray-200" : "bg-gray-50 border-gray-200 opacity-60")}>
+                      <div className="flex justify-between items-center mb-1.5">
+                        <label className="flex items-center gap-1.5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={config.charterBus?.notesEnabled !== false}
+                            onChange={(e) => {
+                              setConfig({
+                                ...config,
+                                charterBus: { ...(config.charterBus || {}), notesEnabled: e.target.checked }
+                              });
+                              setSaveStatus('idle');
+                            }}
+                            className="w-3.5 h-3.5 text-indigo-600 rounded cursor-pointer"
+                          />
+                          <span className="text-xs font-bold text-gray-700">5. 유의사항 (안내 문구)</span>
+                        </label>
+                      </div>
+                      <textarea
+                        rows={3}
+                        disabled={config.charterBus?.notesEnabled === false}
+                        value={config.charterBus?.notes !== undefined ? config.charterBus.notes : '* 출발 10분 전 도착 부탁드립니다.\n* 정시 출발로 늦을 시 탑승이 불가할 수 있습니다.\n* 복귀 시간은 현장 사정에 따라 조정될 수 있습니다.'}
+                        placeholder="하객분들이 지켜주셔야 할 유의사항을 입력하세요."
+                        onChange={(e) => {
+                          setConfig({
+                            ...config,
+                            charterBus: { ...(config.charterBus || {}), notes: e.target.value }
+                          });
+                          setSaveStatus('idle');
+                        }}
+                        className="w-full text-sm border-gray-300 rounded-lg px-2.5 py-1.5 border focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none resize-y leading-relaxed disabled:bg-gray-100"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 실시간 미리보기 (5 cols) */}
+                  <div className="lg:col-span-5 flex flex-col items-center">
+                    <p className="text-xs font-semibold text-gray-500 mb-2">실시간 미리보기</p>
+                    <div className="w-full max-w-[320px] bg-white rounded-2xl border border-gray-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-5 text-left pointer-events-none">
+                      <div className="text-center mb-5">
+                        <h4 className="font-sans font-bold text-[16px] text-[#222] mb-2">
+                          {config.charterBus?.title !== undefined ? config.charterBus.title : '전세버스 안내'}
+                        </h4>
+                        <p className="font-sans text-[12px] text-[#555] leading-relaxed whitespace-pre-line">
+                          {config.charterBus?.subtitle !== undefined ? config.charterBus.subtitle : '멀리서 귀한 걸음 해주시는 하객 여러분께서\n편히 오실 수 있도록 전세버스를 마련하였습니다.'}
+                        </p>
+                      </div>
+
+                      <div className="space-y-3 font-sans text-[12px] text-[#333]">
+                        {config.charterBus?.departureTimeEnabled !== false && (
+                          <div>
+                            <p className="font-medium text-[#222] mb-0.5">{config.charterBus?.departureTimeLabel || '[출발일시]'}</p>
+                            <p className="text-[#444] whitespace-pre-line">{config.charterBus?.departureTime !== undefined ? config.charterBus.departureTime : '0000년 0월 0일(0요일)\n오전 00시 00분 출발'}</p>
+                          </div>
+                        )}
+                        {config.charterBus?.boardingPlaceEnabled !== false && (
+                          <div>
+                            <p className="font-medium text-[#222] mb-0.5">{config.charterBus?.boardingPlaceLabel || '[탑승장소]'}</p>
+                            <p className="text-[#444] whitespace-pre-line">{config.charterBus?.boardingPlace !== undefined ? config.charterBus.boardingPlace : '00시 00구 00역 0번 출구 앞'}</p>
+                          </div>
+                        )}
+                        {config.charterBus?.returnTimeEnabled !== false && (
+                          <div>
+                            <p className="font-medium text-[#222] mb-0.5">{config.charterBus?.returnTimeLabel || '[복귀일시]'}</p>
+                            <p className="text-[#444] whitespace-pre-line">{config.charterBus?.returnTime !== undefined ? config.charterBus.returnTime : '예식 종료 후 오후 00시 00분 출발 예정'}</p>
+                          </div>
+                        )}
+                        {config.charterBus?.busNumberEnabled !== false && (
+                          <div>
+                            <p className="font-medium text-[#222] mb-0.5">{config.charterBus?.busNumberLabel || '[차량번호]'}</p>
+                            <p className="text-[#444] whitespace-pre-line">{config.charterBus?.busNumber !== undefined ? config.charterBus.busNumber : '전세버스 〇〇〇〇호'}</p>
+                          </div>
+                        )}
+                        {config.charterBus?.notesEnabled !== false && (
+                          <div className="pt-2">
+                            <p className="text-[11px] text-[#666] leading-relaxed whitespace-pre-line">
+                              {config.charterBus?.notes !== undefined ? config.charterBus.notes : '* 출발 10분 전 도착 부탁드립니다.\n* 정시 출발로 늦을 시 탑승이 불가할 수 있습니다.\n* 복귀 시간은 현장 사정에 따라 조정될 수 있습니다.'}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}

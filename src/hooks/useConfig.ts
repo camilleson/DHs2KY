@@ -1,5 +1,26 @@
 import { useState, useEffect } from 'react';
 
+export interface CharterBusConfig {
+  enabled?: boolean;
+  title?: string;
+  subtitle?: string;
+  departureTimeEnabled?: boolean;
+  departureTimeLabel?: string;
+  departureTime?: string;
+  boardingPlaceEnabled?: boolean;
+  boardingPlaceLabel?: string;
+  boardingPlace?: string;
+  returnTimeEnabled?: boolean;
+  returnTimeLabel?: string;
+  returnTime?: string;
+  busNumberEnabled?: boolean;
+  busNumberLabel?: string;
+  busNumber?: string;
+  notesEnabled?: boolean;
+  notes?: string;
+  tag?: string;
+}
+
 export interface AppConfig {
   mainPhoto: string;
   mainBackgroundPhoto?: string;
@@ -27,6 +48,7 @@ export interface AppConfig {
   stickers?: Sticker[];
   heroTextAnimation?: 'none' | 'fade-in' | 'slide-up' | 'typewriter';
   kakaoThumbnail?: string;
+  charterBus?: CharterBusConfig;
 }
 
 export interface Sticker {

@@ -5,6 +5,7 @@ import Gallery from './components/Gallery';
 import VideoSection from './components/VideoSection';
 import Calendar from './components/Calendar';
 import Location from './components/Location';
+import CharterBus from './components/CharterBus';
 import Account from './components/Account';
 import AudioPlayer from './components/AudioPlayer';
 import Share from './components/Share';
@@ -81,6 +82,7 @@ function App() {
       <MiddlePhotoSection />
       <Gallery />
       <Location />
+      <CharterBus />
       <Account />
       <BakeryTour />
       <Share />
