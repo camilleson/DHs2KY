@@ -22,6 +22,7 @@
     "/images/gallery/18.jpg",
     "/images/gallery/1783691166665-064A3224__1__re_Original.jpg",
     "/images/gallery/1783691177270-IMG_5648.jpg",
+    "/images/gallery/1787147977133-064A3461_Original.jpg",
     "/images/gallery/1783691221033-064A3700__1__re_Original.jpg",
     "/images/gallery/1783691203949-064A3789__1__re_Original.jpg",
     "/images/gallery/1783699976810-064A5153_1_______________re_Original.jpg",
@@ -31,6 +32,7 @@
     "/images/gallery/1783691369064-IMG_5646.jpg",
     "/images/gallery/1783691378985-IMG_5649.jpg",
     "/images/gallery/1783691401901-4M1A6447__1__re_Original.jpg",
+    "/images/gallery/1787147954421-4M1A6994-_Original.jpg",
     "/images/gallery/1783691419150-4M1A6779__1__re_Original.jpg",
     "/images/gallery/1783691792832-4M1A6181__1__re_Original.jpg",
     "/images/gallery/1783691439696-IMG_5644.jpg",
@@ -61,7 +63,7 @@
     "/images/gallery/1781172821089-IMG_5433.jpg"
   ],
   "charterBus": {
-    "enabled": true,
+    "enabled": false,
     "title": "전세버스 안내",
     "subtitle": "멀리서 귀한 걸음 해주시는 하객 여러분께서\n편히 오실 수 있도록 전세버스를 마련하였습니다.",
     "departureTime": "0000년 0월 0일(0요일)\n오전 00시 00분 출발",
